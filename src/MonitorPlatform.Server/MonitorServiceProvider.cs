@@ -48,6 +48,10 @@ namespace MonitorPlatform.Server
             // throw new NotImplementedException();
             var list =await _userRepository.GetAllUsersAsync();
             //var list= baseRepository.Where(a=>true).ToList();
+            foreach (var item in list)
+            {
+                Console.WriteLine(item.Name);
+            }
             Console.WriteLine("数据获取成功");
             //return Task.CompletedTask;
         }

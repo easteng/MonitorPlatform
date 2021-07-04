@@ -6,7 +6,7 @@
 
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\..\main-project\ESTComponents\src\core\ESTCore.Domain\ESTCore.Domain.csproj" />
-    <ProjectReference Include="..\..\..\..\..\..\main-project\ESTComponents\src\core\ESTCore.ORM.FreeSql\ESTCore.ORM.FreeSql.csproj" />
+    <ProjectReference Include="..\..\..\..\main-project\EST.Components\src\core\ESTCore.Domain\ESTCore.Domain.csproj" />
+    <ProjectReference Include="..\..\..\..\main-project\EST.Components\src\core\ESTCore.ORM.FreeSql\ESTCore.ORM.FreeSql.csproj" />
   </ItemGroup>
 </Project>
