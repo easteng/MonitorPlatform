@@ -1,0 +1,107 @@
+﻿<Window x:Class="MonitorPlatform.Wpf.View.Login"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MonitorPlatform.Wpf.View"
+        xmlns:hc="https://handyorg.github.io/handycontrol"
+        mc:Ignorable="d"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen"
+        AllowsTransparency="True"
+        Background="{x:Null}"
+        Title="系统登录" Height="450" Width="800">
+    <Window.Resources>
+        <ResourceDictionary>
+            <Style x:Key="UserNameStyle" TargetType="TextBox">
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="CaretBrush" Value="{DynamicResource PrimaryTextBrush}"/>
+                <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                <Setter Property="AllowDrop" Value="true"/>
+                <Setter Property="Padding" Value="{StaticResource DefaultInputPadding}"/>
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type TextBox}">
+                            <Border x:Name="border" 
+                                Background="{TemplateBinding Background}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                CornerRadius="5" SnapsToDevicePixels="True">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="40"/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="&#xe605;" HorizontalAlignment="Center" FontFamily="../Assets/Font/#iconfont" VerticalAlignment="Center" FontSize="20" Foreground="#BFC4CB"/>
+                                    <ScrollViewer Grid.Column="1" 
+                                              MinHeight="20"
+                                              x:Name="PART_ContentHost" Focusable="false" 
+                                              HorizontalScrollBarVisibility="Hidden" 
+                                              Margin="-2,0,-1,0" Padding="{TemplateBinding Padding}"
+                                              VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                              VerticalScrollBarVisibility="Hidden"/>
+                                </Grid>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsEnabled" Value="false">
+                                    <Setter Property="Opacity" TargetName="border" Value="0.4"/>
+                                </Trigger>
+                                <Trigger Property="IsMouseOver" Value="true">
+                                    <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource SecondaryBorderBrush}"/>
+                                </Trigger>
+                                <Trigger Property="IsFocused" Value="true">
+                                    <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource PrimaryBrush}"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Border CornerRadius="10" Margin="5">
+        <Border.Background>
+            <ImageBrush ImageSource="../Assets/Images/login_back.png"/>
+        </Border.Background>
+        <Border.Effect>
+            <DropShadowEffect ShadowDepth="0" BlurRadius="5" Opacity="0.3" Direction="0" Color="Gray"/>
+        </Border.Effect>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Border Background="Transparent" Grid.Row="0" MouseLeftButtonDown="Grid_MouseLeftButtonDown"/>
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="1">
+                    <TextBlock Text="无线测温监控平台" FontFamily="微软雅黑" HorizontalAlignment="Center" Margin="0,25" Foreground="#fff" FontSize="25"  FontWeight="ExtraLight"/>
+                    <Border Height="220" Width="280" BorderBrush="#0E9AA7" BorderThickness="1" CornerRadius="10">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Text="用户登录" 
+                                       VerticalAlignment="Center" 
+                                       Foreground="#fff" FontSize="15"
+                                       HorizontalAlignment="Center" FontFamily="微软雅黑" />
+                            <TextBox Grid.Row="1" Style="{StaticResource UserNameStyle}" Height="30" FontSize="16" Foreground="#323A48" Width="210"/>
+                            <TextBox Grid.Row="2" Style="{StaticResource UserNameStyle}" Height="30" FontSize="16" Foreground="#323A48" Width="210"/>
+                            <Button Grid.Row="3" Content="登  录" Width="210" Style="{StaticResource ButtonInfo}" Click="Button_Click"/>
+                        </Grid>
+                    </Border>
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </Border>
+</Window>
