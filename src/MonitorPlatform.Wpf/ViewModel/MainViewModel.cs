@@ -23,7 +23,7 @@ namespace MonitorPlatform.Wpf.ViewModel
 {
     public class MainViewModel
     {
-        public List<MenuModel> MenuModels;
+        public List<MenuModel> MenuModels { get; set; }
         public MainViewModel()
         {
             MenuModels = new List<MenuModel>();
@@ -35,13 +35,24 @@ namespace MonitorPlatform.Wpf.ViewModel
         {
             this.MenuModels.Add(new MenuModel()
             {
-                Name = "首页",
-                Font = "&#xe778;"
+                Name = "综合监控",
+                Font = "&#xe666;"
+            });
+            this.MenuModels.Add(new MenuModel()
+            {
+                Name = "运行监测",
+                Font = "&#xe6ef;",
+                MenuItems = new List<MenuItemModel>()
+                {
+                    new MenuItemModel(){Name="接线图",Link="network"},
+                    new MenuItemModel(){Name="监控列表",Link="network"},
+                    new MenuItemModel(){Name="告警管理",Link="network"},
+                }
             });
             this.MenuModels.Add(new MenuModel()
             {
                 Name = "数据查询",
-                Font = "&#xe778;",
+                Font = "&#xe664;",
                 MenuItems = new List<MenuItemModel>()
                 {
                     new MenuItemModel(){Name="历史数据",Link="network"},
@@ -51,26 +62,37 @@ namespace MonitorPlatform.Wpf.ViewModel
             });
             this.MenuModels.Add(new MenuModel()
             {
-                Name = "监控配置",
-                Font = "&#xe778;",
+                Name = "设备管理",
+                Font = "&#xe66e;",
                 MenuItems = new List<MenuItemModel>()
                 {
-                    new MenuItemModel(){Name="站点配置",Link="network"},
-                    new MenuItemModel(){Name="配电室配置",Link="network"},
+                    new MenuItemModel(){Name="站点厂区",Link="network"},
+                    new MenuItemModel(){Name="设备配置",Link="network"},
                 }
             });
             this.MenuModels.Add(new MenuModel()
             {
                 Name = "采集配置",
-                Font = "&#xe778;",
+                Font = "&#xe7d2;",
                 MenuItems = new List<MenuItemModel>()
                 {
-                    new MenuItemModel(){Name="网络配置",Link="network"},
+                    new MenuItemModel(){Name="主机配置",Link="network"},
                     new MenuItemModel(){Name="协议配置",Link="network"},
                     new MenuItemModel(){Name="采集器配置",Link="network"},
                     new MenuItemModel(){Name="传感器配置",Link="network"},
                     new MenuItemModel(){Name="短信配置",Link="network"},
                     new MenuItemModel(){Name="报警配置",Link="network"},
+                }
+            });
+            this.MenuModels.Add(new MenuModel()
+            {
+                Name = "系统管理",
+                Font = "&#xe6b4;",
+                MenuItems = new List<MenuItemModel>()
+                {
+                    new MenuItemModel(){Name="用户管理",Link="network"},
+                    new MenuItemModel(){Name="权限管理",Link="network"},
+                    new MenuItemModel(){Name="服务管理",Link="network"},
                 }
             });
         }

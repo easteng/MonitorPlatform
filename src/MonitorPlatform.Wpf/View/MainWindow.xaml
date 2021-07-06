@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MonitorPlatform.Wpf"
+        xmlns:convert="clr-namespace:MonitorPlatform.Wpf.Converter"
         mc:Ignorable="d"
         WindowStyle="None"
         ResizeMode="NoResize"
@@ -17,22 +18,27 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../Assets/Styles/MainViewDictionary.xaml"/>
                 <ResourceDictionary Source="../Assets/Styles/DropmenuStyle.xaml"/>
+                <ResourceDictionary>
+                    <convert:StringToIconConverter x:Key="StringToIconConverter"/>
+                    <convert:Bool2VisibleConverter x:Key="Bool2VisibleConverter"/>
+                    <convert:Bool2CollapsedConverter x:Key="Bool2CollapsedConverter"/>
+                </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
-    <Border BorderBrush="#124968" Background="#05202F" BorderThickness="2" Margin="5" CornerRadius="5">
+    <Border BorderBrush="#1C2532" Background="#1C2532" BorderThickness="1" Margin="5" CornerRadius="5">
         <Border.Effect>
             <DropShadowEffect ShadowDepth="1" BlurRadius="10" Opacity="0.5" Direction="0" Color="Gray"/>
         </Border.Effect>
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="55"/>
+                <RowDefinition Height="70"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <!--顶级菜单部分-->
-            <Border Style="{StaticResource GlobalBackgroundColor}" BorderThickness="1" MouseLeftButtonDown="Border_MouseLeftButtonDown">
+            <Border Style="{StaticResource GlobalBackgroundColor}" BorderThickness="0" MouseLeftButtonDown="Border_MouseLeftButtonDown">
                 <StackPanel Orientation="Horizontal">
-                    <Border Background="#05202F" Margin="0" MinWidth="240">
+                    <Border Background="#20A47A" Margin="0" MinWidth="240" CornerRadius="5,0,0,0">
                         <TextBlock 
                             Text="&#xe631; 测温在线监控平台" 
                             Style="{StaticResource MainTitle}" 
@@ -51,59 +57,57 @@
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
                 <!--左侧菜单-->
-                <Border Style="{StaticResource GlobalBackgroundColor}">
-                    <StackPanel Margin="0">
-                        <!--菜单绑定-->
-                        <ItemsControl>
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <VirtualizingStackPanel/>
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                        </ItemsControl>
-                        <Expander ExpandDirection="Down"  SnapsToDevicePixels="True" VerticalAlignment="Top" Style="{DynamicResource ExpanderStyle}" >
-                            <Expander.Header>
-                                <StackPanel Orientation="Horizontal" Margin="20,10">
-                                    <TextBlock  FontFamily="../Assets/Fonts/#iconfont" Text="&#xe778;" 
+                <Border Style="{StaticResource GlobalBackgroundColor}" CornerRadius="0">
+                    <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden">
+                        <StackPanel Margin="0,15,0,0">
+                            <!--菜单绑定-->
+                            <ItemsControl ItemsSource="{Binding MenuModels}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Border Visibility="{Binding Show,Converter={StaticResource Bool2VisibleConverter}, ConverterParameter=1}" >
+                                                <Grid>
+                                                   
+                                                    <RadioButton GroupName="menuItem" Style="{DynamicResource RadioButtonStyle1}" IsChecked="False" Content="{Binding Name}"/>
+                                                </Grid>
+                                                
+                                            </Border>
+                                            <Expander ExpandDirection="Down" Visibility="{Binding Show,Converter={StaticResource Bool2CollapsedConverter}}"  SnapsToDevicePixels="True" VerticalAlignment="Top" Style="{DynamicResource ExpanderStyle}" >
+                                                <Expander.Header>
+                                                    <StackPanel Orientation="Horizontal" Margin="20,15">
+                                                        <TextBlock  FontFamily="../Assets/Fonts/#iconfont" Text="{Binding Font,Converter={StaticResource StringToIconConverter}}" 
                                    Style="{StaticResource  MenuColor}"  VerticalAlignment="Center"></TextBlock>
-                                    <TextBlock Text="首页" Margin="10,0,0,0"  Style="{StaticResource  MenuColor}" ></TextBlock>
-                                </StackPanel>
-                            </Expander.Header>
-                            <Expander.Content>
-                                <StackPanel Background="#00243B">
-                                    <RadioButton Style="{DynamicResource RadioButtonStyle}">控制中心</RadioButton>
-                                    <RadioButton Style="{DynamicResource RadioButtonStyle}">资源管理</RadioButton>
-                                    <RadioButton Style="{DynamicResource RadioButtonStyle}">仪表菜单</RadioButton>
-                                    <RadioButton Style="{DynamicResource RadioButtonStyle}">顶部导航</RadioButton>
-                                    <RadioButton Style="{DynamicResource RadioButtonStyle}">通知中心</RadioButton>
-                                    <RadioButton Style="{DynamicResource RadioButtonStyle}">蓝牙设置</RadioButton>
-                                </StackPanel>
-                            </Expander.Content>
-                        </Expander>
-                        <Expander ExpandDirection="Down"  SnapsToDevicePixels="True" VerticalAlignment="Top" Style="{DynamicResource ExpanderStyle}" >
-                            <Expander.Header>
-                                <StackPanel Orientation="Horizontal" Margin="20,10">
-                                    <TextBlock  FontFamily="../Assets/Fonts/#iconfont" Text="&#xe778;" 
-                                   Style="{StaticResource  MenuColor}"  VerticalAlignment="Center"></TextBlock>
-                                    <TextBlock Text="首页" Margin="10,0,0,0"  Style="{StaticResource  MenuColor}" ></TextBlock>
-                                </StackPanel>
-                            </Expander.Header>
-                            <Expander.Content>
-                                <StackPanel Background="#00243B">
-                                    <RadioButton Style="{DynamicResource RadioButtonStyle}">控制中心</RadioButton>
-                                    <RadioButton Style="{DynamicResource RadioButtonStyle}">资源管理</RadioButton>
-                                    <RadioButton Style="{DynamicResource RadioButtonStyle}">仪表菜单</RadioButton>
-                                    <RadioButton Style="{DynamicResource RadioButtonStyle}">顶部导航</RadioButton>
-                                    <RadioButton Style="{DynamicResource RadioButtonStyle}">通知中心</RadioButton>
-                                    <RadioButton Style="{DynamicResource RadioButtonStyle}">蓝牙设置</RadioButton>
-                                </StackPanel>
-                            </Expander.Content>
-                        </Expander>
-                    </StackPanel>
+                                                        <TextBlock Text="{Binding Name}" Margin="10,0,0,0"  Style="{StaticResource  MenuColor}" ></TextBlock>
+                                                    </StackPanel>
+                                                </Expander.Header>
+                                                <ItemsControl ItemsSource="{Binding MenuItems}">
+                                                    <ItemsControl.ItemsPanel>
+                                                        <ItemsPanelTemplate>
+                                                            <StackPanel/>
+                                                        </ItemsPanelTemplate>
+                                                    </ItemsControl.ItemsPanel>
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <RadioButton GroupName="menuItem" Style="{DynamicResource RadioButtonStyle}" IsChecked="False" Content="{Binding Name}"/>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
+                                            </Expander>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </ScrollViewer>
                 </Border>
                 <!--右侧内容-->
                 <StackPanel Grid.Column="1">
-                    <Grid Background="#00243B" Height="40" />
+                    <Grid Background="#1C2532" Height="40" />
                      <!--内容部分-->
                     <ContentControl  Margin="10">
                         

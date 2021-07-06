@@ -39,5 +39,14 @@ namespace MonitorPlatform.Wpf
         /// 图标
         /// </summary>
         public string Font { get; set;  }
+
+        private bool _show;
+
+        public bool Show
+        {
+            get { return MenuItems.Any(); }
+            set { _show = value; }
+        }
+
     }
 }

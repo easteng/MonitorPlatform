@@ -26,6 +26,7 @@ namespace MonitorPlatform.Wpf
         {
             InitializeComponent();
             this.DataContext = new MainViewModel();
+            var aa = new Expander();
         }
 
         private void Border_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

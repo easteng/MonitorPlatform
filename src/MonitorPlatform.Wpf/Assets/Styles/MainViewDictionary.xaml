@@ -3,11 +3,12 @@
 
 
     <Style TargetType="Border" x:Key="GlobalBackgroundColor">
-        <Setter Property="Background" Value="#053553"/>
+        <Setter Property="Background" Value="#223847"/>
+        <Setter Property="CornerRadius" Value="10,10,0,0"/>
     </Style>
     <Style TargetType="TextBlock" x:Key="MenuColor">
         <Setter Property="Foreground" Value="#DEDFE0"/>
-        <Setter Property="FontSize" Value="18"/>
+        <Setter Property="FontSize" Value="15"/>
     </Style>
     <!--系统名称样式-->
     <Style TargetType="TextBlock" x:Key="MainTitle">

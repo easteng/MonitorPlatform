@@ -392,7 +392,7 @@
 
         <!--右侧显示区域-->
         <StackPanel Grid.Row="1" Grid.Column="2">
-            
+
             <StackPanel Orientation="Horizontal"  Margin="0 15 0 0" Height="40">
                 <StackPanel.Background>
                     <ImageBrush ImageSource="images/timeback.png"/>

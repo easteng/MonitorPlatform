@@ -101,7 +101,7 @@
         </Setter>
         <!--Margin主要用于设置子元素距离左侧边距-->
         <Setter Property="Margin" Value="0 0 0 0"/>
-        <Setter Property="FontSize" Value="18"/>
+        <Setter Property="FontSize" Value="16"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="HorizontalContentAlignment" Value="Left"/>
         <Setter Property="BorderBrush" Value="Transparent"/>
@@ -110,12 +110,12 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type RadioButton}">
-                    <Grid x:Name="templateRoot" Height="30" Background="Transparent" SnapsToDevicePixels="True">
+                    <Grid x:Name="templateRoot" Height="40" Background="Transparent" SnapsToDevicePixels="True">
                         <Border x:Name="border" BorderBrush="Red"
                                      BorderThickness="0"  Opacity="0.1"
                                 Background="Transparent" SnapsToDevicePixels="True"/>
                         <!-- 用于设置选中的左侧树形边框-->
-                        <Border x:Name="bd2" BorderBrush="#2196F3"/>
+                        <Border x:Name="bd2" BorderBrush="#20A47A"/>
                         <Grid x:Name="contentPresenter" Margin="60,0" >
                             <TextBlock Text="◉" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="-10,0" FontSize="12"/>
                             <ContentPresenter 
@@ -147,11 +147,96 @@
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
                             <!--当选中的时候, 改变字体的颜色, 同时左侧加一条宽度为2 的 边框 -->
-                            <Setter Property="Background"  Value="#2196F3" TargetName="bd2"/>
+                            <Setter Property="Background"  Value="#20A47A" TargetName="bd2"/>
                         </Trigger>
                         <Trigger Property="IsChecked" Value="true">
+                            <Setter TargetName="bd2" Property="Background" Value="#20A47A"/>
                         </Trigger>
                         <Trigger Property="IsChecked" Value="{x:Null}"/>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="MinHeight" Value="20"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+    </Style>
+
+
+    <!--单按钮样式 RadioButtonStyle1-->
+    <Style x:Key="RadioButtonStyle1" TargetType="{x:Type RadioButton}">
+        <Setter Property="FocusVisualStyle">
+            <Setter.Value>
+                <Style>
+                    <Setter Property="Control.Template">
+                        <Setter.Value>
+                            <ControlTemplate>
+                                <Rectangle Margin="2" SnapsToDevicePixels="True" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" StrokeThickness="1" StrokeDashArray="1 2"/>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </Setter.Value>
+        </Setter>
+        <!--Margin主要用于设置子元素距离左侧边距-->
+        <Setter Property="Margin" Value="0 0 0 0"/>
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="Foreground" Value="#DEDFE0"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type RadioButton}">
+                    <Grid x:Name="templateRoot" Height="40" Background="Transparent" SnapsToDevicePixels="True">
+                        <Border x:Name="border" BorderBrush="Red"
+                                     BorderThickness="0"  Opacity="0.1"
+                                Background="Transparent" SnapsToDevicePixels="True"/>
+                        <!-- 用于设置选中的左侧树形边框-->
+                        <Border x:Name="bd2" BorderBrush="#20A47A"/>
+                        <Grid x:Name="contentPresenter" Margin="42,0" >
+                            <TextBlock  
+                                                        FontFamily="../Fonts/#iconfont" 
+                                                        Text="&#xe666;"
+                                                        FontSize="18"
+                                                        Foreground="#DEDFE0"
+                                                        HorizontalAlignment="Left"
+                                                        Margin="-17,0"
+                                                        VerticalAlignment="Center"></TextBlock>
+                            <ContentPresenter 
+                                Margin="10,0"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}" 
+                                          Content="{TemplateBinding Content}" Grid.Column="1" 
+                                          ContentStringFormat="{TemplateBinding ContentStringFormat}" 
+                                          Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                          RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" 
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Grid>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="HasContent" Value="True">
+                            <Setter Property="FocusVisualStyle">
+                                <Setter.Value>
+                                    <Style>
+                                        <Setter Property="Control.Template">
+                                            <Setter.Value>
+                                                <ControlTemplate>
+                                                    <Rectangle Margin="0,0,0,0" SnapsToDevicePixels="True" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" StrokeThickness="1" StrokeDashArray="1 2"/>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="Padding" Value="4,-1,0,0"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <!--当选中的时候, 改变字体的颜色, 同时左侧加一条宽度为2 的 边框 -->
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="true">
+                            <Setter TargetName="bd2" Property="Background" Value="#20A47A"/>
+                        </Trigger>
+                        
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
