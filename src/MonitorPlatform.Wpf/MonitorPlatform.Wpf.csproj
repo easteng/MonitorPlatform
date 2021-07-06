@@ -13,17 +13,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\Fonts\iconfont.ttf" />
     <None Remove="Assets\Images\login_back.png" />
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Assets\Fonts\iconfont.ttf" />
     <Resource Include="Assets\Images\login_back.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Assets\Fonts\" />
     <Folder Include="Tools\" />
   </ItemGroup>
 

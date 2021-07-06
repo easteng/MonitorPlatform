@@ -5,12 +5,15 @@
     <Style TargetType="Border" x:Key="GlobalBackgroundColor">
         <Setter Property="Background" Value="#053553"/>
     </Style>
+    <Style TargetType="TextBlock" x:Key="MenuColor">
+        <Setter Property="Foreground" Value="#DEDFE0"/>
+        <Setter Property="FontSize" Value="18"/>
+    </Style>
     <!--系统名称样式-->
     <Style TargetType="TextBlock" x:Key="MainTitle">
         <Setter Property="VerticalAlignment" Value="Center"/>
-        <Setter Property="Margin" Value="15,0"/>
-        <Setter Property="FontSize" Value="18"/>
-        <Setter Property="Foreground" Value="#D1D9DF"/>
-        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="FontSize" Value="22"/>
+        <Setter Property="Foreground" Value="#fff"/>
     </Style>
 </ResourceDictionary>

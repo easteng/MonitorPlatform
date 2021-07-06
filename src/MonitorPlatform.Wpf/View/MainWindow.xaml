@@ -13,7 +13,12 @@
         Name="main"
         Title="测温监控台平台" Height="800" Width="1400">
     <Window.Resources>
-        <ResourceDictionary Source="../Assets/Styles/MainViewDictionary.xaml"/>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Assets/Styles/MainViewDictionary.xaml"/>
+                <ResourceDictionary Source="../Assets/Styles/DropmenuStyle.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Window.Resources>
     <Border BorderBrush="#124968" Background="#05202F" BorderThickness="2" Margin="5" CornerRadius="5">
         <Border.Effect>
@@ -27,103 +32,73 @@
             <!--顶级菜单部分-->
             <Border Style="{StaticResource GlobalBackgroundColor}" BorderThickness="1" MouseLeftButtonDown="Border_MouseLeftButtonDown">
                 <StackPanel Orientation="Horizontal">
-                    <Border Background="#05202F" Margin="8" CornerRadius="6">
-                        <TextBlock Text="无线测温在线监控平台"  Style="{StaticResource MainTitle}"/>
+                    <Border Background="#05202F" Margin="0" MinWidth="240">
+                        <TextBlock 
+                            Text="&#xe631; 测温在线监控平台" 
+                            Style="{StaticResource MainTitle}" 
+                            FontFamily="../Assets/Fonts/#iconfont">
+                            <TextBlock.Effect>
+                                <DropShadowEffect Color="#55D0C5" Direction="0" ShadowDepth="0"/>
+                            </TextBlock.Effect>
+                        </TextBlock>
                     </Border>
                 </StackPanel>
             </Border>
             
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="220"/>
+                    <ColumnDefinition MaxWidth="240"/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
                 <!--左侧菜单-->
                 <Border Style="{StaticResource GlobalBackgroundColor}">
-                    <StackPanel Margin="0,20">
-                        <Border Margin="20,0" Height="40" VerticalAlignment="Center" BorderBrush="#2A4455" BorderThickness="1">
-                            <Grid  VerticalAlignment="Center">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="40"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="30"/>
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Text="⚙" Grid.Column="0"  Foreground="#D1D9DF" Margin="5,0,0,0"/>
-                                <TextBlock Text="首页" Grid.Column="1" Foreground="#D1D9DF"/>
-                                <TextBlock Text="▶" Grid.Column="2" Foreground="#D1D9DF"/>
-                            </Grid>
-                        </Border>
-                        <Border Margin="20,0" Height="40" VerticalAlignment="Center" BorderBrush="#2A4455" BorderThickness="1">
-                            <Grid  VerticalAlignment="Center">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="40"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="30"/>
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Text="⚙" Grid.Column="0"  Foreground="#D1D9DF" Margin="5,0,0,0"/>
-                                <TextBlock Text="系统管理" Grid.Column="1" Foreground="#D1D9DF"/>
-                                <TextBlock Text="▼" Grid.Column="2" Foreground="#D1D9DF"/>
-                            </Grid>
-                        </Border>
-                        <!--二级菜单-->
-                        <Border Margin="20,0" Height="40" VerticalAlignment="Center" Background="#00121F" BorderThickness="1">
-                            <Grid  VerticalAlignment="Center" Margin="30,0,0,0">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="30"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="30"/>
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Text="◉" Grid.Column="0" Foreground="#D1D9DF"/>
-                                <TextBlock Text="人员配置" Grid.Column="1" Foreground="#D1D9DF"/>
-                            </Grid>
-                        </Border>
-                        <Border Margin="20,0" Height="40" VerticalAlignment="Center" Background="#00121F" BorderThickness="1">
-                            <Grid  VerticalAlignment="Center" Margin="30,0,0,0">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="30"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="30"/>
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Text="◉" Grid.Column="0" Foreground="#D1D9DF"/>
-                                <TextBlock Text="角色权限" Grid.Column="1" Foreground="#D1D9DF"/>
-                            </Grid>
-                        </Border>
-                        <Border Margin="20,0" Height="40" VerticalAlignment="Center" BorderBrush="#2A4455" BorderThickness="1">
-                            <Grid  VerticalAlignment="Center">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="40"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="30"/>
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Text="图标" Grid.Column="0" />
-                                <TextBlock Text="协议配置" Grid.Column="1" Foreground="#D1D9DF"/>
-                                <TextBlock Text="图标" Grid.Column="2"/>
-                            </Grid>
-                        </Border>
-                        <Border Margin="20,0" Height="40" VerticalAlignment="Center" BorderBrush="#2A4455" BorderThickness="1">
-                            <Grid  VerticalAlignment="Center">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="40"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="30"/>
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Text="图标" Grid.Column="0" />
-                                <TextBlock Text="综合监控" Grid.Column="1" Foreground="#D1D9DF"/>
-                                <TextBlock Text="图标" Grid.Column="2"/>
-                            </Grid>
-                        </Border>
-                        <Border Margin="20,0" Height="30" VerticalAlignment="Center" BorderBrush="#2A4455" BorderThickness="1">
-                            <Grid  VerticalAlignment="Center">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="40"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="30"/>
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Text="图标" Grid.Column="0" />
-                                <TextBlock Text="系统设置" Grid.Column="1" Foreground="#D1D9DF"/>
-                                <TextBlock Text="图标" Grid.Column="2"/>
-                            </Grid>
-                        </Border>
+                    <StackPanel Margin="0">
+                        <!--菜单绑定-->
+                        <ItemsControl>
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <VirtualizingStackPanel/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
+                        <Expander ExpandDirection="Down"  SnapsToDevicePixels="True" VerticalAlignment="Top" Style="{DynamicResource ExpanderStyle}" >
+                            <Expander.Header>
+                                <StackPanel Orientation="Horizontal" Margin="20,10">
+                                    <TextBlock  FontFamily="../Assets/Fonts/#iconfont" Text="&#xe778;" 
+                                   Style="{StaticResource  MenuColor}"  VerticalAlignment="Center"></TextBlock>
+                                    <TextBlock Text="首页" Margin="10,0,0,0"  Style="{StaticResource  MenuColor}" ></TextBlock>
+                                </StackPanel>
+                            </Expander.Header>
+                            <Expander.Content>
+                                <StackPanel Background="#00243B">
+                                    <RadioButton Style="{DynamicResource RadioButtonStyle}">控制中心</RadioButton>
+                                    <RadioButton Style="{DynamicResource RadioButtonStyle}">资源管理</RadioButton>
+                                    <RadioButton Style="{DynamicResource RadioButtonStyle}">仪表菜单</RadioButton>
+                                    <RadioButton Style="{DynamicResource RadioButtonStyle}">顶部导航</RadioButton>
+                                    <RadioButton Style="{DynamicResource RadioButtonStyle}">通知中心</RadioButton>
+                                    <RadioButton Style="{DynamicResource RadioButtonStyle}">蓝牙设置</RadioButton>
+                                </StackPanel>
+                            </Expander.Content>
+                        </Expander>
+                        <Expander ExpandDirection="Down"  SnapsToDevicePixels="True" VerticalAlignment="Top" Style="{DynamicResource ExpanderStyle}" >
+                            <Expander.Header>
+                                <StackPanel Orientation="Horizontal" Margin="20,10">
+                                    <TextBlock  FontFamily="../Assets/Fonts/#iconfont" Text="&#xe778;" 
+                                   Style="{StaticResource  MenuColor}"  VerticalAlignment="Center"></TextBlock>
+                                    <TextBlock Text="首页" Margin="10,0,0,0"  Style="{StaticResource  MenuColor}" ></TextBlock>
+                                </StackPanel>
+                            </Expander.Header>
+                            <Expander.Content>
+                                <StackPanel Background="#00243B">
+                                    <RadioButton Style="{DynamicResource RadioButtonStyle}">控制中心</RadioButton>
+                                    <RadioButton Style="{DynamicResource RadioButtonStyle}">资源管理</RadioButton>
+                                    <RadioButton Style="{DynamicResource RadioButtonStyle}">仪表菜单</RadioButton>
+                                    <RadioButton Style="{DynamicResource RadioButtonStyle}">顶部导航</RadioButton>
+                                    <RadioButton Style="{DynamicResource RadioButtonStyle}">通知中心</RadioButton>
+                                    <RadioButton Style="{DynamicResource RadioButtonStyle}">蓝牙设置</RadioButton>
+                                </StackPanel>
+                            </Expander.Content>
+                        </Expander>
                     </StackPanel>
                 </Border>
                 <!--右侧内容-->
