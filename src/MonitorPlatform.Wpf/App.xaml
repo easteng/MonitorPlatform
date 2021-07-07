@@ -8,6 +8,18 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/SkinDefault.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/Theme.xaml"/>
+                <ResourceDictionary>
+                    <!--logo 背景色-->
+                    <SolidColorBrush x:Key="LogoBackgound" Color="#007ACC"/>
+                    <SolidColorBrush x:Key="StatuToolbarBackground" Color="#007ACC"/>
+                    <Style TargetType="Border" x:Key="PageStyle">
+                        <Setter Property="Background" Value="#2D2D30"/>
+                        <Setter Property="CornerRadius" Value="2"/>
+                        <Setter Property="Margin" Value="15"/>
+                        <Setter Property="BorderBrush" Value="#434346"/>
+                        <Setter Property="BorderThickness" Value="1"/>
+                    </Style>
+                </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

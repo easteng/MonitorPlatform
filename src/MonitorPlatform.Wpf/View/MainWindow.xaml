@@ -5,13 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MonitorPlatform.Wpf"
         xmlns:convert="clr-namespace:MonitorPlatform.Wpf.Converter"
+        xmlns:hc="https://handyorg.github.io/handycontrol"
         mc:Ignorable="d"
         WindowStyle="None"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen"
         AllowsTransparency="True"
         Background="{x:Null}"
-        Name="main"
+        Name="mainWindow"
         Title="测温监控台平台" Height="800" Width="1400">
     <Window.Resources>
         <ResourceDictionary>
@@ -22,46 +23,102 @@
                     <convert:StringToIconConverter x:Key="StringToIconConverter"/>
                     <convert:Bool2VisibleConverter x:Key="Bool2VisibleConverter"/>
                     <convert:Bool2CollapsedConverter x:Key="Bool2CollapsedConverter"/>
+                    <Style TargetType="TextBlock" x:Key="BaseIcon">
+                        <Setter Property="FontFamily" Value="../Assets/Fonts/#iconfont"/>
+                    </Style>
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
-    <Border BorderBrush="#1C2532" Background="#1C2532" BorderThickness="1" Margin="5" CornerRadius="5">
+    <Border BorderBrush="#1C2532" Background="#1E1E1E" BorderThickness="1" Margin="2" CornerRadius="5">
         <Border.Effect>
             <DropShadowEffect ShadowDepth="1" BlurRadius="10" Opacity="0.5" Direction="0" Color="Gray"/>
         </Border.Effect>
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="70"/>
+                <RowDefinition Height="50"/>
                 <RowDefinition Height="*"/>
+                <RowDefinition Height="25"/>
             </Grid.RowDefinitions>
             <!--顶级菜单部分-->
-            <Border Style="{StaticResource GlobalBackgroundColor}" BorderThickness="0" MouseLeftButtonDown="Border_MouseLeftButtonDown">
-                <StackPanel Orientation="Horizontal">
-                    <Border Background="#20A47A" Margin="0" MinWidth="240" CornerRadius="5,0,0,0">
-                        <TextBlock 
+            <Border Style="{StaticResource GlobalBackgroundColor}" BorderThickness="1" MouseLeftButtonDown="Border_MouseLeftButtonDown">
+                <Grid>
+                    <StackPanel Orientation="Horizontal">
+                        <Border Background="{StaticResource LogoBackgound}" MinWidth="240" HorizontalAlignment="Left" Margin="0" CornerRadius="5,0,0,0">
+                            <TextBlock 
                             Text="&#xe631; 测温在线监控平台" 
-                            Style="{StaticResource MainTitle}" 
-                            FontFamily="../Assets/Fonts/#iconfont">
-                            <TextBlock.Effect>
-                                <DropShadowEffect Color="#55D0C5" Direction="0" ShadowDepth="0"/>
-                            </TextBlock.Effect>
-                        </TextBlock>
-                    </Border>
-                </StackPanel>
+                                FontFamily="../Assets/Fonts/#iconfont"
+                            Style="{StaticResource MainTitle}">
+                                <TextBlock.Effect>
+                                    <DropShadowEffect Color="#55D0C5" Direction="0" ShadowDepth="0"/>
+                                </TextBlock.Effect>
+                            </TextBlock>
+                        </Border>
+                        <!--通知滚动条-->
+                        <TextBlock Style="{StaticResource BaseIcon}" 
+                            Foreground="#fff"
+                            FontSize="18"
+                            Margin="30,0"
+                            Text="&#xe687;" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                        <hc:RunningBlock 
+                            BorderThickness="0"
+                            Width="400"
+                            Content="热烈庆祝中国共产党成立100周年" 
+                            FontSize="15" FontWeight="ExtraLight" 
+                            Foreground="{StaticResource AccentBrush}"
+                            VerticalAlignment="Center"
+                            Duration="0:0:10" Margin="0,0"/>
+                    </StackPanel>
+                    <Grid HorizontalAlignment="Right" Margin="30,0">
+                        <!--用户名及控制按钮-->
+                        <StackPanel Orientation="Horizontal" >
+                            <hc:Shield Subject="版本" Status="测试版本v1"
+                                       Margin="0,0,0,0" Color="Red"
+                                       Command="hc:ControlCommands.OpenLink" CommandParameter=""/>
+                            <TextBlock
+                                MouseDown="TextBlock_MouseDown" 
+                                Text="&#xe62e;" 
+                                FontSize="40"
+                                Margin="10,0"
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Center"
+                                Cursor="Hand"
+                                Style="{StaticResource BaseIcon}" Foreground="red"/>
+                            <!--头像图标-->
+                            <Border Width="40" Height="40" CornerRadius="40">
+                                <Border.Background>
+                                    <ImageBrush ImageSource="../Assets/Images/user.png"/>
+                                </Border.Background>
+                            </Border>
+                            <Button VerticalAlignment="Center"
+                                    Cursor="Hand"
+                                    Content="123"
+                                    Margin="10,0"
+                                    Foreground="#fff">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <TextBlock Text="管理员" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
             </Border>
-            
+            <!--菜单及内容部分-->
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition MaxWidth="240"/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
                 <!--左侧菜单-->
-                <Border Style="{StaticResource GlobalBackgroundColor}" CornerRadius="0">
+                <Border Style="{StaticResource GlobalBackgroundColor}" CornerRadius="0" Margin="0">
                     <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden">
                         <StackPanel Margin="0,15,0,0">
                             <!--菜单绑定-->
-                            <ItemsControl ItemsSource="{Binding MenuModels}">
+                            <ItemsControl ItemsSource="{Binding MenuModels}"
+                                          Name="MenuContainer"
+                                          >
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <StackPanel/>
@@ -70,12 +127,15 @@
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <Grid>
+                                            <!--如果菜单没有子项则显示-->
                                             <Border Visibility="{Binding Show,Converter={StaticResource Bool2VisibleConverter}, ConverterParameter=1}" >
                                                 <Grid>
-                                                   
-                                                    <RadioButton GroupName="menuItem" Style="{DynamicResource RadioButtonStyle1}" IsChecked="False" Content="{Binding Name}"/>
+                                                    <RadioButton
+                                                        x:Name="menu_item"
+                                                        Click="menu_item_Click"
+                                                        Tag="{Binding Link}"
+                                                        GroupName="menuItem" Style="{DynamicResource RadioButtonStyle1}" IsChecked="False" Content="{Binding Name}"/>
                                                 </Grid>
-                                                
                                             </Border>
                                             <Expander ExpandDirection="Down" Visibility="{Binding Show,Converter={StaticResource Bool2CollapsedConverter}}"  SnapsToDevicePixels="True" VerticalAlignment="Top" Style="{DynamicResource ExpanderStyle}" >
                                                 <Expander.Header>
@@ -85,6 +145,7 @@
                                                         <TextBlock Text="{Binding Name}" Margin="10,0,0,0"  Style="{StaticResource  MenuColor}" ></TextBlock>
                                                     </StackPanel>
                                                 </Expander.Header>
+                                                <!--子菜单项绑定-->
                                                 <ItemsControl ItemsSource="{Binding MenuItems}">
                                                     <ItemsControl.ItemsPanel>
                                                         <ItemsPanelTemplate>
@@ -93,7 +154,11 @@
                                                     </ItemsControl.ItemsPanel>
                                                     <ItemsControl.ItemTemplate>
                                                         <DataTemplate>
-                                                            <RadioButton GroupName="menuItem" Style="{DynamicResource RadioButtonStyle}" IsChecked="False" Content="{Binding Name}"/>
+                                                            <RadioButton
+                                                                x:Name="menu_item"
+                                                                Click="menu_item_Click"
+                                                                Tag="{Binding Link}"
+                                                                GroupName="menuItem" Style="{DynamicResource RadioButtonStyle}" IsChecked="False" Content="{Binding Name}"/>
                                                         </DataTemplate>
                                                     </ItemsControl.ItemTemplate>
                                                 </ItemsControl>
@@ -106,13 +171,16 @@
                     </ScrollViewer>
                 </Border>
                 <!--右侧内容-->
-                <StackPanel Grid.Column="1">
-                    <Grid Background="#1C2532" Height="40" />
-                     <!--内容部分-->
-                    <ContentControl  Margin="10">
-                        
-                    </ContentControl>
-                </StackPanel>
+                <Grid Grid.Column="1">
+                    <ContentControl Grid.Row="0" Content="{Binding MainContainer}"/>
+                </Grid>
+            </Grid>
+            <!--状态栏部分-->
+            <Grid Background="{StaticResource StatuToolbarBackground}" Grid.Row="2">
+                <TextBlock 
+                            Foreground="#fff"
+                            Text="Copy right @EST Compamy 2021" 
+                            VerticalAlignment="Center" HorizontalAlignment="Center"/>
             </Grid>
         </Grid>
     </Border>

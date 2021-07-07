@@ -1,4 +1,5 @@
-﻿using MonitorPlatform.Wpf.ViewModel;
+﻿using MonitorPlatform.Wpf.Common;
+using MonitorPlatform.Wpf.ViewModel;
 
 using System;
 using System.Collections.Generic;
@@ -25,8 +26,14 @@ namespace MonitorPlatform.Wpf
         public MainWindow()
         {
             InitializeComponent();
+            this.MaxHeight = SystemParameters.MaximizedPrimaryScreenHeight-10;
             this.DataContext = new MainViewModel();
-            var aa = new Expander();
+            this.Loaded += MainWindow_Loaded;
+        }
+
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            // todo 
         }
 
         private void Border_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -34,6 +41,28 @@ namespace MonitorPlatform.Wpf
             if (e.LeftButton == System.Windows.Input.MouseButtonState.Pressed)
             {
                 this.DragMove();
+            }
+        }
+
+        private void TextBlock_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            this.WindowState = this.WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
+        }
+
+        private void menu_item_Click(object sender, RoutedEventArgs e)
+        {
+            var clickIndex = 0;
+            var radioButtons = VisualTreeHelp.FindChilds<RadioButton>(MenuContainer, "menu_item");
+            for (var i = 0; i < radioButtons.Count; i++)
+            {
+                if (radioButtons[i] == sender)
+                {
+                    clickIndex = i;
+                    var radioButton= radioButtons[i];
+                    var viewName = radioButton.Tag;
+                    ((MainViewModel)this.DataContext).LeftMenuClick(viewName);
+                    break;
+                }
             }
         }
     }

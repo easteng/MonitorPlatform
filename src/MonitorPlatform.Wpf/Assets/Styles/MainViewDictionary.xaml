@@ -3,8 +3,10 @@
 
 
     <Style TargetType="Border" x:Key="GlobalBackgroundColor">
-        <Setter Property="Background" Value="#223847"/>
-        <Setter Property="CornerRadius" Value="10,10,0,0"/>
+        <Setter Property="Background" Value="#2D2D30"/>
+        <Setter Property="CornerRadius" Value="5,5,0,0"/>
+        <Setter Property="BorderBrush" Value="#434346"/>
+        <Setter Property="BorderThickness" Value="1"/>
     </Style>
     <Style TargetType="TextBlock" x:Key="MenuColor">
         <Setter Property="Foreground" Value="#DEDFE0"/>

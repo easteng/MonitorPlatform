@@ -11,6 +11,7 @@
 ******* ★ Copyright @easten company 2021-2022. All rights reserved ★ *********
 ***********************************************************************
  */
+using MonitorPlatform.Wpf.Common;
 using MonitorPlatform.Wpf.Model;
 
 using System;
@@ -18,16 +19,40 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace MonitorPlatform.Wpf.ViewModel
 {
     public class MainViewModel
     {
         public List<MenuModel> MenuModels { get; set; }
+        public CommandBase MenuClickCommand { get; set;  }
+        private FrameworkElement _mainContainer;
+
+        public FrameworkElement MainContainer
+        {
+            get { return _mainContainer; }
+            set { _mainContainer = value; }
+        }
+
         public MainViewModel()
         {
             MenuModels = new List<MenuModel>();
+            MenuClickCommand=new CommandBase();
+            MenuClickCommand.DoExecute = new Action<object>(LeftMenuClick);
+            MenuClickCommand.DoCanExecute = new Func<object, bool>(a => true);
+
             this.BuilderMenus();
+            this.LeftMenuClick("Dashboard");
+        }
+
+        public void LeftMenuClick(object obj)
+        {
+          
+            var viewType = Type.GetType($"MonitorPlatform.Wpf.View.{obj}");
+            if (viewType == null) return;
+            var contructor = viewType.GetConstructor(Type.EmptyTypes);
+            this.MainContainer = (FrameworkElement)contructor.Invoke(null);
         }
 
         #region 菜单项配置
@@ -36,7 +61,8 @@ namespace MonitorPlatform.Wpf.ViewModel
             this.MenuModels.Add(new MenuModel()
             {
                 Name = "综合监控",
-                Font = "&#xe666;"
+                Font = "&#xe666;",
+                Link= "Dashboard"
             });
             this.MenuModels.Add(new MenuModel()
             {
