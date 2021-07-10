@@ -204,16 +204,8 @@
                                      BorderThickness="0"  Opacity="0.1"
                                 Background="Transparent" SnapsToDevicePixels="True"/>
                         <!-- 用于设置选中的左侧树形边框-->
-                        <Border x:Name="bd2" BorderBrush="#20A47A"/>
+                        <Border x:Name="bd2" SnapsToDevicePixels="True"/>
                         <Grid x:Name="contentPresenter" Margin="42,0" >
-                            <TextBlock  
-                                                        FontFamily="../Fonts/#iconfont" 
-                                                        Text="&#xe666;"
-                                                        FontSize="18"
-                                                        Foreground="#DEDFE0"
-                                                        HorizontalAlignment="Left"
-                                                        Margin="-18,0"
-                                                        VerticalAlignment="Center"></TextBlock>
                             <ContentPresenter 
                                 Margin="10,0"
                                           ContentTemplate="{TemplateBinding ContentTemplate}" 

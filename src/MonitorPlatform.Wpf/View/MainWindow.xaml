@@ -130,11 +130,25 @@
                                             <!--如果菜单没有子项则显示-->
                                             <Border Visibility="{Binding Show,Converter={StaticResource Bool2VisibleConverter}, ConverterParameter=1}" >
                                                 <Grid>
+                                                   
                                                     <RadioButton
                                                         x:Name="menu_item"
                                                         Click="menu_item_Click"
                                                         Tag="{Binding Link}"
-                                                        GroupName="menuItem" Style="{DynamicResource RadioButtonStyle1}" IsChecked="False" Content="{Binding Name}"/>
+                                                        GroupName="menuItem" Style="{DynamicResource RadioButtonStyle1}" IsChecked="False" >
+                                                        <RadioButton.Content>
+                                                            <Grid>
+                                                                <TextBlock  
+                                                                     FontFamily="../Assets/Fonts/#iconfont" 
+                                                                     Text="{Binding Font,Converter={StaticResource StringToIconConverter}}" 
+                                                                     FontSize="18"
+                                                                     Margin="-28,0"
+                                                                     Style="{StaticResource  MenuColor}"  VerticalAlignment="Center"/>
+                                                                <TextBlock Text="{Binding Name}" FontSize="15"/>
+                                                            </Grid>
+                                                           
+                                                        </RadioButton.Content>
+                                                    </RadioButton>
                                                 </Grid>
                                             </Border>
                                             <Expander ExpandDirection="Down" Visibility="{Binding Show,Converter={StaticResource Bool2CollapsedConverter}}"  SnapsToDevicePixels="True" VerticalAlignment="Top" Style="{DynamicResource ExpanderStyle}" >
@@ -142,7 +156,7 @@
                                                     <StackPanel Orientation="Horizontal" Margin="20,15">
                                                         <TextBlock  FontFamily="../Assets/Fonts/#iconfont" Text="{Binding Font,Converter={StaticResource StringToIconConverter}}" 
                                    Style="{StaticResource  MenuColor}"  VerticalAlignment="Center"></TextBlock>
-                                                        <TextBlock Text="{Binding Name}" Margin="10,0,0,0"  Style="{StaticResource  MenuColor}" ></TextBlock>
+                                                        <TextBlock Text="{Binding Name}" Margin="14,0,0,0"  Style="{StaticResource  MenuColor}" ></TextBlock>
                                                     </StackPanel>
                                                 </Expander.Header>
                                                 <!--子菜单项绑定-->
