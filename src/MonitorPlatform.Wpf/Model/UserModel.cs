@@ -13,16 +13,18 @@
  */
 using MonitorPlatform.Wpf.Common;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace MonitorPlatform.Wpf.Model
 {
     public class UserModel:NotifyBase
     {
+        private int index;
+
+        public int Index
+        {
+            get { return index; }
+            set { index = value; }
+        }
+
         private string _name;
 
         public string Name
@@ -38,5 +40,21 @@ namespace MonitorPlatform.Wpf.Model
             get { return _password; }
             set { _password = value; this.DoNotify(); }
         }
+
+        private string _email;
+
+        public string Email
+        {
+            get { return _email; }
+            set { _email = value; this.DoNotify(); }
+        }
+        private string _phoneNum;
+
+        public string Phone
+        {
+            get { return _phoneNum; }
+            set { _phoneNum = value; }
+        }
+
     }
 }

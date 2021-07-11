@@ -60,7 +60,12 @@ namespace MonitorPlatform.Wpf
                     clickIndex = i;
                     var radioButton= radioButtons[i];
                     var viewName = radioButton.Tag;
-                    ((MainViewModel)this.DataContext).LeftMenuClick(viewName);
+                    var viewType = Type.GetType($"MonitorPlatform.Wpf.View.{viewName.ToString()}");
+                    if (viewType == null) return;
+                    var contructor = viewType.GetConstructor(Type.EmptyTypes);
+                    this.mainContainer.Content = (FrameworkElement)contructor.Invoke(null);
+
+                   // ((MainViewModel)this.DataContext).LeftMenuClick(viewName);
                     break;
                 }
             }

@@ -19,6 +19,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Page Remove="Assets\Styles\GridViewStyle.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\Styles\GridViewStyle.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Resource>
+  </ItemGroup>
+
+  <ItemGroup>
     <Resource Include="Assets\Fonts\iconfont.ttf" />
     <Resource Include="Assets\Images\login_back.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -34,6 +44,17 @@
 
   <ItemGroup>
     <PackageReference Include="HandyControl" Version="3.2.0" />
+    <PackageReference Include="XamlFlair.WPF" Version="1.2.11" />
+    <ProjectReference Include="..\..\..\..\main-project\EST.Components\src\core\ESTCore.MassTransit\ESTCore.MassTransit.csproj" />
+    <ProjectReference Include="..\..\..\..\main-project\EST.Components\src\core\ESTCore.ORM.FreeSql\ESTCore.ORM.FreeSql.csproj" />
+    <ProjectReference Include="..\MonitorPlatform.Domain\MonitorPlatform.Domain.csproj" />
+    <ProjectReference Include="..\MonitorPlatform.Share\MonitorPlatform.Share.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

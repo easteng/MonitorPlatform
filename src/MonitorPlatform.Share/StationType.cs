@@ -11,24 +11,27 @@
 ******* ★ Copyright @easten company 2021-2022. All rights reserved ★ *********
 ***********************************************************************
  */
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace MonitorPlatform.Share
 {
     public enum StationType
     {
+        [Display(Name = "站点/厂区")]
+        [Description("站点/厂区")]
         /// <summary>
         /// 厂区或者站点
         /// </summary>
         Station,
+        [Display(Name = "配电室")]
+        [Description("配电室")]
         /// <summary>
         /// 配电室
         /// </summary>
         Region,
+        [Display(Name = "设备")]
+        [Description("设备")]
         /// <summary>
         /// 具体的设备
         /// </summary>

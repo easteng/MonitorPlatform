@@ -23,15 +23,88 @@ namespace MonitorPlatform.Wpf.Common
     /// <summary>
     /// 命令公共类
     /// </summary>
+    //public class CommandBase : ICommand
+    //{
+    //    public event EventHandler CanExecuteChanged;
+
+    //    public bool CanExecute(object parameter) => DoCanExecute?.Invoke(parameter) ?? false;
+
+    //    public void Execute(object parameter) => DoExecute?.Invoke(parameter);
+
+    //    public Action<object> DoExecute { get; set; }
+    //    public Func<object, bool> DoCanExecute { get; set; }
+
+    //    public static CommandBase Builder(Action<object> action, bool can = false)
+    //    {
+    //        var command = new CommandBase();
+    //        command.DoCanExecute = DoCan(can);
+    //        command.DoExecute = Do(action);
+    //        return command;
+    //    }
+
+    //    private static Action<object> Do(Action<object> action)
+    //    {
+    //        return new Action<object>(action);
+    //    }
+
+    //    private static Func<object, bool> DoCan(bool can = true)
+    //    {
+    //        return new Func<object, bool>(a => can);
+    //    }
+    //}
     public class CommandBase : ICommand
     {
-        public event EventHandler CanExecuteChanged;
+        private readonly Action<object> _commandpara;
+        private readonly Action _command;
+        private readonly Func<bool> _canExecute;
 
-        public bool CanExecute(object parameter) => DoCanExecute?.Invoke(parameter) ?? false;
+        public CommandBase(Action command, Func<bool> canExecute = null)
+        {
+            if (command == null)
+            {
+                throw new ArgumentNullException();
+            }
+            _canExecute = canExecute;
+            _command = command;
+        }
 
-        public void Execute(object parameter) => DoExecute?.Invoke(parameter);
+        public CommandBase(Action<object> commandpara, Func<bool> canExecute = null)
+        {
+            if (commandpara == null)
+            {
+                throw new ArgumentNullException();
+            }
+            _canExecute = canExecute;
+            _commandpara = commandpara;
+        }
 
-        public Action<object> DoExecute { get; set; }
-        public Func<object, bool> DoCanExecute { get; set; }
+        public bool CanExecute(object parameter)
+        {
+            return _canExecute == null || _canExecute();
+        }
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public void Execute(object parameter)
+        {
+            if (parameter != null)
+            {
+                _commandpara(parameter);
+            }
+            else
+            {
+                if (_command != null)
+                {
+                    _command();
+                }
+                else if (_commandpara != null)
+                {
+                    _commandpara(null);
+                }
+            }
+        }
     }
 }

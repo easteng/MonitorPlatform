@@ -11,8 +11,12 @@
 ******* ★ Copyright @easten company 2021-2022. All rights reserved ★ *********
 ***********************************************************************
  */
+using MonitorPlatform.Domain.Entities;
+using MonitorPlatform.Share;
 using MonitorPlatform.Wpf.Common;
 using MonitorPlatform.Wpf.Model;
+
+using Silky.Lms.Core;
 
 using System;
 using System.Collections.Generic;
@@ -25,6 +29,7 @@ namespace MonitorPlatform.Wpf.ViewModel
 {
     public class MainViewModel
     {
+        public RuntimeDataModel RuntimeDataModel { get; set; }=new RuntimeDataModel();
         public List<MenuModel> MenuModels { get; set; }
         public CommandBase MenuClickCommand { get; set;  }
         private FrameworkElement _mainContainer;
@@ -38,18 +43,23 @@ namespace MonitorPlatform.Wpf.ViewModel
         public MainViewModel()
         {
             MenuModels = new List<MenuModel>();
-            MenuClickCommand=new CommandBase();
-            MenuClickCommand.DoExecute = new Action<object>(LeftMenuClick);
-            MenuClickCommand.DoCanExecute = new Func<object, bool>(a => true);
 
+            GlableDelegateHandler.UpdateRuntime = (s) =>
+            {
+                RuntimeDataModel.Name = s;
+            };
             this.BuilderMenus();
-            this.LeftMenuClick("Dashboard");
+            //this.LeftMenuClick("Dashboard");
+
+            var rep = EngineContext.Current.Resolve<IFreeSql>();
+            var aa = rep.GetRepository<User>();
+            var list = aa.Where(a => true).ToList(true);
         }
 
-        public void LeftMenuClick(object obj)
+        private void LeftMenuClick(object obj)
         {
           
-            var viewType = Type.GetType($"MonitorPlatform.Wpf.View.{obj}");
+            var viewType = Type.GetType($"MonitorPlatform.Wpf.View.{obj.ToString()}");
             if (viewType == null) return;
             var contructor = viewType.GetConstructor(Type.EmptyTypes);
             this.MainContainer = (FrameworkElement)contructor.Invoke(null);
@@ -97,8 +107,8 @@ namespace MonitorPlatform.Wpf.ViewModel
                 Font = "&#xe618;",
                 MenuItems = new List<MenuItemModel>()
                 {
-                    new MenuItemModel(){Name="传感器管理",Link="network"},
-                    new MenuItemModel(){Name="采集服务管理",Link="network"},
+                    new MenuItemModel(){Name="传感器管理",Link="SensorManager"},
+                    new MenuItemModel(){Name="采集服务管理",Link="ServerManager"},
                     new MenuItemModel(){Name="设备管理",Link="network"},
                 }
             });
@@ -108,7 +118,7 @@ namespace MonitorPlatform.Wpf.ViewModel
                 Font = "&#xe6b4;",
                 MenuItems = new List<MenuItemModel>()
                 {
-                    new MenuItemModel(){Name="用户管理",Link="network"},
+                    new MenuItemModel(){Name="用户管理",Link="UserManager"},
                     new MenuItemModel(){Name="数据维护",Link="network"},
                     new MenuItemModel(){Name="短息管理",Link="network"}
                 }

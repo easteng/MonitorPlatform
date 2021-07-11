@@ -13,6 +13,8 @@
  */
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,14 +23,20 @@ namespace MonitorPlatform.Share
 {
     public enum PointStatus
     {
+        [Display(Name = "正常")]
+        [Description("正常")]
         /// <summary>
         /// 正常
         /// </summary>
         Normal,
+        [Display(Name = "预警")]
+        [Description("预警")]
         /// <summary>
         /// 预警
         /// </summary>
         Warning,
+        [Display(Name = "报警")]
+        [Description("报警")]
         /// <summary>
         /// 报警状态
         /// </summary>

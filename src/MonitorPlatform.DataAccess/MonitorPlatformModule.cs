@@ -17,8 +17,6 @@ using Microsoft.Extensions.DependencyInjection;
 
 using MonitorPlatform.Domain.IServices;
 
-using Surging.Core.CPlatform.Module;
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,15 +25,5 @@ using System.Threading.Tasks;
 
 namespace MonitorPlatform.DataAccess
 {
-    public class MonitorPlatformModule:BusinessModule
-    {
-        protected override void RegisterBuilder(ContainerBuilderWrapper builder)
-        {
-            var service = new ServiceCollection();
-            service.AddSingleton<MonitorPlatformDBContext>();
-            service.AddSingleton<IUserRepositoryService, UserRepositoryService>();
-            builder.ContainerBuilder.Populate(service);
-            base.RegisterBuilder(builder);
-        }
-    }
+   
 }

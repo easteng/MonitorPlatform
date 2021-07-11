@@ -15,7 +15,6 @@ using FreeSql;
 
 using MonitorPlatform.Domain.Entities;
 
-using Surging.Core.CPlatform.Utilities;
 
 using System;
 using System.Collections.Generic;
@@ -30,9 +29,9 @@ namespace MonitorPlatform.DataAccess
         public DbSet<User> User { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
-            var freeSql = ServiceLocator.GetService<IFreeSql>();
+            //var freeSql = ServiceLocator.GetService<IFreeSql>();
             //base.OnConfiguring(options);
-            options.UseFreeSql(freeSql);
+            //options.UseFreeSql(freeSql);
         }
         protected override void OnModelCreating(ICodeFirst codefirst)
         {

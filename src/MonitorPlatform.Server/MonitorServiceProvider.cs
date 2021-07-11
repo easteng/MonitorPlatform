@@ -21,7 +21,6 @@ using Microsoft.Extensions.Hosting;
 using MonitorPlatform.Domain.Entities;
 using MonitorPlatform.Domain.IServices;
 
-using Surging.Core.CPlatform.Utilities;
 
 using System;
 using System.Collections.Generic;
@@ -58,9 +57,6 @@ namespace MonitorPlatform.Server
         public Task StartAsync(CancellationToken cancellationToken)
         {
             //throw new NotImplementedException();
-            var freeSql = ServiceLocator.Current.Resolve<IFreeSql>();
-            var userResp = freeSql.GetRepository<User>();
-            var list = userResp.Where(a => true).ToList();
             return Task.CompletedTask;
         }
 

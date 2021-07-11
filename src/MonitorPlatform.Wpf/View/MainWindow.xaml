@@ -63,7 +63,7 @@
                         <hc:RunningBlock 
                             BorderThickness="0"
                             Width="400"
-                            Content="热烈庆祝中国共产党成立100周年" 
+                            Content="" 
                             FontSize="15" FontWeight="ExtraLight" 
                             Foreground="{StaticResource AccentBrush}"
                             VerticalAlignment="Center"
@@ -72,7 +72,7 @@
                     <Grid HorizontalAlignment="Right" Margin="30,0">
                         <!--用户名及控制按钮-->
                         <StackPanel Orientation="Horizontal" >
-                            <hc:Shield Subject="版本" Status="测试版本v1"
+                            <hc:Shield Subject="版本" Status="{Binding RuntimeDataModel.Name}"
                                        Margin="0,0,0,0" Color="Red"
                                        Command="hc:ControlCommands.OpenLink" CommandParameter=""/>
                             <TextBlock
@@ -186,7 +186,7 @@
                 </Border>
                 <!--右侧内容-->
                 <Grid Grid.Column="1">
-                    <ContentControl Grid.Row="0" Content="{Binding MainContainer}"/>
+                    <ContentControl x:Name="mainContainer" Grid.Row="0" Content="{Binding MainContainer}"/>
                 </Grid>
             </Grid>
             <!--状态栏部分-->

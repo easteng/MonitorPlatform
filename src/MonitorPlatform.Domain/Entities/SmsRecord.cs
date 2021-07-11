@@ -24,6 +24,7 @@ namespace MonitorPlatform.Domain.Entities
     public class SmsRecord:BaseEntity<Guid>
     {
         public string Number { get;set;  }
+        public string MonitorName { get; set; }
         public string Content { get; set; } 
         public string UserName { get; set; }
         public DateTime SendTime { get; set; }

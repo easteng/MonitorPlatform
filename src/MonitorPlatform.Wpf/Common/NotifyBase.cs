@@ -23,6 +23,8 @@ namespace MonitorPlatform.Wpf.Common
 {
     public class NotifyBase : INotifyPropertyChanged
     {
+        public Guid Id { get; set; }
+        public int Index { get; set; }
         public event PropertyChangedEventHandler PropertyChanged;
         public void DoNotify([CallerMemberName] string propName = "")
         {

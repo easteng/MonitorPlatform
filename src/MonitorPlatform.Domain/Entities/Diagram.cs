@@ -24,14 +24,23 @@ namespace MonitorPlatform.Domain.Entities
     public class Diagram:BaseEntity<Guid>
     {
         public Guid MonitorId { get; set;  }
-        public Monitor Monitor { get; set; }   
+        public Monitor Monitor { get; set; }
         /// <summary>
         /// 图纸名称
         /// </summary>
         public string Name { get; set;  }
         /// <summary>
+        /// 描述
+        /// </summary>
+        public string Desc { get; set; }
+        /// <summary>
         /// 图纸的二进制数据
         /// </summary>
         public byte[] Data { get; set;  }
+        /// <summary>
+        /// 图纸的配置项
+        /// </summary>
+
+        public IEnumerable<DiagramConfig> Configs { get; set;  }
     }
 }

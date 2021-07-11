@@ -50,7 +50,7 @@ namespace MonitorPlatform.Domain.Entities
         /// <summary>
         /// 说明
         /// </summary>
-        public string Desc { get; set; }
+        public string PointDesc { get; set; }
         /// <summary>
         /// 最后一次的温度值
         /// </summary>
@@ -62,6 +62,5 @@ namespace MonitorPlatform.Domain.Entities
         /// 是否发送短信
         /// </summary>
         public bool IsSendMsg { get; set; }
-
     }
 }
