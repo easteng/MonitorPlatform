@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+    <OutputPath>..\Output\WTR20A\</OutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\main-project\EST.Components\src\core\ESTCore.Message\ESTCore.Message.csproj" />
+    <ProjectReference Include="..\..\..\..\..\main-project\EST.Components\src\core\ESTCore.Caching\ESTCore.Caching.csproj" />
+    <ProjectReference Include="..\ESTHost.Core\ESTHost.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+</Project>
