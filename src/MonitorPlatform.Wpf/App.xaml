@@ -8,6 +8,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/SkinDefault.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/Theme.xaml"/>
+                <ResourceDictionary Source="Assets/Styles/ComboxStyle.xaml"/>
                 <ResourceDictionary>
                     <!--logo 背景色-->
                     <SolidColorBrush x:Key="LogoBackgound" Color="#007ACC"/>

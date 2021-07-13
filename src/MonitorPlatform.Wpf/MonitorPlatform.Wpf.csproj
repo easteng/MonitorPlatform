@@ -19,10 +19,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Page Remove="Assets\Styles\ComboxStyle.xaml" />
     <Page Remove="Assets\Styles\GridViewStyle.xaml" />
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Assets\Styles\ComboxStyle.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Resource>
     <Resource Include="Assets\Styles\GridViewStyle.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Resource>
