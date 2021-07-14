@@ -15,6 +15,8 @@ using ESTCore.ORM.FreeSql;
 
 using FreeSql;
 
+using HandyControl.Controls;
+
 using Masuit.Tools.Systems;
 
 using MonitorPlatform.Domain.Entities;
@@ -24,6 +26,7 @@ using MonitorPlatform.Wpf.Model;
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -33,8 +36,19 @@ namespace MonitorPlatform.Wpf.ViewModel
 {
     public class MonitorViewModel: NotifyBase
     {
+        public event EventHandler<EventArgs> ReloadImage;
         // 监测点内容
         private MonitorModel monitorModel;
+
+        // 配置项实体
+        private ConfigModel configModel;
+
+        public ConfigModel ConfigModel
+        {
+            get { return configModel; }
+            set { configModel = value; this.DoNotify(); }
+        }
+
 
         public MonitorModel MonitorModel
         {
@@ -98,15 +112,20 @@ namespace MonitorPlatform.Wpf.ViewModel
             set { monitorTypes = value; this.DoNotify(); }
         }
         readonly IBaseRepository<Monitor, Guid> monitorRepositiry;
+        readonly IBaseRepository<Diagram, Guid> diagramrRepositiry;
 
         public ICommand OpenLeftDrawCommand { get { return new CommandBase(OpenLeftDrawAction); } }
         public ICommand SaveMonitorCommand { get { return new CommandBase(SaveMonitorAction); } }
         public ICommand CloseDrawCommand { get { return new CommandBase(CloseDrawAction); } }
+        public ICommand GetConfigCommand { get { return new CommandBase(GetConfigAction); } }
+        public ICommand OpenRightDrawCommand { get { return new CommandBase(OpenRightDrawAction); } }
         public MonitorViewModel()
         {
+            this.ConfigModel=new ConfigModel();
             this.MonitorModels = new List<MonitorModel>();
             this.MonitorModels.Add(new MonitorModel() { Name = "请添顶级监测点" });
             monitorRepositiry = ESTRepository.Builder<Monitor, Guid>();
+            diagramrRepositiry = ESTRepository.Builder<Diagram, Guid>();
             MonitorTypes = new List<ComboxItem>();
             this.Refresh();
             // 监测点类型
@@ -133,12 +152,6 @@ namespace MonitorPlatform.Wpf.ViewModel
                     this.MonitorModels = ObjectMapper.Map<List<MonitorModel>>(monitors).ToList();
                 }
             });
-        }
-
-        // 上传图片操作
-        public void UploadAction(object data)
-        {
-
         }
         // 是否添加子节点
         private bool AddChild { get; set; }
@@ -221,33 +234,109 @@ namespace MonitorPlatform.Wpf.ViewModel
             //this.Refresh();
         }
 
+        // 监测点选中事件
+        public void TreeSelected(MonitorModel model)
+        {
+            this.BottomShow = false;
+            this.RightShow = false;
+            var typeName = model.Type.GetDisplay();// 获取枚举值对应的字符串表示
+            this.ConfigModel.CurrentId=model.Id;
+            this.ConfigModel.CurrentMonitor = $"监测点:{model.Name}({typeName})";// 显示的字符串
+            this.ConfigModel.StationType = model.Type;
+            this.ConfigModel.IsEdit = false;
+            this.ConfigModel.CanUpload = model.Type == StationType.Region;// 只有配电室区域才能操作
 
-        // 打开右侧
-        public void OpenRightDrawAction(object data)
-        {
-            this.RightShow = true;  
-        }
-        // 打开底部
-        public void OpenBottomDrawAction(object data)
-        {
-
-        }
-        // 查看 监测点的配置
-        public void GetConfigAction(object obj)
-        {
-            if (this.MonitorModel.Type == Share.StationType.Device)
+            if(model.Type == StationType.Region)
             {
-                // 查询当前区域的配置信息
+                // 查询并读取上传的图片资源
+                ReadImgdata();
+            }
+        }
+
+        private void ReadImgdata()
+        {
+            var id = this.ConfigModel.CurrentId;// 监测点id
+            var diagram = diagramrRepositiry.Where(a => a.MonitorId == id).First();
+            if(diagram != null)
+            {
+                var filePath = Path.Combine(Directory.GetCurrentDirectory(), $"file");
+                if (!Directory.Exists(filePath))
+                {
+                    // 不存在就创建
+                    Directory.CreateDirectory(filePath);
+                }
+                filePath = Path.Combine(filePath, $"\\{diagram.Id}.svg");
+                if (File.Exists(filePath))
+                {
+                    // 图片存在
+                    this.ReloadImage?.Invoke(filePath, new EventArgs());
+                }
+                else
+                {
+                    // 图片不存在，将数据库中的文件写入到本地
+                    var data=diagram.Data;
+                    File.WriteAllBytes(filePath, data);
+                    this.ReloadImage?.Invoke(this, new EventArgs());
+                }
             }
         }
 
 
-
+        // 打开右侧
+        public void OpenRightDrawAction(object data)
+        {
+            this.RightShow = bool.Parse(data.ToString());
+        }
+        // 打开底部
+        public void OpenBottomDrawAction(object data)
+        {
+            this.BottomShow = true;
+        }
+        // 查看 监测点的配置
+        public void GetConfigAction(object obj)
+        {
+            this.BottomShow = true;
+            var id = this.ConfigModel.CurrentId;
+        }
 
         // 新增监测点 
         public void CreateMonitorAction(object data)
         {
 
+        }
+        // 新增图纸，保存数据
+        public void SavePicData(string path)
+        {
+            Task.Run(() => {
+                if (File.Exists(path))
+                {
+                    var data = File.ReadAllBytes(path);
+                    // 先查询监测点是否已经绑定图片
+                    var diagram = diagramrRepositiry.Where(a => a.MonitorId == this.ConfigModel.CurrentId).First();
+
+                    if (diagram != null)
+                    {
+                        // 已经存在，只需要更新
+                        diagram.Data = data;
+                    }
+                    else
+                    {
+                        diagram = new Diagram();
+                        diagram.Data = data;
+                        diagram.MonitorId = this.ConfigModel.CurrentId;
+                        diagramrRepositiry.Insert(diagram);
+                    }
+                    // 同时将数据写到当前目录file 文件夹中
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "file");
+                    if (!Directory.Exists(filePath))
+                    {
+                        Directory.CreateDirectory(filePath);
+                    }
+                    filePath = Path.Combine(filePath, $"{diagram.Id}.svg");
+                    File.WriteAllBytes(filePath, data);
+                    Growl.Info("操作成功");
+                }
+            });
         }
     }
 }

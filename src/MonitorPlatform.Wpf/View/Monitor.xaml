@@ -7,6 +7,7 @@
              mc:Ignorable="d" 
               xmlns:viewmodel="clr-namespace:MonitorPlatform.Wpf.ViewModel" 
               xmlns:hc="https://handyorg.github.io/handycontrol" 
+             xmlns:svg="clr-namespace:ESTControl.SvgViewer;assembly=ESTControl.SvgViewer"
                 d:DataContext="{d:DesignInstance Type=viewmodel:MonitorViewModel}"
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
@@ -32,26 +33,7 @@
                 <TextBlock Text="系统管理 / 监测点管理" VerticalAlignment="Center" Foreground="#fff" Margin="20,0"/>
             </Grid>
             <!--工具栏-->
-            <!--<StackPanel Margin="20,0" Orientation="Horizontal" Height="40" Grid.Row="1">
-                <hc:SearchBar Command="{Binding SearchCommand}" 
-                              Width="200"
-                              Background="{StaticResource FormBackground}" 
-                              BorderBrush="{StaticResource FormBorderBrush}"
-                              Foreground="{StaticResource FormForeground}"
-                              ShowClearButton="True"
-                              Height="30" 
-                              hc:InfoElement.Placeholder="请输入查询关键字..." 
-                              hc:InfoElement.TitlePlacement="Left"
-                              hc:InfoElement.Necessary="False"
-                              Style="{StaticResource SearchBarPlus}" 
-                              CommandParameter="{Binding Text,RelativeSource={RelativeSource Self}}"/>
-                <Button
-                    x:Name="btnAdd"
-                    Content="添加"
-                    Command="{Binding CreateCommand}"
-                    CommandParameter="true"
-                    Margin="5" Style="{StaticResource ButtonPrimary}" Width="60" Height="30" Padding="10,0"/>
-            </StackPanel>-->
+           
             <!--内容区域-->
             <Grid Margin="20,0" Grid.Row="1">
                 <Grid.ColumnDefinitions>
@@ -73,7 +55,7 @@
                         </Grid>
                         <TreeView MinHeight="300" Margin="10,5" 
                                   Height="auto"
-                                  MaxHeight="800"
+                                  MaxHeight="500"
                                   BorderBrush="{StaticResource FormBorderBrush}"
                                   Background="{StaticResource FormBackground}"
                                   SelectedItemChanged="TreeView_SelectedItemChanged"
@@ -132,19 +114,57 @@
                 <Border Grid.Column="1" 
                         Margin="20,20,0,20"
                         BorderBrush="{StaticResource FormBorderBrush}" BorderThickness="1">
-                    
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="40"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding ConfigModel.CurrentMonitor}" Margin="10,0" VerticalAlignment="Center" Foreground="#fff"/>
+                            <Button IsEnabled="{Binding ConfigModel.CanUpload}"  FontSize="18"  Command="{Binding GetConfigCommand}" Content="&#xe6b4;" FontFamily="../Assets/Fonts/#iconfont" Margin="1,0" Style="{StaticResource ButtonSuccess}" Padding="10,0" Height="25">
+                                <hc:Poptip.Instance>
+                                    <hc:Poptip Content="查看配置" hc:Foreground="Red" PlacementType="Top"/>
+                                </hc:Poptip.Instance>
+                            </Button>
+                            <Button IsEnabled="{Binding ConfigModel.CanUpload}" FontSize="18" Content="&#xe60c;" FontFamily="../Assets/Fonts/#iconfont" Name="uploadImg" Click="uploadImg_Click" Margin="1,0" Style="{StaticResource ButtonDanger}" Padding="10,0" Height="25">
+                                <hc:Poptip.Instance>
+                                    <hc:Poptip Content="上传图纸" hc:Foreground="Red" PlacementType="Top"/>
+                                </hc:Poptip.Instance>
+                            </Button>
+                            <TextBlock  Text="是否编辑:" Margin="10,0" VerticalAlignment="Center" Foreground="#fff"/>
+                            <ToggleButton IsEnabled="{Binding ConfigModel.CanUpload}" Unchecked="ToggleButton_Unchecked" Checked="ToggleButton_Checked" IsChecked="{Binding ConfigModel.IsEdit}" Height="20" Margin="5,5" HorizontalAlignment="Center" Style="{StaticResource ToggleButtonSwitch}"/>
+                            <TextBlock  Text="图形名称:" Margin="10,0" VerticalAlignment="Center" Foreground="#fff"/>
+                             <hc:TextBox 
+                                 Background="{StaticResource FormBackground}"
+                                 BorderBrush="{StaticResource FormBorderBrush}"
+                                 hc:Foreground="#fff"
+                                 hc:InfoElement.Necessary="True"
+                                 Width="200"
+                                 Height="25"
+                                 ShowClearButton="True" Text="{Binding ConfigModel.PicName}"/>
+                            <Button IsEnabled="{Binding ConfigModel.CanUpload}" FontSize="18" Content="&#xe60b;" FontFamily="../Assets/Fonts/#iconfont" Name="btnSavePic" Click="btnSavePic_Click" Margin="10,0" Style="{StaticResource ButtonPrimary}" Padding="10,0" Height="25">
+                                <hc:Poptip.Instance>
+                                    <hc:Poptip Content="保存数据" hc:Foreground="Red" PlacementType="Top"/>
+                                </hc:Poptip.Instance>
+                            </Button>
+                        </StackPanel>
+                        <!--svg 图片显示区域-->
+                        <Grid Grid.Row="1">
+                            <svg:DrawingPage Name="SvgContainer" ViewerModel="View"  Grid.Row="1" CustomColor="#1E1E1E"/>
+                        </Grid>
+                    </Grid>
                 </Border>
             </Grid>
 
             <!--右侧抽屉-->
-            <hc:Drawer Name="DrawerRight" MaskCanClose="False" IsOpen="{Binding Show}">
-                <Border Margin="0,50,5,30" Background="{DynamicResource FormBackground}" Width="300" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource BorderBrush}">
+            <hc:Drawer Name="DrawerRight" ShowMask="False" MaskCanClose="False" IsOpen="{Binding RightShow}">
+                <Border Margin="0,100,5,30" Background="{DynamicResource FormBackground}" Width="300" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource BorderBrush}">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="40"/>
                             <RowDefinition/>
                         </Grid.RowDefinitions>
-                        <TextBlock Margin="0,20,0,0" Text="设备信息管理" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#fff" FontSize="16"/>
+                        <TextBlock Margin="0,20,0,0" Text="监测点属性" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#fff" FontSize="16"/>
                         <StackPanel Grid.Row="1" Margin="20,0">
                             <hc:TextBox
                                 Background="{StaticResource FormBackground}" 
@@ -174,6 +194,7 @@
                                       hc:InfoElement.TitlePlacement="Left" 
                                       hc:InfoElement.Title="协议类型" 
                                       hc:InfoElement.Necessary="True"
+                                         SelectionChanged="devivetype_SelectionChanged"
                                       Margin="0,16,0,0">
                             </hc:ComboBox>
                             <hc:TextBox
@@ -235,15 +256,15 @@
             <!--底部数据调试抽屉-->
             <hc:Drawer Name="DrawerBottom"  Dock="Bottom" ShowMask="False" IsOpen="{Binding BottomShow}">
                 <Border Background="#1E1E1E" 
-                        Height="500" BorderThickness="0,1,0,0"
-                        Margin="280,0,40,30"
+                        Height="300" BorderThickness="0,1,0,0"
+                        Margin="280,0,310,30"
                         CornerRadius="5,5,0,0"
-                        BorderBrush="{DynamicResource BorderBrush}">
+                        BorderBrush="{DynamicResource FormBorderBrush}">
                     <Grid Margin="10,0">
                         <StackPanel>
                             <!--服务监测内容标题及关闭-->
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="数据绑定选择" Foreground="#fff" Margin="10" FontSize="16"/>
+                                <TextBlock Text="配置信息" Foreground="#fff" Margin="10" FontSize="16"/>
                                 <Button 
                                 HorizontalAlignment="Right" 
                                 Content="保存"
@@ -262,8 +283,8 @@
                                 Padding="10,0"
                                 Cursor="Hand"
                                 Style="{StaticResource ButtonDashedInfo}"
-                                Command="{Binding BindDataSaveComand}" 
-                                CommandParameter="false"/>
+                                Command="{Binding CloseDrawCommand}" 
+                                CommandParameter="bottom"/>
                             </StackPanel>
                             <!--需要绑定的列表值-->
                             <ListView ScrollViewer.VerticalScrollBarVisibility="Visible" 
@@ -328,6 +349,7 @@
                                       hc:InfoElement.TitlePlacement="Left" 
                                       hc:InfoElement.Title="监测点类型" 
                                       hc:InfoElement.Necessary="True"
+                                         SelectionChanged="monitorType_SelectionChanged"
                                       Margin="0,16,0,0">
                             </hc:ComboBox>
                             <StackPanel Orientation="Horizontal" Margin="0,10" HorizontalAlignment="Right">
@@ -349,6 +371,7 @@
                     </Grid>
                 </Border>
             </hc:Drawer>
+
         </Grid>
     </Border>
 </UserControl>

@@ -30,6 +30,7 @@ namespace MonitorPlatform.Wpf.View
         {
             InitializeComponent();
             this.DataContext = deviceManagerViewModel = new DeviceManagerViewModel();
+            
         }
 
         private void test_Click(object sender, RoutedEventArgs e)

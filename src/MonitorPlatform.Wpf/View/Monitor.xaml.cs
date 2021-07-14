@@ -1,4 +1,7 @@
-﻿using MonitorPlatform.Wpf.Model;
+﻿using Microsoft.Win32;
+
+using MonitorPlatform.Share;
+using MonitorPlatform.Wpf.Model;
 using MonitorPlatform.Wpf.ViewModel;
 
 using System;
@@ -8,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -28,6 +32,15 @@ namespace MonitorPlatform.Wpf.View
         {
             InitializeComponent();
             this.DataContext= monitorViewModel=new MonitorViewModel();
+            monitorViewModel.ReloadImage += MonitorViewModel_ReloadImage;
+        }
+
+        private void MonitorViewModel_ReloadImage(object sender, EventArgs e)
+        {
+            if (sender != null)
+            {
+                this.SvgContainer.LoadDocument(sender.ToString());
+            }
         }
 
         private void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
@@ -37,6 +50,7 @@ namespace MonitorPlatform.Wpf.View
             if(treeView != null)
             {
                 monitorViewModel.ActiveMonitorId = treeView.Id;
+                monitorViewModel.TreeSelected(treeView);
             }
         }
 
@@ -73,6 +87,55 @@ namespace MonitorPlatform.Wpf.View
                     this.monitorViewModel.DeleteMonitorAction(Guid.Parse(tag.ToString()));
                 }
             }
+        }
+
+        private void uploadImg_Click(object sender, RoutedEventArgs e)
+        {
+            // 点击上传电路图
+            var file = new OpenFileDialog();
+            // 限制svg
+            file.Filter = "(.svg)|*svg";
+            if(file.ShowDialog()==true)
+            {
+                var filePath=file.FileName;
+                this.monitorViewModel.ConfigModel.SelectedFilePath = filePath; // 记录文件路径
+                this.SvgContainer.LoadDocument(filePath);
+            }
+        }
+
+        private void devivetype_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+           
+
+        }
+
+        private void monitorType_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            // 站点类型切换
+            var item = ((ComboBox)sender).SelectedItem as ComboxItem;
+            if (item != null)
+            {
+                this.monitorViewModel.MonitorModel.Type = (StationType)item.Value;
+            }
+        }
+
+        private void ToggleButton_Checked(object sender, RoutedEventArgs e)
+        {
+            // 是否编辑的按钮切换
+            this.monitorViewModel.OpenRightDrawAction("true");
+        }
+
+        private void ToggleButton_Unchecked(object sender, RoutedEventArgs e)
+        {
+            this.monitorViewModel.OpenRightDrawAction("false");
+        }
+
+        private void btnSavePic_Click(object sender, RoutedEventArgs e)
+        {
+            // 点击保存当前的数据
+            // 调用进度条
+            // 提示保存成功
+            this.monitorViewModel.SavePicData(this.monitorViewModel.ConfigModel.SelectedFilePath);
         }
     }
 }
