@@ -1,19 +1,17 @@
 ﻿/**********************************************************************
 *******命名空间： MonitorPlatform.Domain.Entities
-*******类 名 称： Monitor
-*******类 说 明： 监测点表
+*******类 名 称： History
+*******类 说 明： 温度历史记录表
 *******作    者： Easten
 *******机器名称： DESKTOP-EC8U0GP
 *******CLR 版本： 4.0.30319.42000
-*******创建时间： 7/7/2021 11:49:44 PM
+*******创建时间： 7/11/2021 11:23:08 AM
 *******联系方式： 1301485237@qq.com
 ***********************************************************************
 ******* ★ Copyright @easten company 2021-2022. All rights reserved ★ *********
 ***********************************************************************
  */
 using ESTCore.Domain.Entity;
-
-using MonitorPlatform.Share;
 
 using System;
 using System.Collections.Generic;
@@ -23,20 +21,27 @@ using System.Threading.Tasks;
 
 namespace MonitorPlatform.Domain.Entities
 {
-    public class Monitor:BaseEntity<Guid>
+    public class HistoryRecord:BaseEntity<Guid>
     {
         /// <summary>
-        /// 节点名称
+        /// 监测点名称
         /// </summary>
-        public string Name { get; set; }
+        public string MonitorName { get; set;  }
+
+        public Guid MonitorId { get; set;  }
+
         /// <summary>
-        /// 节点类型
+        /// 传感器id
         /// </summary>
-        public StationType Type { get; set; }
+        public string SensorCode { get; set; }
+        /// <summary>
+        /// 温度值
+        /// </summary>
+        public decimal Value { get; set; }
+        /// <summary>
+        /// 时间
+        /// </summary>
+        public DateTime Time { get; set; }
 
-        public Monitor Parent { get; set; }
-        public Guid? ParentId { get; set;  }
-
-        public ICollection<Monitor> Children { get; set; }
     }
 }

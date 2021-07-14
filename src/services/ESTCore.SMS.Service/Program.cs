@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Windows.Forms;
 
-namespace ESTHost.ServerManager
+namespace ESTCore.SMS.Service
 {
     class Program
     {
         static void Main(string[] args)
         {
-            //Application.OpenForms.
             Console.WriteLine("Hello World!");
         }
     }

@@ -1,0 +1,175 @@
+﻿<UserControl x:Class="MonitorPlatform.Wpf.View.SensorManager"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MonitorPlatform.Wpf.View"
+               xmlns:viewmodel="clr-namespace:MonitorPlatform.Wpf.ViewModel" 
+              xmlns:hc="https://handyorg.github.io/handycontrol" 
+                d:DataContext="{d:DesignInstance Type=viewmodel:SensorManagerViewModel}"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Assets/Styles/GridViewStyle.xaml"/>
+                <ResourceDictionary>
+                    <Style TargetType="TextBlock" x:Key="BaseIcon">
+                        <Setter Property="FontFamily" Value="../Assets/Fonts/#iconfont"/>
+                    </Style>
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Border Style="{StaticResource PageStyle}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="60"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <!--面包屑-->
+            <Grid Height="30" Background="#184868">
+                <TextBlock Text="系统管理 / 传感器管理" VerticalAlignment="Center" Foreground="#fff" Margin="20,0"/>
+            </Grid>
+            <!--工具栏-->
+            <StackPanel Margin="20,0" Orientation="Horizontal" Height="40" Grid.Row="1">
+                <hc:SearchBar Command="{Binding SearchCommand}" 
+                              Width="200"
+                              Background="{StaticResource FormBackground}" 
+                              BorderBrush="{StaticResource FormBorderBrush}"
+                              Foreground="{StaticResource FormForeground}"
+                              ShowClearButton="True"
+                              Height="30" 
+                              hc:InfoElement.Placeholder="请输入查询关键字..." 
+                              hc:InfoElement.TitlePlacement="Left"
+                              hc:InfoElement.Necessary="False"
+                              Style="{StaticResource SearchBarPlus}" 
+                              CommandParameter="{Binding Text,RelativeSource={RelativeSource Self}}"/>
+                <Button
+                    x:Name="btnAdd"
+                    Content="添加"
+                    Command="{Binding CreateCommand}"
+                    CommandParameter="true"
+                    Margin="5" Style="{StaticResource ButtonPrimary}" Width="60" Height="30" Padding="10,0"/>
+                <Button
+                    Content="导入"
+                    Command="{Binding OpenDrawCommand}"
+                    CommandParameter="true"
+                    Margin="5" Style="{StaticResource ButtonSuccess}" Width="60" Height="30" Padding="10,0"/>
+                <Button
+                    Content="导出"
+                    Command="{Binding OpenDrawCommand}"
+                    CommandParameter="true"
+                    Margin="5" Style="{StaticResource ButtonSuccess}" Width="60" Height="30" Padding="10,0"/>
+            </StackPanel>
+            <!--内容区域-->
+            <Grid Margin="20,0" Grid.Row="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="60"/>
+                </Grid.RowDefinitions>
+                <ListView 
+                    ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                    ItemsSource="{Binding SensorList}"  Style="{StaticResource DefaultListView}">
+                    <ListView.View>
+                        <GridView ColumnHeaderContainerStyle="{StaticResource DefaultGridViewColumnHeader}">
+                            <GridViewColumn HeaderContainerStyle="{StaticResource CenterGridViewColumnHeader}"  Width="80"  Header="序号" DisplayMemberBinding="{Binding Index}"/>
+                            <GridViewColumn Width="100" Header="传感器编号" DisplayMemberBinding="{Binding SensorCode}"/>
+                            <GridViewColumn Width="200" Header="厂家" DisplayMemberBinding="{Binding Factory}"/>
+                            <GridViewColumn Width="400" Header="说明" DisplayMemberBinding="{Binding Remark}"/>
+                            <GridViewColumn HeaderContainerStyle="{StaticResource CenterGridViewColumnHeader}" Width="150" Header="操作">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                            <Button
+                                          Content="编辑"
+                                                Name="btnEdit"
+                                                Click="btnEdit_Click"
+                                          Cursor="Hand"
+                                          Tag="{Binding Id}"
+                                          Margin="5,0" Style="{StaticResource ButtonSuccess}" Width="40" Height="20" Padding="5,0"/>
+                                            <Button
+                                          Content="删除"
+                                                Name="deleteBtn"
+                                                Click="deleteBtn_Click"
+                                          Cursor="Hand"
+                                          Tag="{Binding Id}"
+                                          Margin="5,0" Style="{StaticResource ButtonDanger}" Width="40" Height="20" Padding="5,0"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+
+                <!--总数据条数-->
+                <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,10">
+                    <TextBlock Foreground="#fff">当前数据：</TextBlock>
+                    <TextBlock Foreground="#fff" Text="{Binding SensorList.Count}"/>
+                    <TextBlock Foreground="#fff">条</TextBlock>
+                </StackPanel>
+            </Grid>
+
+            <!--抽屉-->
+            <hc:Drawer Name="DrawerLeft" MaskCanClose="False" IsOpen="{Binding Show}">
+                <Border Margin="0,50,5,30" Background="{DynamicResource FormBackground}" Width="300" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource BorderBrush}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="40"/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Margin="0,20,0,0" Text="传感器管理" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#fff" FontSize="16"/>
+                        <StackPanel Grid.Row="1" Margin="20,0">
+                            <hc:TextBox
+                                Background="{StaticResource FormBackground}" 
+                                BorderBrush="{StaticResource FormBorderBrush}"
+                                Foreground="{StaticResource FormForeground}"
+                                hc:InfoElement.Placeholder="请输入传感器编号" 
+                                hc:InfoElement.Title="传感器编号" 
+                                hc:InfoElement.Necessary="False" 
+                                hc:TextType="NnInt"
+                                Text="{Binding SensorModel.SensorCode}"
+                                Margin="0,16,0,0"/>
+                            <hc:TextBox 
+                                Background="{StaticResource FormBackground}" 
+                                BorderBrush="{StaticResource FormBorderBrush}"
+                                Foreground="{StaticResource FormForeground}"
+                                hc:InfoElement.Placeholder="生产厂家"
+                                hc:InfoElement.Title="生产厂家" 
+                                hc:InfoElement.Necessary="False" 
+                                Text="{Binding SensorModel.Factory}"
+                                Margin="0,16,0,0"/>
+                            <hc:TextBox 
+                                Background="{StaticResource FormBackground}" 
+                                BorderBrush="{StaticResource FormBorderBrush}"
+                                Foreground="{StaticResource FormForeground}"
+                                hc:InfoElement.Placeholder="备注说明"
+                                hc:InfoElement.Title="备注说明" 
+                                hc:InfoElement.Necessary="False" 
+                                Text="{Binding SensorModel.Remark}"
+                                Margin="0,16,0,0"/>
+                            <StackPanel Orientation="Horizontal" Margin="0,10" HorizontalAlignment="Right">
+                                <Button
+                                     x:Name="btnCancle"
+                                     Content="取消"
+                                     Command="{Binding CreateCommand}"
+                                     CommandParameter="false"
+                                     Margin="5" Style="{StaticResource ButtonPrimary}" 
+                                     Width="60" Height="25" Padding="10,0"/>
+                                <Button
+                                     x:Name="btnSave"
+                                     Content="保存"
+                                     Command="{Binding SaveCommand}"
+                                     CommandParameter="{Binding SensorModel}"
+                                     Margin="5" Style="{StaticResource ButtonSuccess}" 
+                                     Width="60" Height="25" Padding="10,0"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </hc:Drawer>
+        </Grid>
+    </Border>
+</UserControl>

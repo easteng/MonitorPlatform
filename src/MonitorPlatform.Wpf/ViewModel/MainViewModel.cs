@@ -99,7 +99,7 @@ namespace MonitorPlatform.Wpf.ViewModel
             {
                 Name = "监测管理",
                 Font = "&#xe687;",
-                Link = "network",
+                Link = "Monitor",
             });
             this.MenuModels.Add(new MenuModel()
             {
@@ -109,7 +109,7 @@ namespace MonitorPlatform.Wpf.ViewModel
                 {
                     new MenuItemModel(){Name="传感器管理",Link="SensorManager"},
                     new MenuItemModel(){Name="采集服务管理",Link="ServerManager"},
-                    new MenuItemModel(){Name="设备管理",Link="network"},
+                    new MenuItemModel(){Name="设备管理",Link="DeviceManager"},
                 }
             });
             this.MenuModels.Add(new MenuModel()
