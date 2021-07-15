@@ -248,7 +248,7 @@ namespace MonitorPlatform.Wpf.ViewModel
 
             if(model.Type == StationType.Region)
             {
-                // 查询并读取上传的图片资源
+                // 查询并读取上传的图片资源,绑定图片的名称
                 ReadImgdata();
             }
         }
@@ -278,6 +278,8 @@ namespace MonitorPlatform.Wpf.ViewModel
                     File.WriteAllBytes(filePath, data);
                     this.ReloadImage?.Invoke(this, new EventArgs());
                 }
+                this.ConfigModel.SelectedFilePath = filePath;
+                this.ConfigModel.PicName = diagram.Name;
             }
         }
 
@@ -318,11 +320,14 @@ namespace MonitorPlatform.Wpf.ViewModel
                     {
                         // 已经存在，只需要更新
                         diagram.Data = data;
+                        diagram.Name = this.ConfigModel.PicName;
+                        diagramrRepositiry.Update(diagram);
                     }
                     else
                     {
                         diagram = new Diagram();
                         diagram.Data = data;
+                        diagram.Name = this.ConfigModel.PicName;
                         diagram.MonitorId = this.ConfigModel.CurrentId;
                         diagramrRepositiry.Insert(diagram);
                     }

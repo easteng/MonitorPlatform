@@ -137,5 +137,10 @@ namespace MonitorPlatform.Wpf.View
             // 提示保存成功
             this.monitorViewModel.SavePicData(this.monitorViewModel.ConfigModel.SelectedFilePath);
         }
+
+        private void brnConfigTemp_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
