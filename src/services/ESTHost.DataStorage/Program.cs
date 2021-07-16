@@ -24,12 +24,9 @@ namespace ESTHost.DataStorage
                {
                    config.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
                })
-               .ConfigureServices(a =>
-               {
-                   a.AddHostedService<WindowBackgroundService>();
-               })
                .RegisterLmsServices<DataStorageModule>();
 
+            host.Build().Run();
             Console.WriteLine("Hello World!");
         }
     }

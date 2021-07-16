@@ -45,11 +45,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ESTHost.WTR31.Service", "sr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ESTHost.WTR20A.Service", "src\Services\ESTHost.WTR20A.Service\ESTHost.WTR20A.Service.csproj", "{3A142389-647E-466B-939B-23F6E7932D11}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ESTHost.Core", "src\Services\ESTHost.Core\ESTHost.Core.csproj", "{84CDD252-BD83-4B20-9AE4-34367AFBC2EB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ESTHost.Core", "src\Services\ESTHost.Core\ESTHost.Core.csproj", "{84CDD252-BD83-4B20-9AE4-34367AFBC2EB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ESTHost.ServerManager", "src\Services\ESTHostServerManager\ESTHost.ServerManager.csproj", "{0C5C6142-8B59-4747-9C8C-D43F56737755}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ESTHost.SMS.Service", "src\Services\ESTCore.SMS.Service\ESTHost.SMS.Service.csproj", "{111D5521-5CB8-4501-B0B7-2A9CED1B4CBC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ESTHost.SMS.Service", "src\Services\ESTCore.SMS.Service\ESTHost.SMS.Service.csproj", "{111D5521-5CB8-4501-B0B7-2A9CED1B4CBC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonitorPlatform.Contracts", "src\MonitorPlatform.Contracts\MonitorPlatform.Contracts.csproj", "{8D68124B-B0A1-48FC-87CC-EE0D0CE6F737}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -133,6 +135,10 @@ Global
 		{111D5521-5CB8-4501-B0B7-2A9CED1B4CBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{111D5521-5CB8-4501-B0B7-2A9CED1B4CBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{111D5521-5CB8-4501-B0B7-2A9CED1B4CBC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D68124B-B0A1-48FC-87CC-EE0D0CE6F737}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D68124B-B0A1-48FC-87CC-EE0D0CE6F737}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D68124B-B0A1-48FC-87CC-EE0D0CE6F737}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D68124B-B0A1-48FC-87CC-EE0D0CE6F737}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -160,6 +166,7 @@ Global
 		{84CDD252-BD83-4B20-9AE4-34367AFBC2EB} = {375B0263-5BC0-40F0-A37B-9D43A48BBBDA}
 		{0C5C6142-8B59-4747-9C8C-D43F56737755} = {375B0263-5BC0-40F0-A37B-9D43A48BBBDA}
 		{111D5521-5CB8-4501-B0B7-2A9CED1B4CBC} = {375B0263-5BC0-40F0-A37B-9D43A48BBBDA}
+		{8D68124B-B0A1-48FC-87CC-EE0D0CE6F737} = {04F6A5AD-1F55-4B0C-9069-CE4E28BE2532}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {730832CF-56CC-4D95-A38D-A6AB7952AB5F}
