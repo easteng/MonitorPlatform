@@ -49,6 +49,7 @@ namespace MonitorPlatform.Wpf.ViewModel
                 BorderBrush = "#30B1D2",
                 BorderHeight = 30,
                 BorderWidth = 60,
+                FontSize=14,
                 DefaultValueForeground = "#DCF911",
                 WaringValueForegrund= "#FD7E07",
                 AlertValueForegrund= "#FF1900"
@@ -68,10 +69,19 @@ namespace MonitorPlatform.Wpf.ViewModel
         /// 外部控件传值并初始化
         /// </summary>
         /// <param name="model"></param>
-        public void InitTemplate(TemplateModel model)
+        public TemplateModel InitTemplate(TemplateModel model)
         {
-            this.TemplateModel = model;
-            GetDefaultColor(this.TemplateModel);
+            if(model == null)
+            {
+                InitDefaultTemplateValue();
+            }
+            else
+            {
+                this.TemplateModel = model;
+                GetDefaultColor(this.TemplateModel);
+            }
+
+            return this.TemplateModel;
         }
         /// <summary>
         /// 更新温度数据

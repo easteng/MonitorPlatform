@@ -31,14 +31,16 @@ namespace MonitorPlatform.Domain.Entities
         /// 传感器id
         /// </summary>
         public string SensorCode { get; set; }
+
+
         /// <summary>
         /// x 坐标
         /// </summary>
-        public decimal PointX { get; set; }
+        public double PointX { get; set; }
         /// <summary>
         /// y 坐标
         /// </summary>
-        public decimal PointY { get; set; }
+        public double PointY { get; set; }
         /// <summary>
         /// 自定义样式
         /// </summary>
@@ -48,9 +50,9 @@ namespace MonitorPlatform.Domain.Entities
         /// </summary>
         public string PointName { get;set;  }
         /// <summary>
-        /// 说明
+        /// 属性name  
         /// </summary>
-        public string PointDesc { get; set; }
+        public string PropName { get; set; }
         /// <summary>
         /// 最后一次的温度值
         /// </summary>

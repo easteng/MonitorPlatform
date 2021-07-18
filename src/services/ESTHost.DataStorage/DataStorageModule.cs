@@ -38,8 +38,8 @@ namespace ESTHost.DataStorage.Service
     ///  数据存储模块
     /// </summary>
     [DependsOn(
-        typeof(FreeSqlModule), 
-        typeof(ESTRedisCacheModule),
+      //  typeof(FreeSqlModule), 
+      //  typeof(ESTRedisCacheModule),
         typeof(ESTMessageModule)
         )]
     public class DataStorageModule : StartUpModule
@@ -76,9 +76,10 @@ namespace ESTHost.DataStorage.Service
                 });
             });
             service.AddSingleton<IBus>(provider => provider.GetRequiredService<IBusControl>());
-            service.AddHostedService<WindowBackgroundService>();
-            // base.RegisterServices(builder);
+            //service.AddHostedService<WindowBackgroundService>();
+            // 
             builder.Populate(service);
+           // base.RegisterServices(builder);
         }
 
     }

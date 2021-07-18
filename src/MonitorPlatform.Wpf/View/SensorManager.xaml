@@ -27,6 +27,7 @@
                 <RowDefinition Height="30"/>
                 <RowDefinition Height="60"/>
                 <RowDefinition Height="*"/>
+                <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
             <!--面包屑-->
             <Grid Height="30" Background="#184868">
@@ -53,11 +54,13 @@
                     CommandParameter="true"
                     Margin="5" Style="{StaticResource ButtonPrimary}" Width="60" Height="30" Padding="10,0"/>
                 <Button
+                    x:Name="btnImport"
                     Content="导入"
                     Command="{Binding OpenDrawCommand}"
                     CommandParameter="true"
                     Margin="5" Style="{StaticResource ButtonSuccess}" Width="60" Height="30" Padding="10,0"/>
                 <Button
+                    x:Name="btnExport"
                     Content="导出"
                     Command="{Binding OpenDrawCommand}"
                     CommandParameter="true"
@@ -112,6 +115,21 @@
                 </StackPanel>
             </Grid>
 
+            <!--功能按钮-->
+            <StackPanel Orientation="Horizontal" Grid.Row="3" HorizontalAlignment="Right" Name="grid_modal">
+                <Button
+                    x:Name="btn_modal_cancle"
+                    Content="取消"
+                    Command="{Binding CreateCommand}"
+                    CommandParameter="true"
+                    Margin="5" Style="{StaticResource ButtonPrimary}" Width="60" Height="30" Padding="10,0"/>
+                <Button
+                    x:Name="btn_modal_save"
+                    Content="保存"
+                    Command="{Binding CreateCommand}"
+                    CommandParameter="true"
+                    Margin="5" Style="{StaticResource ButtonSuccess}" Width="60" Height="30" Padding="10,0"/>
+            </StackPanel>
             <!--抽屉-->
             <hc:Drawer Name="DrawerLeft" MaskCanClose="False" IsOpen="{Binding Show}">
                 <Border Margin="0,50,5,30" Background="{DynamicResource FormBackground}" Width="300" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource BorderBrush}">

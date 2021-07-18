@@ -57,6 +57,8 @@ namespace MonitorPlatform.Wpf.Model
         public string WaringBadgeColor { get; set; }
 
         // 温度字体
+        private int fontSize { get; set;}
+        public int FontSize { get => fontSize; set { fontSize = value; this.DoNotify(); } }
         private string valueForeground { get; set; }
         public string ValueForeground { get => defaultValueForeground; set { defaultValueForeground = value; this.DoNotify(); } }
         private string defaultValueForeground { get; set; }

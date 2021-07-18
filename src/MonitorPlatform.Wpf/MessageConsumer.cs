@@ -12,6 +12,7 @@
 ***********************************************************************
  */
 using ESTCore.MassTransit;
+using ESTCore.Message;
 
 using MassTransit;
 
@@ -39,7 +40,7 @@ namespace MonitorPlatform.Wpf
 
         public void OnNext(ConsumeContext<IBaseMessage> value)
         {
-            GlableDelegateHandler.UpdateRuntime?.Invoke(value.Message.Name);
+            //GlableDelegateHandler.UpdateRuntime?.Invoke(value.Message.Name);
             //throw new NotImplementedException();
         }
     }

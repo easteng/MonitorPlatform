@@ -1,12 +1,19 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk.Worker">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <OutputType>exe</OutputType>
+    <PublishSingleFile>true</PublishSingleFile>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <PlatformTarget>x64</PlatformTarget>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
     <OutputPath>..\Output\DataStorage\</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="5.0.1" />
     <ProjectReference Include="..\..\..\..\..\main-project\EST.Components\src\core\ESTCore.Message\ESTCore.Message.csproj" />
     <ProjectReference Include="..\..\..\..\..\main-project\EST.Components\src\core\ESTCore.Caching\ESTCore.Caching.csproj" />
     <ProjectReference Include="..\..\..\..\..\main-project\EST.Components\src\core\ESTCore.ORM.FreeSql\ESTCore.ORM.FreeSql.csproj" />

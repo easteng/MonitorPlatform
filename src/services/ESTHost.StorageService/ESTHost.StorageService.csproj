@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <UserSecretsId>dotnet-ESTHost.StorageService-0E5D0CA6-416F-4AC0-A926-5E1A035E7B07</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\MonitorPlatform.Contracts\MonitorPlatform.Contracts.csproj" />
+    <ProjectReference Include="..\ESTHost.Core\ESTHost.Core.csproj" />
+  </ItemGroup>
+</Project>

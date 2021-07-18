@@ -20,11 +20,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace MonitorPlatform.Wpf.Model
 {
     public class DiagramConfigModel: NotifyBase
     {
+        public DiagramConfigModel() { }
+        public DiagramConfigModel(string name,Point point) {
+            this.PropName=name; 
+            this.PointX = point.X;
+            this.PointY = point.Y;  
+        }
+
         public Guid DiagramId { get; set; }
         public Diagram Diagram { get; set; }
         /// <summary>
@@ -32,16 +40,24 @@ namespace MonitorPlatform.Wpf.Model
         /// </summary>
         private string sensorCode { get; set; }
         public string SensorCode { get => sensorCode; set { sensorCode = value; this.DoNotify(); } }
+
+        private Point point;
+
+        public Point Point
+        {
+            get { return point; }
+            set { point = value;this.DoNotify(); }
+        }
         /// <summary>
         /// x 坐标
         /// </summary>
-        private decimal pointX { get; set; }
-        public decimal PointX { get => pointX; set { pointX = value; this.DoNotify(); } }
+        private double pointX { get; set; }
+        public double PointX { get => pointX; set { pointX = value; this.DoNotify(); } }
         /// <summary>
         /// y 坐标
         /// </summary>
-        private decimal pointY { get; set; }
-        public decimal PointY { get => pointY; set { pointY = value; this.DoNotify(); } }
+        private double pointY { get; set; }
+        public double PointY { get => pointY; set { pointY = value; this.DoNotify(); } }
         /// <summary>
         /// 自定义样式
         /// </summary>
@@ -53,10 +69,10 @@ namespace MonitorPlatform.Wpf.Model
         private string pointName { get; set; }
         public string PointName { get => pointName; set { pointName = value; this.DoNotify(); } }
         /// <summary>
-        /// 说明
+        /// 属性名称  est+时间
         /// </summary>
-        private string pointDesc { get; set; }
-        public string PointDesc { get => pointDesc; set { pointDesc = value; this.DoNotify(); } }
+        private string propName { get; set; }
+        public string PropName { get => propName; set { propName = value; this.DoNotify(); } }
         /// <summary>
         /// 最后一次的温度值
         /// </summary>
@@ -71,5 +87,10 @@ namespace MonitorPlatform.Wpf.Model
         /// </summary>
         private bool isSendMsg { get; set; }
         public bool IsSendMsg { get => isSendMsg; set { isSendMsg = value; this.DoNotify(); } }
+
+        /// <summary>
+        /// 是否保存
+        /// </summary>
+        public bool IsSave { get; set; }
     }
 }

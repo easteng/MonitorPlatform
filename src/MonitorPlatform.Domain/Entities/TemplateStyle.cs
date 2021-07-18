@@ -44,6 +44,7 @@ namespace MonitorPlatform.Domain.Entities
         public string BadgeBorderBrush { get; set; }
 
         // 温度字体
+        public int FontSize { get; set; }
         public string ValueForeground { get; set; } 
         public string DefaultValueForeground { get; set; } 
         public string WaringValueForegrund { get; set; }

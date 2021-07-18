@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ESTHostServerManager;
+
+using System;
 using System.Windows.Forms;
 
 namespace ESTHost.ServerManager
@@ -7,8 +9,9 @@ namespace ESTHost.ServerManager
     {
         static void Main(string[] args)
         {
-            //Application.OpenForms.
-            Console.WriteLine("Hello World!");
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.Run(new Form1());
         }
     }
 }

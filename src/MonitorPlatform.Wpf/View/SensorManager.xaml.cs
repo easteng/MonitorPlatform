@@ -23,11 +23,26 @@ namespace MonitorPlatform.Wpf.View
     public partial class SensorManager : UserControl
     {
         readonly SensorManagerViewModel SensorManagerViewModel;
+
+        public bool IsDefault { get; set; } = true; // 是否为选择模式
+
         public SensorManager()
         {
             SensorManagerViewModel=new SensorManagerViewModel();
             InitializeComponent();
             this.DataContext = SensorManagerViewModel;
+
+            if (IsDefault)
+            {
+                this.grid_modal.Visibility= Visibility.Collapsed;
+            }
+            else
+            {
+                this.grid_modal.Visibility = Visibility.Visible;
+                this.btnAdd.Visibility = Visibility.Collapsed;
+                this.btnImport.Visibility = Visibility.Collapsed;
+                this.btnExport.Visibility = Visibility.Collapsed;
+            }
         }
 
         private void btnEdit_Click(object sender, RoutedEventArgs e)

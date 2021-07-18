@@ -17,6 +17,7 @@ using FreeSql;
 
 using HandyControl.Controls;
 
+using Masuit.Tools;
 using Masuit.Tools.Systems;
 
 using MonitorPlatform.Domain.Entities;
@@ -30,6 +31,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 namespace MonitorPlatform.Wpf.ViewModel
@@ -37,6 +39,7 @@ namespace MonitorPlatform.Wpf.ViewModel
     public class MonitorViewModel: NotifyBase
     {
         public event EventHandler<EventArgs> ReloadImage;
+        public event EventHandler<List<DiagramConfigModel>> InitPoint;
         // 监测点内容
         private MonitorModel monitorModel;
 
@@ -64,6 +67,14 @@ namespace MonitorPlatform.Wpf.ViewModel
             set { monitorModels = value; this.DoNotify(); }
         }
 
+
+        // 温度传感器
+        private List<string> sensorList;
+        public List<string> SensorList
+        {
+            get { return sensorList; }
+            set { sensorList = value; this.DoNotify(); }
+        }
         // 图纸内容
         private DiagramModel diagramModel;
 
@@ -80,6 +91,29 @@ namespace MonitorPlatform.Wpf.ViewModel
             get { return diagramConfigModel; }
             set { diagramConfigModel = value; this.DoNotify(); }
         }
+
+
+        /// <summary>
+        /// 配置属性列表
+        /// </summary>
+        private List<DiagramConfigModel> diagramConfigModels;
+
+        public List<DiagramConfigModel> DiagramConfigModels
+        {
+            get { return diagramConfigModels; }
+            set { diagramConfigModels = value; this.DoNotify(); }
+        }
+
+
+        // 温度模板样式配置
+        private TemplateModel templateModel;
+
+        public TemplateModel TemplateModel
+        {
+            get { return templateModel; }
+            set { templateModel = value; this.DoNotify(); }
+        }
+
 
         // 左侧抽屉
         private bool leftShow;
@@ -103,6 +137,16 @@ namespace MonitorPlatform.Wpf.ViewModel
             get { return bottomShow; }
             set { bottomShow = value; this.DoNotify(); }
         }
+
+        // 温度模板配置抽屉
+        private bool configShow;
+        public bool ConfigShow
+        {
+            get { return configShow; }
+            set { configShow = value; this.DoNotify(); }
+        }
+
+
         // 监测点类型
         private List<ComboxItem> monitorTypes;
 
@@ -113,9 +157,14 @@ namespace MonitorPlatform.Wpf.ViewModel
         }
         readonly IBaseRepository<Monitor, Guid> monitorRepositiry;
         readonly IBaseRepository<Diagram, Guid> diagramrRepositiry;
+        readonly IBaseRepository<TemplateStyle, Guid> styleRepository;
+        readonly IBaseRepository<DiagramConfig, Guid> diagramConfigRepository;
+        readonly IBaseRepository<Sensor, Guid> sensorRepository;
 
         public ICommand OpenLeftDrawCommand { get { return new CommandBase(OpenLeftDrawAction); } }
         public ICommand SaveMonitorCommand { get { return new CommandBase(SaveMonitorAction); } }
+        public ICommand SaveConfigCommand { get { return new CommandBase(SaveConfigAction); } }
+        public ICommand SavePointCommand { get { return new CommandBase(SavePointAction); } }
         public ICommand CloseDrawCommand { get { return new CommandBase(CloseDrawAction); } }
         public ICommand GetConfigCommand { get { return new CommandBase(GetConfigAction); } }
         public ICommand OpenRightDrawCommand { get { return new CommandBase(OpenRightDrawAction); } }
@@ -126,6 +175,9 @@ namespace MonitorPlatform.Wpf.ViewModel
             this.MonitorModels.Add(new MonitorModel() { Name = "请添顶级监测点" });
             monitorRepositiry = ESTRepository.Builder<Monitor, Guid>();
             diagramrRepositiry = ESTRepository.Builder<Diagram, Guid>();
+            styleRepository = ESTRepository.Builder<TemplateStyle, Guid>();
+            diagramConfigRepository = ESTRepository.Builder<DiagramConfig, Guid>();
+            sensorRepository = ESTRepository.Builder<Sensor, Guid>();
             MonitorTypes = new List<ComboxItem>();
             this.Refresh();
             // 监测点类型
@@ -138,6 +190,10 @@ namespace MonitorPlatform.Wpf.ViewModel
                     Value = item.Value
                 });
             }
+            // 绑定传感器数据
+           this.SensorList = sensorRepository.Where(a => true)
+                .ToList()
+                .Select(a => a.SensorCode).ToList();
         }
 
         private void Refresh()
@@ -192,12 +248,56 @@ namespace MonitorPlatform.Wpf.ViewModel
             }else if(data.ToString() == "right")
             {
                 this.RightShow = false;
-            }else
+            }else if(data.ToString() == "config")
+            {
+                this.ConfigShow=false;
+            }
+            else
             {
                 this.BottomShow = false;
             }
         }
-
+        // 打开配置温度模板的抽屉
+        public void OpenConfigDrawAction(bool open)
+        {
+            this.ConfigShow = open;
+            // 查询一次当前的配置
+            GetTemplateStyle();
+        }
+        // 获取当前监测点的温度模板
+        private void GetTemplateStyle()
+        {
+            var monitorId = this.ConfigModel.CurrentId;
+            var temp = styleRepository.Where(a => a.MonitorId == monitorId).First();
+            if (temp != null)
+            {
+                this.TemplateModel = ObjectMapper.Map<TemplateModel>(temp);
+            }
+            else
+            {
+                this.TemplateModel = null;
+            }
+        }
+        // 保存温度模板的配置
+        public void SaveConfigAction(object data)
+        {
+           
+            // 判断配置是否存在
+            var temp = styleRepository.Where(a => a.MonitorId == this.ConfigModel.CurrentId).First();
+            if (temp != null)
+            {
+                temp = ObjectMapper.Map<TemplateStyle>(this.TemplateModel);
+                styleRepository.Update(temp);
+            }
+            else
+            {
+                temp = ObjectMapper.Map<TemplateStyle>(this.TemplateModel);
+                temp.MonitorId = this.ConfigModel.CurrentId;
+                styleRepository.Insert(temp);
+            }
+            this.ConfigShow=false;
+            Growl.Info("保存成功");
+        }
         // 保存监测点数据
         public void SaveMonitorAction(object obj)
         {
@@ -250,6 +350,10 @@ namespace MonitorPlatform.Wpf.ViewModel
             {
                 // 查询并读取上传的图片资源,绑定图片的名称
                 ReadImgdata();
+                // 读取当前监测点的温度模板
+                GetTemplateStyle();
+                // 读取当前监测点的温度点数据
+                RefreshDiagramConfigs();
             }
         }
 
@@ -280,6 +384,8 @@ namespace MonitorPlatform.Wpf.ViewModel
                 }
                 this.ConfigModel.SelectedFilePath = filePath;
                 this.ConfigModel.PicName = diagram.Name;
+
+                this.DiagramModel = ObjectMapper.Map<DiagramModel>(diagram);
             }
         }
 
@@ -330,6 +436,7 @@ namespace MonitorPlatform.Wpf.ViewModel
                         diagram.Name = this.ConfigModel.PicName;
                         diagram.MonitorId = this.ConfigModel.CurrentId;
                         diagramrRepositiry.Insert(diagram);
+                        this.DiagramModel = ObjectMapper.Map<DiagramModel>(diagram);
                     }
                     // 同时将数据写到当前目录file 文件夹中
                     var filePath = Path.Combine(Directory.GetCurrentDirectory(), "file");
@@ -342,6 +449,108 @@ namespace MonitorPlatform.Wpf.ViewModel
                     Growl.Info("操作成功");
                 }
             });
+        }
+
+        // 点击新增温度点
+        public void NewPoint(string name,Point point)
+        {
+            // 查询当前配电监测点有无图纸配置
+            if (!diagramrRepositiry.Where(a => a.MonitorId == this.ConfigModel.CurrentId).Any())
+            {
+                HandyControl.Controls.MessageBox.Show("请先添加图纸", "温馨提示");
+                return;
+            }
+            if (!this.RightShow)
+                this.RightShow = true;
+            this.DiagramConfigModel = new DiagramConfigModel(name,point);
+
+        }
+        // 点击保存 温度点
+        public void SavePointAction()
+        {
+            if (this.DiagramConfigModel.PointName.IsNullOrEmpty())
+            {
+                HandyControl.Controls.MessageBox.Show("请配置温度点名称", "温馨提示");
+                return;
+            }
+
+            this.DiagramConfigModel.IsSave = true;
+
+            var model = diagramConfigRepository
+                .Where(a => a.Id == this.DiagramConfigModel.Id)
+                .First();
+
+            if (model != null)
+            {
+                // 存在数据，进行更新
+                model = ObjectMapper.Map<DiagramConfig>(this.DiagramConfigModel);
+                diagramConfigRepository.Update(model);
+            }
+            else
+            {
+                // 不存在数据，进行添加
+                model = ObjectMapper.Map<DiagramConfig>(this.DiagramConfigModel);
+                model.DiagramId = this.DiagramModel.Id;
+                diagramConfigRepository.Insert(model);
+            }
+            Growl.Info("保存成功");
+            RefreshDiagramConfigs();
+        }
+        // 移动温度点，更新坐标位置
+        public void UpdatePoint(string name, Point point)
+        {
+            var model = diagramConfigRepository.Where(a => a.PropName == name).First();
+            if(model != null)
+            {
+                model.PointX=point.X; ;
+                model.PointY = point.Y;
+                diagramConfigRepository.Update(model);
+
+                this.DiagramConfigModel=ObjectMapper.Map<DiagramConfigModel>(model);
+            }
+            else
+            {
+                this.diagramConfigModel.PropName = name;
+                this.DiagramConfigModel.PointX=point.X;
+                this.DiagramConfigModel.PointY = point.Y;
+            }
+        }
+        /// <summary>
+        /// 修改温度数据  绑定温度
+        /// </summary>
+        /// <param name="model"></param>
+        public void UpdatePointConfig(DiagramConfigModel model)
+        {
+            var entity=ObjectMapper.Map<DiagramConfig>(model);
+            diagramConfigRepository.Update(entity);
+            RefreshDiagramConfigs();
+            Growl.Info("保存成功");
+        }
+        /// <summary>
+        /// 删除温度点数据
+        /// </summary>
+        /// <param name="name"></param>
+        public void DeletePoint(string name)
+        {
+            diagramConfigRepository.Delete(a=>a.PropName == name);
+            RefreshDiagramConfigs();
+            Growl.Info("删除成功");
+        }
+        /// <summary>
+        /// 刷新指定温度点的温度配置数据
+        /// </summary>
+        public void RefreshDiagramConfigs()
+        {
+            var list = diagramrRepositiry
+                .Orm
+                .Select<Diagram, DiagramConfig>()
+                .Where((d, c) => d.MonitorId == this.ConfigModel.CurrentId && c.DiagramId == d.Id)
+                .ToList<DiagramConfig>();
+            this.DiagramConfigModels = ObjectMapper.Map<List<DiagramConfigModel>>(list).CreateIndex();
+            if (!this.RightShow)
+            {
+                this.InitPoint?.Invoke(this, DiagramConfigModels);
+            }
         }
     }
 }

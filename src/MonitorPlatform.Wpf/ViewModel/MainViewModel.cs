@@ -80,7 +80,7 @@ namespace MonitorPlatform.Wpf.ViewModel
                 Font = "&#xe6ef;",
                 MenuItems = new List<MenuItemModel>()
                 {
-                    new MenuItemModel(){Name="运行监测",Link="network"},
+                    new MenuItemModel(){Name="运行监测",Link="OperationMonitor"},
                     new MenuItemModel(){Name="实时列表",Link="network"},
                 }
             });

@@ -35,9 +35,9 @@ namespace MonitorPlatform.Wpf.View
         /// 更新要素的值
         /// </summary>
         /// <param name="model"></param>
-        public void UpdateElement(TemplateModel model)
+        public TemplateModel UpdateElement(TemplateModel model)
         {
-            this.templateViewModel.InitTemplate(model);
+           return  this.templateViewModel.InitTemplate(model);
         }
 
         /// <summary>

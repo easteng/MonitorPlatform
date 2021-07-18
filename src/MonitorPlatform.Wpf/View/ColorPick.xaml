@@ -1,0 +1,14 @@
+﻿<Window x:Class="MonitorPlatform.Wpf.View.ColorPick"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MonitorPlatform.Wpf.View"
+        mc:Ignorable="d"
+        WindowStyle="None"
+        xmlns:hc="https://handyorg.github.io/handycontrol"
+        Title="ColorPick" Height="auto" Width="auto">
+    <hc:TransitioningContentControl>
+        <hc:ColorPicker Name="ColorPicker" Margin="0"/>
+    </hc:TransitioningContentControl>
+</Window>

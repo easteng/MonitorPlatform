@@ -10,4 +10,8 @@
     <OutputPath>..\Output\Tool</OutputPath>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="System.ServiceProcess.ServiceController" Version="5.0.0" />
+  </ItemGroup>
+
 </Project>

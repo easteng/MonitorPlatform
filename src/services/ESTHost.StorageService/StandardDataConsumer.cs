@@ -1,35 +1,39 @@
 ﻿/**********************************************************************
-*******命名空间： ESTHost.WTR31.Service
-*******类 名 称： BackgroundService
-*******类 说 明： 标准后台服务
+*******命名空间： ESTHost.DataStorage.Service
+*******类 名 称： StandardDataConsumer
+*******类 说 明： 标准数据的消费者
 *******作    者： Easten
 *******机器名称： EASTEN
 *******CLR 版本： 4.0.30319.42000
-*******创建时间： 7/13/2021 3:37:09 PM
+*******创建时间： 7/16/2021 10:20:56 AM
 *******联系方式： 1301485237@qq.com
 ***********************************************************************
 ******* ★ Copyright @Easten 2020-2021. All rights reserved ★ *********
 ***********************************************************************
  */
-using Microsoft.Extensions.Hosting;
+using ESTCore.Message;
+
+using MassTransit;
+
+using MonitorPlatform.Contracts;
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
-namespace ESTHost.WTR20A.Service
+namespace ESTHost.StorageService
 {
     /// <summary>
-    ///  后台服务
+    ///  标准数据的消费者
     /// </summary>
-    public class WindowBackgroundService : BackgroundService
+    public class StandardDataConsumer : IConsumer<StandardMessage<IOTData>>
     {
-        protected override Task ExecuteAsync(CancellationToken stoppingToken)
+        public Task Consume(ConsumeContext<StandardMessage<IOTData>> context)
         {
-            throw new NotImplementedException();
+            Console.WriteLine("消费到物联网数据");
+            return Task.CompletedTask;
         }
     }
 }

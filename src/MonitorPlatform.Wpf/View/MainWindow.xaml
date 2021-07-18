@@ -56,14 +56,14 @@
                         </Border>
                         <!--通知滚动条-->
                         <TextBlock Style="{StaticResource BaseIcon}" 
-                            Foreground="#fff"
-                            FontSize="18"
-                            Margin="30,0"
-                            Text="&#xe687;" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                            Foreground="#D9C91F"
+                            FontSize="20"
+                            Margin="20,0"
+                            Text="&#xe672;" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                         <hc:RunningBlock 
                             BorderThickness="0"
                             Width="400"
-                            Content="" 
+                            Content="测试版本" 
                             FontSize="15" FontWeight="ExtraLight" 
                             Foreground="{StaticResource AccentBrush}"
                             VerticalAlignment="Center"
@@ -72,22 +72,22 @@
                     <Grid HorizontalAlignment="Right" Margin="30,0">
                         <!--用户名及控制按钮-->
                         <StackPanel Orientation="Horizontal" >
-                            <hc:Shield Subject="版本" Status="{Binding RuntimeDataModel.Name}"
-                                       Margin="0,0,0,0" Color="Red"
+                            <hc:Shield Subject="版本" Status="测试v1"
+                                       Margin="0,0,0,0" Color="#16A2F0"
                                        Command="hc:ControlCommands.OpenLink" CommandParameter=""/>
                             <TextBlock
                                 MouseDown="TextBlock_MouseDown" 
-                                Text="&#xe62e;" 
-                                FontSize="40"
+                                Text="&#xe6cc;" 
+                                FontSize="20"
                                 Margin="10,0"
                                 VerticalAlignment="Center"
                                 HorizontalAlignment="Center"
                                 Cursor="Hand"
-                                Style="{StaticResource BaseIcon}" Foreground="red"/>
+                                Style="{StaticResource BaseIcon}" Foreground="#DFDFDE"/>
                             <!--头像图标-->
-                            <Border Width="40" Height="40" CornerRadius="40">
+                            <Border Width="30" Height="30" CornerRadius="30">
                                 <Border.Background>
-                                    <ImageBrush ImageSource="../Assets/Images/user.png"/>
+                                    <ImageBrush ImageSource="../Assets/Images/user1.png"/>
                                 </Border.Background>
                             </Border>
                             <Button VerticalAlignment="Center"
