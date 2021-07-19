@@ -23,11 +23,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows;
 
 namespace MonitorPlatform.Wpf.ViewModel
 {
-    public class MainViewModel
+    public class MainViewModel : NotifyBase
     {
         public RuntimeDataModel RuntimeDataModel { get; set; }=new RuntimeDataModel();
         public List<MenuModel> MenuModels { get; set; }
@@ -39,6 +40,15 @@ namespace MonitorPlatform.Wpf.ViewModel
             get { return _mainContainer; }
             set { _mainContainer = value; }
         }
+
+        private string realTime;
+
+        public string RealTime
+        {
+            get { return realTime; }
+            set { realTime = value; this.DoNotify(); }
+        }
+
 
         public MainViewModel()
         {
@@ -54,6 +64,16 @@ namespace MonitorPlatform.Wpf.ViewModel
             var rep = EngineContext.Current.Resolve<IFreeSql>();
             var aa = rep.GetRepository<User>();
             var list = aa.Where(a => true).ToList(true);
+
+
+
+            // 系统时间定时器
+            var time = new Timer();
+            time.Elapsed += (a, b) =>
+            {
+                RealTime = DateTime.Now.ToString("HH:mm:ss");
+            };
+            time.Start();
         }
 
         private void LeftMenuClick(object obj)

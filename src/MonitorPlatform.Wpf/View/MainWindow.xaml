@@ -24,7 +24,9 @@
                     <convert:Bool2VisibleConverter x:Key="Bool2VisibleConverter"/>
                     <convert:Bool2CollapsedConverter x:Key="Bool2CollapsedConverter"/>
                     <Style TargetType="TextBlock" x:Key="BaseIcon">
+                        <Setter Property="VerticalAlignment" Value="Center"/>
                         <Setter Property="FontFamily" Value="../Assets/Fonts/#iconfont"/>
+                        <Setter Property="Foreground" Value="#fff"/>
                     </Style>
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
@@ -54,6 +56,19 @@
                                 </TextBlock.Effect>
                             </TextBlock>
                         </Border>
+                        <!--菜单收缩展开按钮-->
+                        <Button x:Name="btn_menut_switch" Click="btn_menut_switch_Click">
+                            <Button.Template>
+                                <ControlTemplate>
+                                    <TextBlock Style="{StaticResource BaseIcon}" 
+                                            Foreground="#fff"
+                                            FontSize="18"
+                                            Cursor="Hand"
+                                            Margin="10,0"
+                                            Text="&#xe65d;" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
                         <!--通知滚动条-->
                         <TextBlock Style="{StaticResource BaseIcon}" 
                             Foreground="#D9C91F"
@@ -94,13 +109,63 @@
                                     Cursor="Hand"
                                     Content="123"
                                     Margin="10,0"
+                                    Name="btn_user"
+                                    Click="btn_user_Click"
                                     Foreground="#fff">
                                 <Button.Template>
                                     <ControlTemplate TargetType="Button">
-                                        <TextBlock Text="管理员" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                                        <Grid>
+                                            <TextBlock Text="管理员" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                                        </Grid>
                                     </ControlTemplate>
                                 </Button.Template>
                             </Button>
+                            <!--弹出框-->
+                            <Popup x:Name="user_popue" 
+                                   PopupAnimation="Fade"
+                                   Width="90"
+                                   Height="100" 
+                                   PlacementTarget="{Binding ElementName=btn_user}" 
+                                   Placement="Bottom" AllowsTransparency="True" 
+                                   StaysOpen="False">
+
+                                <Border 
+                                    Margin="0,15"
+                                    BorderBrush="{StaticResource FormBorderBrush}"
+                                    BorderThickness="1"
+                                    Background="#252526">
+                                    <StackPanel>
+                                        <Button VerticalAlignment="Top"
+                                         Cursor="Hand"
+                                         Content="123"
+                                         Margin="10,0"
+                                         Foreground="#fff">
+                                            <Button.Template>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Grid>
+                                                        <TextBlock Text="用户详细" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                                                    </Grid>
+                                                </ControlTemplate>
+                                            </Button.Template>
+                                        </Button>
+                                        <Button VerticalAlignment="Top"
+                                                Name="btn_exit"
+                                                Click="btn_exit_Click"
+                                             Cursor="Hand"
+                                             Content="123"
+                                             Margin="10,0"
+                                             Foreground="#fff">
+                                            <Button.Template>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Grid>
+                                                        <TextBlock Text="退出系统" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                                                    </Grid>
+                                                </ControlTemplate>
+                                            </Button.Template>
+                                        </Button>
+                                    </StackPanel>
+                                </Border>
+                            </Popup>
                         </StackPanel>
                     </Grid>
                 </Grid>
@@ -109,93 +174,165 @@
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition MaxWidth="240"/>
-                    <ColumnDefinition/>
+                    <ColumnDefinition />
                 </Grid.ColumnDefinitions>
                 <!--左侧菜单-->
-                <Border Style="{StaticResource GlobalBackgroundColor}" CornerRadius="0" Margin="0">
-                    <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden">
-                        <StackPanel Margin="0,15,0,0">
-                            <!--菜单绑定-->
-                            <ItemsControl ItemsSource="{Binding MenuModels}"
+                <Grid Grid.Column="0">
+                    <Border Style="{StaticResource GlobalBackgroundColor}" Name="SideMenu" CornerRadius="0" Margin="0">
+                        <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden">
+                            <StackPanel Margin="0,15,0,0">
+                                <!--菜单绑定-->
+                                <ItemsControl ItemsSource="{Binding MenuModels}"
                                           Name="MenuContainer"
                                           >
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <StackPanel/>
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <Grid>
-                                            <!--如果菜单没有子项则显示-->
-                                            <Border Visibility="{Binding Show,Converter={StaticResource Bool2VisibleConverter}, ConverterParameter=1}" >
-                                                <Grid>
-                                                   
-                                                    <RadioButton
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid>
+                                                <!--如果菜单没有子项则显示-->
+                                                <Border Visibility="{Binding Show,Converter={StaticResource Bool2VisibleConverter}, ConverterParameter=1}" >
+                                                    <Grid>
+
+                                                        <RadioButton
                                                         x:Name="menu_item"
                                                         Click="menu_item_Click"
                                                         Tag="{Binding Link}"
                                                         GroupName="menuItem" Style="{DynamicResource RadioButtonStyle1}" IsChecked="False" >
-                                                        <RadioButton.Content>
-                                                            <Grid>
-                                                                <TextBlock  
+                                                            <RadioButton.Content>
+                                                                <Grid>
+                                                                    <TextBlock  
                                                                      FontFamily="../Assets/Fonts/#iconfont" 
                                                                      Text="{Binding Font,Converter={StaticResource StringToIconConverter}}" 
                                                                      FontSize="18"
                                                                      Margin="-28,0"
                                                                      Style="{StaticResource  MenuColor}"  VerticalAlignment="Center"/>
-                                                                <TextBlock Text="{Binding Name}" FontSize="15"/>
-                                                            </Grid>
-                                                           
-                                                        </RadioButton.Content>
-                                                    </RadioButton>
-                                                </Grid>
-                                            </Border>
-                                            <Expander ExpandDirection="Down" Visibility="{Binding Show,Converter={StaticResource Bool2CollapsedConverter}}"  SnapsToDevicePixels="True" VerticalAlignment="Top" Style="{DynamicResource ExpanderStyle}" >
-                                                <Expander.Header>
-                                                    <StackPanel Orientation="Horizontal" Margin="20,15">
-                                                        <TextBlock  FontFamily="../Assets/Fonts/#iconfont" Text="{Binding Font,Converter={StaticResource StringToIconConverter}}" 
+                                                                    <TextBlock Text="{Binding Name}" FontSize="15"/>
+                                                                </Grid>
+
+                                                            </RadioButton.Content>
+                                                        </RadioButton>
+                                                    </Grid>
+                                                </Border>
+                                                <Expander ExpandDirection="Down" Visibility="{Binding Show,Converter={StaticResource Bool2CollapsedConverter}}"  SnapsToDevicePixels="True" VerticalAlignment="Top" Style="{DynamicResource ExpanderStyle}" >
+                                                    <Expander.Header>
+                                                        <StackPanel Orientation="Horizontal" Margin="20,15">
+                                                            <TextBlock  FontFamily="../Assets/Fonts/#iconfont" Text="{Binding Font,Converter={StaticResource StringToIconConverter}}" 
                                    Style="{StaticResource  MenuColor}"  VerticalAlignment="Center"></TextBlock>
-                                                        <TextBlock Text="{Binding Name}" Margin="14,0,0,0"  Style="{StaticResource  MenuColor}" ></TextBlock>
-                                                    </StackPanel>
-                                                </Expander.Header>
-                                                <!--子菜单项绑定-->
-                                                <ItemsControl ItemsSource="{Binding MenuItems}">
-                                                    <ItemsControl.ItemsPanel>
-                                                        <ItemsPanelTemplate>
-                                                            <StackPanel/>
-                                                        </ItemsPanelTemplate>
-                                                    </ItemsControl.ItemsPanel>
-                                                    <ItemsControl.ItemTemplate>
-                                                        <DataTemplate>
-                                                            <RadioButton
+                                                            <TextBlock Text="{Binding Name}" Margin="14,0,0,0"  Style="{StaticResource  MenuColor}" ></TextBlock>
+                                                        </StackPanel>
+                                                    </Expander.Header>
+                                                    <!--子菜单项绑定-->
+                                                    <ItemsControl ItemsSource="{Binding MenuItems}">
+                                                        <ItemsControl.ItemsPanel>
+                                                            <ItemsPanelTemplate>
+                                                                <StackPanel/>
+                                                            </ItemsPanelTemplate>
+                                                        </ItemsControl.ItemsPanel>
+                                                        <ItemsControl.ItemTemplate>
+                                                            <DataTemplate>
+                                                                <RadioButton
                                                                 x:Name="menu_item"
                                                                 Click="menu_item_Click"
                                                                 Tag="{Binding Link}"
                                                                 GroupName="menuItem" Style="{DynamicResource RadioButtonStyle}" IsChecked="False" Content="{Binding Name}"/>
-                                                        </DataTemplate>
-                                                    </ItemsControl.ItemTemplate>
-                                                </ItemsControl>
-                                            </Expander>
-                                        </Grid>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                        </StackPanel>
-                    </ScrollViewer>
-                </Border>
+                                                            </DataTemplate>
+                                                        </ItemsControl.ItemTemplate>
+                                                    </ItemsControl>
+                                                </Expander>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Border>
+                </Grid>
                 <!--右侧内容-->
-                <Grid Grid.Column="1">
+                <Grid Grid.Column="1" Name="RightGrid">
                     <ContentControl x:Name="mainContainer" Grid.Row="0" Content="{Binding MainContainer}"/>
                 </Grid>
+                <Grid.RenderTransform>
+                    <TranslateTransform x:Name="menuTranslateTransform" X="0" Y="0"/>
+                </Grid.RenderTransform>
             </Grid>
             <!--状态栏部分-->
             <Grid Background="{StaticResource StatuToolbarBackground}" Grid.Row="2">
-                <TextBlock 
+
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="&#xe600;" Margin="10,0,5,0" Style="{StaticResource BaseIcon}">
+                       <hc:Poptip.Instance>
+                          <hc:Poptip Content="当前时间" PlacementType="Top" Background="{StaticResource FormBackground}"/>
+                       </hc:Poptip.Instance>
+                    </TextBlock>
+                    <!--当前时间-->
+                    <TextBlock Text="{Binding RealTime}" Margin="0" Width="50" Style="{StaticResource BaseIcon}" Foreground="#55EE75"/>
+                    <!--服务状态-->
+                    <TextBlock Text="&#xe60e;" Margin="10,0" Style="{StaticResource BaseIcon}">
+                       <hc:Poptip.Instance>
+                          <hc:Poptip Content="服务状态" PlacementType="Top" Background="{StaticResource FormBackground}"/>
+                       </hc:Poptip.Instance>
+                    </TextBlock>
+                    <TextBlock Text="离线" Margin="0" Width="30" Style="{StaticResource BaseIcon}" Foreground="#F6DD64"/>
+
+                    <!--接入采集器-->
+                    <TextBlock Text="&#xe629;" Margin="10,0" Style="{StaticResource BaseIcon}">
+                       <hc:Poptip.Instance>
+                          <hc:Poptip Content="当前接入采集器" PlacementType="Top" Background="{StaticResource FormBackground}"/>
+                       </hc:Poptip.Instance>
+                    </TextBlock>
+                    <TextBlock Text="4台" Margin="0" Width="50" Style="{StaticResource BaseIcon}" Foreground="#fff"/>
+                </StackPanel>
+
+                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <TextBlock 
                             Foreground="#fff"
                             Text="Copy right @EST Compamy 2021" 
                             VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                </StackPanel>
+                <StackPanel HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <!--当前报警-->
+                    <hc:Badge Value="0" FontSize="7" Foreground="#fff" BadgeMargin="0,-8,-10,0" Height="10" Margin="0,0,20,0" Style="{StaticResource BadgeDanger}">
+                        <Button x:Name="alert_info" Click="alert_info_Click" FontSize="15" Foreground="#fff" Margin="0" FontFamily="../Assets/Fonts/#iconfont">
+                            <Button.Template>
+                                <ControlTemplate>
+                                    <TextBlock Text="&#xe629;" Margin="5,0,5,0" Style="{StaticResource BaseIcon}">
+                                    <hc:Poptip.Instance>
+                                        <hc:Poptip Content="当前报警" PlacementType="TopRight" Background="{StaticResource FormBackground}"/>
+                                    </hc:Poptip.Instance>
+                                    </TextBlock>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+                    </hc:Badge>
+                    <Popup x:Name="alertinfo_popute" Placement="Top" PlacementTarget="{Binding ElementName=alert_info}" StaysOpen="False" PopupAnimation="Slide" AllowsTransparency="True">
+                        <Border HorizontalAlignment="Center"
+                                BorderBrush="{StaticResource FormBorderBrush}" 
+                                BorderThickness="1" Background="{StaticResource 
+                            FormBackground}" Width="200" Height="200">
+                            <TextBlock Text="暂无报警" Foreground="#fff"/>
+                        </Border>
+                    </Popup>
+                </StackPanel>
             </Grid>
+            <!--托盘-->
+            <hc:NotifyIcon Text="测温监控平台" Width="100" IsBlink="False" Visibility="Visible" Icon="../Assets/Images/temp.ico">
+                <hc:NotifyIcon.ContextContent>
+                    <Border CornerRadius="4" Margin="10" Background="{DynamicResource RegionBrush}" Effect="{StaticResource EffectShadow2}">
+                        <StackPanel VerticalAlignment="Center" Margin="16">
+                            <TextBlock Text="站点有报警（12条）"/>
+                            <StackPanel Margin="0,16,0,0" HorizontalAlignment="Center" Orientation="Horizontal">
+                                <Button Command="hc:ControlCommands.ShutdownApp" Margin="5,0,0,0" Height="25" MinWidth="50" Style="{StaticResource ButtonPrimary}" Content="停止闪烁"/>
+                                <Button Command="hc:ControlCommands.ShutdownApp" Margin="5,0,0,0" Height="25"  MinWidth="50" Style="{StaticResource ButtonPrimary}" Content="退出系统"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </hc:NotifyIcon.ContextContent>
+            </hc:NotifyIcon>
+
         </Grid>
     </Border>
 </Window>

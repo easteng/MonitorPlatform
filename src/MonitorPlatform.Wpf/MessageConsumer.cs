@@ -11,37 +11,34 @@
 ******* ★ Copyright @easten company 2021-2022. All rights reserved ★ *********
 ***********************************************************************
  */
-using ESTCore.MassTransit;
-using ESTCore.Message;
+//using MassTransit;
 
-using MassTransit;
+//using MonitorPlatform.Share;
 
-using MonitorPlatform.Share;
+//using System;
+//using System.Collections.Generic;
+//using System.Linq;
+//using System.Text;
+//using System.Threading.Tasks;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+//namespace MonitorPlatform.Wpf
+//{
+//    public class MessageConsumer : IObserver<ConsumeContext<IBaseMessage>>
+//    {
+//        public void OnCompleted()
+//        {
+//            throw new NotImplementedException();
+//        }
 
-namespace MonitorPlatform.Wpf
-{
-    public class MessageConsumer : IObserver<ConsumeContext<IBaseMessage>>
-    {
-        public void OnCompleted()
-        {
-            throw new NotImplementedException();
-        }
+//        public void OnError(Exception error)
+//        {
+//            throw new NotImplementedException();
+//        }
 
-        public void OnError(Exception error)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void OnNext(ConsumeContext<IBaseMessage> value)
-        {
-            //GlableDelegateHandler.UpdateRuntime?.Invoke(value.Message.Name);
-            //throw new NotImplementedException();
-        }
-    }
-}
+        // public void OnNext(ConsumeContext<IBaseMessage> value)
+        // {
+        //     GlableDelegateHandler.UpdateRuntime?.Invoke(value.Message.Name);
+        //     throw new NotImplementedException();
+        // }
+//     }
+// }
