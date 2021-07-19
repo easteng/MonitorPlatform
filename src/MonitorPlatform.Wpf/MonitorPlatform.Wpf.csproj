@@ -14,7 +14,9 @@
 
   <ItemGroup>
     <None Remove="Assets\Fonts\iconfont.ttf" />
+    <None Remove="Assets\Images\back.ico" />
     <None Remove="Assets\Images\login_back.png" />
+    <None Remove="Assets\Images\temp.ico" />
     <None Remove="Assets\Images\user.png" />
   </ItemGroup>
 
@@ -24,6 +26,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Assets\Images\back.ico" />
+    <Resource Include="Assets\Images\temp.ico" />
     <Resource Include="Assets\Styles\ComboxStyle.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Resource>

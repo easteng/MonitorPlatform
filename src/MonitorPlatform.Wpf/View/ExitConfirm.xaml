@@ -1,0 +1,36 @@
+﻿<Window x:Class="MonitorPlatform.Wpf.View.ExitConfirm"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MonitorPlatform.Wpf.View"
+        mc:Ignorable="d"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen"
+        AllowsTransparency="True"
+        xmlns:hc="https://handyorg.github.io/handycontrol"
+        Title="ExitConfirm" Height="150" Width="250">
+    
+     <!--系统退出确认框-->
+    <Border Background="{StaticResource FormBackground}" BorderBrush="{StaticResource FormBorderBrush}" BorderThickness="1">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"/>
+                <RowDefinition/>
+                <RowDefinition Height="40"/>
+            </Grid.RowDefinitions>
+            <Border Background="#57575A">
+                <TextBlock Text="温馨提示" VerticalAlignment="Center" Foreground="#fff" Margin="10,0"/>
+            </Border>
+            <StackPanel x:Name="radiopanel" Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Center">
+                <RadioButton Foreground="#fff" GroupName="exit" Margin="5,10,0,0" Content="退出系统" IsChecked="True" Tag="exit"/>
+                <RadioButton Foreground="#fff" GroupName="exit" Margin="10,10,0,0" Content="最小到托盘" Tag="mini"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="2">
+                <Button Width="60" Height="25" Name="btn_cancle" Click="btn_cancle_Click" Content="取消" Margin="5" Style="{StaticResource ButtonPrimary}"/>
+                <Button Width="60" Height="25" Name="btn_confirm" Click="btn_confirm_Click" Content="确认" Margin="5" Style="{StaticResource ButtonSuccess}"/>
+            </StackPanel>
+        </Grid>
+    </Border>
+</Window>

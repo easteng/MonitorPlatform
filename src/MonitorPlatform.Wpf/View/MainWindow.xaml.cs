@@ -1,4 +1,5 @@
 ﻿using MonitorPlatform.Wpf.Common;
+using MonitorPlatform.Wpf.View;
 using MonitorPlatform.Wpf.ViewModel;
 
 using System;
@@ -12,6 +13,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
@@ -70,5 +72,84 @@ namespace MonitorPlatform.Wpf
                 }
             }
         }
+
+        private void btn_user_Click(object sender, RoutedEventArgs e)
+        {
+            user_popue.IsOpen = true;
+        }
+
+        private void btn_exit_Click(object sender, RoutedEventArgs e)
+        {
+            // 点击退出系统
+            var exit = new ExitConfirm();
+            exit.FormExit += (a, b) =>
+             {
+                 Application.Current.Shutdown();
+             };
+            exit.FormMini += (a, b) =>
+            {
+                this.WindowState = System.Windows.WindowState.Minimized;
+                exit.Close();
+            };
+            exit.ShowDialog();
+        }
+
+        private void alertinfo_popute_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void alert_info_Click(object sender, RoutedEventArgs e)
+        {
+            // 状态栏的报警
+            this.alertinfo_popute.IsOpen = true;
+        }
+
+
+        #region 左侧菜单收缩展开代码逻辑
+        private bool menuExpand = false;
+        private DoubleAnimation menuAnimation = new DoubleAnimation()
+        {
+            BeginTime = TimeSpan.FromMilliseconds(0),
+            FillBehavior = FillBehavior.HoldEnd,
+            Duration = new Duration(TimeSpan.FromMilliseconds(200))
+        };
+        private void btn_menut_switch_Click(object sender, RoutedEventArgs e)
+        {
+            // 左侧菜单切换时间
+            if (menuExpand)
+            {
+                menuExpand = false;
+                // 收缩菜单
+                menuAnimation.From = 0;
+                menuAnimation.To = -200;
+                SideMenu.MaxWidth = 40;
+                ChangeChildContentWidth(-200);
+            }
+            else
+            {
+                menuExpand = true;
+                //展开菜单
+                menuAnimation.From = -200;
+                menuAnimation.To = 0;
+                SideMenu.MaxWidth = 240;
+                ChangeChildContentWidth(-400);
+            }
+
+            menuTranslateTransform.BeginAnimation(TranslateTransform.XProperty, menuAnimation);
+        }
+
+        private void ChangeChildContentWidth(int width)
+        {
+            var aa = this.mainContainer;
+            FrameworkElement ui = aa.Content as FrameworkElement;
+            if (ui != null)
+            {
+                ui.Width =this.Width+width;
+            }
+        }
+        #endregion
+
+
     }
 }
