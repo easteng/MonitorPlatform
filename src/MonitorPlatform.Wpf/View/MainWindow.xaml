@@ -173,12 +173,12 @@
             <!--菜单及内容部分-->
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition MaxWidth="240"/>
-                    <ColumnDefinition />
+                    <ColumnDefinition Width="auto" x:Name="leftmenusider"/>
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <!--左侧菜单-->
-                <Grid Grid.Column="0">
-                    <Border Style="{StaticResource GlobalBackgroundColor}" Name="SideMenu" CornerRadius="0" Margin="0">
+                <Grid Grid.Column="0" Name="LeftGrid" Width="200">
+                    <Border Width="200" Style="{StaticResource GlobalBackgroundColor}" HorizontalAlignment="Left" Name="SideMenu" CornerRadius="0" Margin="0">
                         <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden">
                             <StackPanel Margin="0,15,0,0">
                                 <!--菜单绑定-->
@@ -219,7 +219,7 @@
                                                 </Border>
                                                 <Expander ExpandDirection="Down" Visibility="{Binding Show,Converter={StaticResource Bool2CollapsedConverter}}"  SnapsToDevicePixels="True" VerticalAlignment="Top" Style="{DynamicResource ExpanderStyle}" >
                                                     <Expander.Header>
-                                                        <StackPanel Orientation="Horizontal" Margin="20,15">
+                                                        <StackPanel Orientation="Horizontal" Margin="15">
                                                             <TextBlock  FontFamily="../Assets/Fonts/#iconfont" Text="{Binding Font,Converter={StaticResource StringToIconConverter}}" 
                                    Style="{StaticResource  MenuColor}"  VerticalAlignment="Center"></TextBlock>
                                                             <TextBlock Text="{Binding Name}" Margin="14,0,0,0"  Style="{StaticResource  MenuColor}" ></TextBlock>

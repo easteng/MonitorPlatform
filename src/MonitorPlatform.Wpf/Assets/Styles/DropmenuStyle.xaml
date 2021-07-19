@@ -19,7 +19,7 @@
                                               FontStretch="{TemplateBinding FontStretch}" FontSize="{TemplateBinding FontSize}" 
                                               FontFamily="{TemplateBinding FontFamily}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" 
                                               IsChecked="{Binding IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" 
-                                              Margin="0,0,15,0" MinWidth="0" MinHeight="0" Padding="{TemplateBinding Padding}" VerticalContentAlignment="{TemplateBinding 
+                                              Margin="0,0,20,0" MinWidth="0" MinHeight="0" Padding="{TemplateBinding Padding}" VerticalContentAlignment="{TemplateBinding 
                                     VerticalContentAlignment}">
                                 <ToggleButton.FocusVisualStyle>
                                     <Style>
@@ -27,7 +27,7 @@
                                             <Setter.Value>
                                                 <ControlTemplate>
                                                     <Border>
-                                                        <Rectangle Margin="0" SnapsToDevicePixels="True" Stroke="#fff" StrokeThickness="1" StrokeDashArray="1 2"/>
+                                                        <Rectangle Margin="-10" SnapsToDevicePixels="True" Stroke="#fff" StrokeThickness="1" StrokeDashArray="1 2"/>
                                                     </Border>
                                                 </ControlTemplate>
                                             </Setter.Value>
@@ -42,10 +42,10 @@
                                                     <Border Padding="{TemplateBinding Padding}">
                                                         <Grid>
                                                             <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition Width="19*"/>
+                                                                <ColumnDefinition Width="8*"/>
                                                             </Grid.ColumnDefinitions>
-                                                            <Path Grid.Column="0" x:Name="arrow" Data="M1,1.5L4.5,5 8,1.5" HorizontalAlignment="Right"  SnapsToDevicePixels="False" Stroke="#DEDFE0" StrokeThickness="2" VerticalAlignment="Center" Height="10" Margin="5,10" />
-                                                            <ContentPresenter ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" HorizontalAlignment="Left" Margin="4,0,0,0" RecognizesAccessKey="True" SnapsToDevicePixels="True" VerticalAlignment="Center"  />
+                                                            <Path Grid.Column="0" x:Name="arrow" Data="M1,1.5L4.5,5 8,1.5" HorizontalAlignment="Right"  SnapsToDevicePixels="False" Stroke="#DEDFE0" StrokeThickness="2" VerticalAlignment="Center" Height="10" Margin="0,10" />
+                                                            <ContentPresenter ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" HorizontalAlignment="Left" Margin="0,0,0,0" RecognizesAccessKey="True" SnapsToDevicePixels="True" VerticalAlignment="Center"  />
                                                         </Grid>
                                                     </Border>
                                                     <ControlTemplate.Triggers>
@@ -124,10 +124,10 @@
                                 Background="Transparent" SnapsToDevicePixels="True"/>
                         <!-- 用于设置选中的左侧树形边框-->
                         <Border x:Name="bd2"/>
-                        <Grid x:Name="contentPresenter" Margin="60,0" >
-                            <TextBlock Text="◉" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="-10,0" FontSize="12"/>
+                        <Grid x:Name="contentPresenter" Margin="30,0" >
+                            <TextBlock Text="◉" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="-5,0" FontSize="12"/>
                             <ContentPresenter 
-                                Margin="10,0"
+                                Margin="10,0,-10,0"
                                           ContentTemplate="{TemplateBinding ContentTemplate}" 
                                           Content="{TemplateBinding Content}" Grid.Column="1" 
                                           ContentStringFormat="{TemplateBinding ContentStringFormat}" 
@@ -207,7 +207,7 @@
                         <Border x:Name="bd2" SnapsToDevicePixels="True"/>
                         <Grid x:Name="contentPresenter" Margin="42,0" >
                             <ContentPresenter 
-                                Margin="10,0"
+                                Margin="0,0"
                                           ContentTemplate="{TemplateBinding ContentTemplate}" 
                                           Content="{TemplateBinding Content}" Grid.Column="1" 
                                           ContentStringFormat="{TemplateBinding ContentStringFormat}" 

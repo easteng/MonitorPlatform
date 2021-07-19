@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MonitorPlatform.Wpf.View"
              mc:Ignorable="d" 
+              Width="800"
               xmlns:viewmodel="clr-namespace:MonitorPlatform.Wpf.ViewModel" 
               xmlns:hc="https://handyorg.github.io/handycontrol" 
              xmlns:svg="clr-namespace:ESTControl.SvgViewer;assembly=ESTControl.SvgViewer"

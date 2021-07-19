@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:MonitorPlatform.Wpf.View"
                xmlns:viewmodel="clr-namespace:MonitorPlatform.Wpf.ViewModel" 
               xmlns:hc="https://handyorg.github.io/handycontrol" 
+              Width="800"
                 d:DataContext="{d:DesignInstance Type=viewmodel:SensorManagerViewModel}"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">

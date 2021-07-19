@@ -31,8 +31,30 @@ namespace MonitorPlatform.Wpf
             this.MaxHeight = SystemParameters.MaximizedPrimaryScreenHeight-10;
             this.DataContext = new MainViewModel();
             this.Loaded += MainWindow_Loaded;
+            this.SizeChanged += MainWindow_SizeChanged;
         }
 
+        /// <summary>
+        /// 窗体大小编号，同时改变子窗体的大小
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            InitFormSize();
+        }
+        private void InitFormSize()
+        {
+            if (this.menuExpand)
+            {
+                ChangeChildContentWidth(200);
+            }
+            else
+            {
+                ChangeChildContentWidth(0);
+            }
+        }
+                
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             // todo 
@@ -65,8 +87,9 @@ namespace MonitorPlatform.Wpf
                     var viewType = Type.GetType($"MonitorPlatform.Wpf.View.{viewName.ToString()}");
                     if (viewType == null) return;
                     var contructor = viewType.GetConstructor(Type.EmptyTypes);
-                    this.mainContainer.Content = (FrameworkElement)contructor.Invoke(null);
-
+                    var ui = (FrameworkElement)contructor.Invoke(null);
+                    this.mainContainer.Content = ui;
+                    InitFormSize();
                    // ((MainViewModel)this.DataContext).LeftMenuClick(viewName);
                     break;
                 }
@@ -107,7 +130,7 @@ namespace MonitorPlatform.Wpf
 
 
         #region 左侧菜单收缩展开代码逻辑
-        private bool menuExpand = false;
+        private bool menuExpand = true;
         private DoubleAnimation menuAnimation = new DoubleAnimation()
         {
             BeginTime = TimeSpan.FromMilliseconds(0),
@@ -120,23 +143,23 @@ namespace MonitorPlatform.Wpf
             if (menuExpand)
             {
                 menuExpand = false;
+                this.LeftGrid.Width = 0;
                 // 收缩菜单
-                menuAnimation.From = 0;
-                menuAnimation.To = -200;
-                SideMenu.MaxWidth = 40;
-                ChangeChildContentWidth(-200);
+                 menuAnimation.To =0;
+                 menuAnimation.From=200;
+                ChangeChildContentWidth(0);
+                LeftGrid.BeginAnimation(Grid.WidthProperty, menuAnimation);
             }
             else
             {
                 menuExpand = true;
+                this.LeftGrid.Width = 200;
                 //展开菜单
-                menuAnimation.From = -200;
-                menuAnimation.To = 0;
-                SideMenu.MaxWidth = 240;
-                ChangeChildContentWidth(-400);
+                menuAnimation.To = 200;
+                menuAnimation.From = 0;
+                LeftGrid.BeginAnimation(Grid.WidthProperty, menuAnimation);
+                ChangeChildContentWidth(200);
             }
-
-            menuTranslateTransform.BeginAnimation(TranslateTransform.XProperty, menuAnimation);
         }
 
         private void ChangeChildContentWidth(int width)
@@ -145,7 +168,7 @@ namespace MonitorPlatform.Wpf
             FrameworkElement ui = aa.Content as FrameworkElement;
             if (ui != null)
             {
-                ui.Width =this.Width+width;
+                ui.Width =this.Width-width;
             }
         }
         #endregion
