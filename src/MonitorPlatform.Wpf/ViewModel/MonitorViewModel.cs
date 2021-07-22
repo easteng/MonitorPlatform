@@ -552,5 +552,15 @@ namespace MonitorPlatform.Wpf.ViewModel
                 this.InitPoint?.Invoke(this, DiagramConfigModels);
             }
         }
+
+        // 选中传感器，设定传感器信息
+        public void SetSensorCode(Guid id)
+        {
+            var sensor = sensorRepository.Where(a => a.Id == id).First();
+            if (sensor != null)
+            {
+                this.DiagramConfigModel.SensorCode = sensor.SensorCode;
+            }
+        }
     }
 }

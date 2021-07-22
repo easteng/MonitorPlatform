@@ -1,4 +1,5 @@
-﻿using MonitorPlatform.Share;
+﻿using HandyControl.Controls;
+using MonitorPlatform.Share;
 using MonitorPlatform.Wpf.ViewModel;
 
 using System;
@@ -19,7 +20,7 @@ using System.Windows.Shapes;
 namespace MonitorPlatform.Wpf.View
 {
     /// <summary>
-    /// Interaction logic for ServerManager.xaml
+    /// 采集器  视图
     /// </summary>
     public partial class ServerManager : UserControl
     {
@@ -49,34 +50,48 @@ namespace MonitorPlatform.Wpf.View
             }
         }
 
-        private void ptotoco_Selected(object sender, RoutedEventArgs e)
-        {
-            
-        }
-
         private void ptotoco_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (this.ptotoco.SelectedValue != null)
             {
                 var item = (PtotocolType)this.ptotoco.SelectedValue;
-                this.serverManagerViewModel.CollectionClientModel.Ptotocol = item;
+                this.serverManagerViewModel.TerminalModel.Ptotocol = item;
             }
         }
 
-        private void typecombox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void btn_sensor_Click(object sender, RoutedEventArgs e)
         {
-            if (this.typecombox.SelectedValue != null)
-            {
-                var item = (DeviceCollectionType)this.typecombox.SelectedValue;
-                this.serverManagerViewModel.CollectionClientModel.Type = item;
-            }
-           
-        }
-
-        private void debug_Click(object sender, RoutedEventArgs e)
-        {
-            // 打开监控界面
+            // 打开底部菜单
+            Button btn = (Button)sender;
             this.serverManagerViewModel.BottomShow = true;
+            this.serverManagerViewModel.QueryBindSensorAction(btn.Tag);
+            // 关联传感器
+        }
+
+        private void btn_deleterlt_sensor_Click(object sender, RoutedEventArgs e)
+        {
+            // 删除指定的关联的传感器
+            if (HandyControl.Controls.MessageBox.Show("确定删除吗?", "温馨提示", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            {
+                Button btn = (Button)sender;
+                serverManagerViewModel.DelteRltSensor(Guid.Parse(btn.Tag.ToString()));
+            }
+        }
+
+        private void btn_rlt_sensor_Click(object sender, RoutedEventArgs e)
+        {
+            // 点击关联传感器
+            var sensor = new SensorSelectModal();
+            sensor.ShowInTaskbar = true;
+            sensor.Confirm += (e, data) =>
+            {
+                if (this.serverManagerViewModel.SaveRelSensor(data))
+                {
+                    Growl.Info("关联成功");
+                    sensor.Close();
+                }
+            };
+            sensor.ShowDialog();
         }
     }
 }

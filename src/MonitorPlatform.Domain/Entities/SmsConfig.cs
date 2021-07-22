@@ -26,10 +26,19 @@ namespace MonitorPlatform.Domain.Entities
         /// <summary>
         /// 串口名称
         /// </summary>
-        public string  ComName { get; set; }
+        public string ComName { get; set; }
         /// <summary>
         /// 波特率
         /// </summary>
-        public double Baud { get; set; }
+        public int BaudRate { get; set;  }
+        /// <summary>
+        /// 数据位
+        /// </summary>
+        public int DataBits { get; set;  }
+
+        /// <summary>
+        /// 是否启用
+        /// </summary>
+        public bool Enable { get; set; }
     }
 }

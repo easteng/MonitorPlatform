@@ -128,12 +128,8 @@
                 </Grid>
                 <!--传感器及客户端表格区域-->
                 <Grid Grid.Row="1">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                    </Grid.ColumnDefinitions>
-                    <!--传感器表格-->
-                    <Grid Grid.Column="0" Margin="0,0,5,0">
+                    <!--绑定的采集终端-->
+                    <Grid Grid.Column="1" Margin="0,0,0,0">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="30"/>
                             <RowDefinition Height="*"/>
@@ -141,65 +137,23 @@
                         </Grid.RowDefinitions>
                         <Button 
                                 HorizontalAlignment="Left" 
-                                Content="关联传感器"
+                                Content="关联采集终端"
                                 Height="25"
                                 Margin="0"
                                 Padding="10,0"
                                 Cursor="Hand"
-                                Style="{StaticResource ButtonDashedWarning}"
-                                Command="{Binding BindSensorCommand}" 
-                                CommandParameter="false"/>
-                        <ListView Grid.Row="1"
-                    ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                    ItemsSource="{Binding Sensors}"  Style="{StaticResource DefaultListView}">
-                            <ListView.View>
-                                <GridView ColumnHeaderContainerStyle="{StaticResource DefaultGridViewColumnHeader}">
-                                    <GridViewColumn HeaderContainerStyle="{StaticResource CenterGridViewColumnHeader}"  Width="80"  Header="序号" DisplayMemberBinding="{Binding Index}"/>
-                                    <GridViewColumn Width="150" Header="传感器编码" DisplayMemberBinding="{Binding SensorCode}"/>
-                                    <GridViewColumn HeaderContainerStyle="{StaticResource CenterGridViewColumnHeader}" Width="150" Header="操作">
-                                        <GridViewColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                                    <Button Content="删除"  Name="deleteSensor" Click="deleteSensor_Click" Cursor="Hand"  Tag="{Binding Id}" Margin="2,0" Style="{StaticResource ButtonDanger}" Width="40" Height="20" Padding="2,0"/>
-                                                </StackPanel>
-                                            </DataTemplate>
-                                        </GridViewColumn.CellTemplate>
-                                    </GridViewColumn>
-                                </GridView>
-                            </ListView.View>
-                        </ListView>
-                        <!--总数据条数-->
-                        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,10">
-                            <TextBlock Foreground="#fff">当前数据：</TextBlock>
-                            <TextBlock Foreground="#fff" Text="{Binding Sensors.Count}"/>
-                            <TextBlock Foreground="#fff">条</TextBlock>
-                        </StackPanel>
-                    </Grid>
-                    <!--绑定的采集客户端-->
-                    <Grid Grid.Column="1" Margin="5,0,0,0">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="30"/>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="60"/>
-                        </Grid.RowDefinitions>
-                        <Button 
-                                HorizontalAlignment="Left" 
-                                Content="关联采集服务"
-                                Height="25"
-                                Margin="0"
-                                Padding="10,0"
-                                Cursor="Hand"
-                                Style="{StaticResource ButtonDashedPrimary}"
+                                Style="{StaticResource ButtonDashedSuccess}"
                                 Command="{Binding BindClientCommand}" 
                                 CommandParameter="false"/>
                         <ListView 
                             Grid.Row="1"
                     ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                    ItemsSource="{Binding Clients}"  Style="{StaticResource DefaultListView}">
+                    ItemsSource="{Binding BindModels}"  Style="{StaticResource DefaultListView}">
                             <ListView.View>
                                 <GridView ColumnHeaderContainerStyle="{StaticResource DefaultGridViewColumnHeader}">
                                     <GridViewColumn HeaderContainerStyle="{StaticResource CenterGridViewColumnHeader}"  Width="80"  Header="序号" DisplayMemberBinding="{Binding Index}"/>
-                                    <GridViewColumn Width="150" Header="客户端名称" DisplayMemberBinding="{Binding Name}"/>
+                                    <GridViewColumn Width="150" Header="终端名称" DisplayMemberBinding="{Binding Name}"/>
+                                    <GridViewColumn Width="150" Header="终端地址" DisplayMemberBinding="{Binding Addr}"/>
                                     <GridViewColumn HeaderContainerStyle="{StaticResource CenterGridViewColumnHeader}" Width="150" Header="操作">
                                         <GridViewColumn.CellTemplate>
                                             <DataTemplate>
@@ -215,14 +169,14 @@
                         <!--总数据条数-->
                         <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,10">
                             <TextBlock Foreground="#fff">当前数据：</TextBlock>
-                            <TextBlock Foreground="#fff" Text="{Binding Clients.Count}"/>
+                            <TextBlock Foreground="#fff" Text="{Binding BindModels.Count}"/>
                             <TextBlock Foreground="#fff">条</TextBlock>
                         </StackPanel>
                     </Grid>
                 </Grid>
             </Grid>
 
-            <!--抽屉-->
+            <!--左侧数据维护抽屉-->
             <hc:Drawer Name="DrawerLeft" MaskCanClose="False" IsOpen="{Binding Show}">
                 <Border Margin="0,50,5,30" Background="{DynamicResource FormBackground}" Width="300" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource BorderBrush}">
                     <Grid>
@@ -321,16 +275,20 @@
             </hc:Drawer>
             <!--底部数据调试抽屉-->
             <hc:Drawer Name="DrawerBottom"  Dock="Bottom" ShowMask="False" IsOpen="{Binding BottomShow}">
-                <Border Background="#1E1E1E" 
-                        Height="500" BorderThickness="0,1,0,0"
-                        Margin="280,0,40,30"
-                        CornerRadius="5,5,0,0"
-                        BorderBrush="{DynamicResource BorderBrush}">
+                <Border 
+                   Background="{StaticResource FormBackground}" 
+                   BorderBrush="{StaticResource FormBorderBrush}"
+                   Height="380"
+                   Width="600"
+                   BorderThickness="1"
+                   HorizontalAlignment="Left"
+                   Margin="238,0,40,50"
+                   CornerRadius="5,5,0,0">
                     <Grid Margin="10,0">
                         <StackPanel>
                             <!--服务监测内容标题及关闭-->
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="数据绑定选择" Foreground="#fff" Margin="10" FontSize="16"/>
+                                <TextBlock Text="请选项需要绑定的采集终端" Foreground="#fff" Margin="10" FontSize="16"/>
                                 <Button 
                                 HorizontalAlignment="Right" 
                                 Content="保存"
@@ -348,14 +306,14 @@
                                 Margin="0,10"
                                 Padding="10,0"
                                 Cursor="Hand"
-                                Style="{StaticResource ButtonDashedInfo}"
+                                Style="{StaticResource ButtonDashedSuccess}"
                                 Command="{Binding BindDataSaveComand}" 
                                 CommandParameter="false"/>
                             </StackPanel>
                             <!--需要绑定的列表值-->
-                            <ListView ScrollViewer.VerticalScrollBarVisibility="Visible" 
-                                      ItemsSource="{Binding BindModels}"
-                                      MaxHeight="480"
+                            <ListView ScrollViewer.VerticalScrollBarVisibility="Hidden" 
+                                      ItemsSource="{Binding TerminalList}"
+                                      MaxHeight="330"
                                       Style="{StaticResource DefaultListView}">
                                 <ListView.View>
                                     <GridView ColumnHeaderContainerStyle="{StaticResource DefaultGridViewColumnHeader}">
@@ -363,13 +321,14 @@
                                             <GridViewColumn.CellTemplate>
                                                 <DataTemplate>
                                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                                        <CheckBox x:Name="rowselect" Checked="rowselect_Checked" Tag="{Binding Id}"/>
+                                                        <CheckBox x:Name="rowselect" Unchecked="rowselect_Unchecked" Checked="rowselect_Checked_1" Tag="{Binding Id}"/>
                                                     </StackPanel>
                                                 </DataTemplate>
                                             </GridViewColumn.CellTemplate>
                                         </GridViewColumn>
                                         <GridViewColumn HeaderContainerStyle="{StaticResource CenterGridViewColumnHeader}"  Width="80"  Header="序号" DisplayMemberBinding="{Binding Index}"/>
-                                        <GridViewColumn Width="150" Header="名称" DisplayMemberBinding="{Binding Name}"/>
+                                        <GridViewColumn Width="150" Header="终端名称" DisplayMemberBinding="{Binding Name}"/>
+                                        <GridViewColumn Width="150" Header="Modbus 地址位" DisplayMemberBinding="{Binding Addr}"/>
                                     </GridView>
                                 </ListView.View>
                             </ListView>

@@ -1,7 +1,7 @@
 ﻿/**********************************************************************
 *******命名空间： MonitorPlatform.Wpf.ViewModel
 *******类 名 称： ServerManagerViewModel
-*******类 说 明： 采集服务配置
+*******类 说 明： 采集器配置
 *******作    者： Easten
 *******机器名称： DESKTOP-EC8U0GP
 *******CLR 版本： 4.0.30319.42000
@@ -35,20 +35,20 @@ namespace MonitorPlatform.Wpf.ViewModel
 {
     public class ServerManagerViewModel : NotifyBase
     {
-        private CollectionClientModel collectionClientModel;
+        private TerminalModel terminalModel;
 
-        public CollectionClientModel CollectionClientModel
+        public TerminalModel TerminalModel
         {
-            get { return collectionClientModel; }
-            set { collectionClientModel = value; this.DoNotify(); }
+            get { return terminalModel; }
+            set { terminalModel = value; this.DoNotify(); }
         }
 
-        private List<CollectionClientModel> collectionList;
+        private List<TerminalModel> terminalList;
 
-        public List<CollectionClientModel> CollectionClientModels
+        public List<TerminalModel> TerminalList
         {
-            get { return collectionList; }
-            set { collectionList = value; this.DoNotify(); }
+            get { return terminalList; }
+            set { terminalList = value; this.DoNotify(); }
         }
         private List<ComboxItem> ptotocolList;
         public List<ComboxItem> PtotocolList
@@ -60,15 +60,14 @@ namespace MonitorPlatform.Wpf.ViewModel
                 this.DoNotify();
             }
         }
-        private List<ComboxItem> type;
-        public List<ComboxItem> TypeList
+
+        //设备绑定的传感器列表
+        private List<SensorModel> sensors;
+
+        public List<SensorModel> Sensors
         {
-            get => type;
-            set
-            {
-                type = value;
-                this.DoNotify();
-            }
+            get { return sensors; }
+            set { sensors = value; this.DoNotify(); }
         }
         private bool show;
 
@@ -91,12 +90,16 @@ namespace MonitorPlatform.Wpf.ViewModel
         public ICommand DebuggerCommand { get { return new CommandBase(OpenBottomAction); } }
         public ICommand CreateCommand { get { return new CommandBase(OpenDrawAction); } }
         public ICommand DeleteCommand { get { return new CommandBase(DeleteAction); } }
-        readonly IBaseRepository<CollectionClient, Guid> collectionRepository;
+        readonly IBaseRepository<Terminal, Guid> terminalRepository;
+        readonly IBaseRepository<TerminalRltSensor, Guid> terminalRltSensorRepository;
+
+        private Guid SelectedTerminalId { get; set; }
         public ServerManagerViewModel()
         {
-            collectionRepository= ESTRepository.Builder<CollectionClient, Guid>();
+            terminalRepository = ESTRepository.Builder<Terminal, Guid>();
+            terminalRltSensorRepository = ESTRepository.Builder<TerminalRltSensor, Guid>();
             PtotocolList=new  List<ComboxItem>();
-            TypeList = new  List<ComboxItem>();
+           // TypeList = new  List<ComboxItem>();
             var dic1 = typeof(PtotocolType).GetDescriptionAndValue();//协议类型
             var dic2 = typeof(DeviceCollectionType).GetDescriptionAndValue();//采集类型
             foreach (var item in dic1)
@@ -107,14 +110,14 @@ namespace MonitorPlatform.Wpf.ViewModel
                     Value = item.Value
                 });
             }
-            foreach (var item in dic2)
-            {
-                TypeList.Add(new ComboxItem
-                {
-                    Key = item.Key,
-                    Value = item.Value
-                });
-            }
+            //foreach (var item in dic2)
+            //{
+            //    TypeList.Add(new ComboxItem
+            //    {
+            //        Key = item.Key,
+            //        Value = item.Value
+            //    });
+            //}
             this.Refresh();
         }
         // 刷新数据
@@ -122,11 +125,11 @@ namespace MonitorPlatform.Wpf.ViewModel
         {
             Task.Run(() =>
             {
-                var list = collectionRepository
+                var list = terminalRepository
                 .WhereIf(code != "", a => a.Name.Contains(code))
                 .Where(a => true)
                 .ToList();
-                this.CollectionClientModels = ObjectMapper.Map<List<CollectionClientModel>>(list).CreateIndex();
+                this.TerminalList = ObjectMapper.Map<List<TerminalModel>>(list).CreateIndex();
             });
         }
 
@@ -136,9 +139,13 @@ namespace MonitorPlatform.Wpf.ViewModel
         /// <param name="data"></param>
         public void OpenDrawAction(object data)
         {
-            this.CollectionClientModel = new CollectionClientModel();
+            this.TerminalModel = new TerminalModel();
             this.Show = bool.Parse(data.ToString());
         }
+        /// <summary>
+        /// 打开底部的抽屉
+        /// </summary>
+        /// <param name="data"></param>
         public void OpenBottomAction(object data)
         {
             this.BottomShow = bool.Parse(data.ToString());
@@ -161,9 +168,9 @@ namespace MonitorPlatform.Wpf.ViewModel
         /// <param name="obj"></param>
         public void EditAction(object obj)
         {
-            var sensor = collectionRepository.Get(Guid.Parse(obj.ToString()));
-            var model = ObjectMapper.Map<CollectionClientModel>(sensor);
-            this.CollectionClientModel = model;
+            var sensor = terminalRepository.Get(Guid.Parse(obj.ToString()));
+            var model = ObjectMapper.Map<TerminalModel>(sensor);
+            this.TerminalModel = model;
             this.Show = true;
         }
 
@@ -174,21 +181,80 @@ namespace MonitorPlatform.Wpf.ViewModel
         public void SaveAction(object obj)
         {
 
-            var collectionModel = (CollectionClientModel)obj;
-            var collection = ObjectMapper.Map<CollectionClient>(collectionModel);
+            var collectionModel = (TerminalModel)obj;
+            var collection = ObjectMapper.Map<Terminal>(collectionModel);
             if (collection.Id != Guid.Empty)
             {
-                collectionRepository.Update(collection);
+                terminalRepository.Update(collection);
             }
             else
             {
-                collectionRepository.Insert(collection);
+                terminalRepository.Insert(collection);
             }
 
             this.Show = false;
             Growl.Info("操作成功");
             this.Refresh();
         }
+
+        /// <summary>
+        /// 查询终端采集器关联的传感器
+        /// </summary>
+        /// <param name="data"></param>
+        public void QueryBindSensorAction(object data)
+        {
+            var id = Guid.Parse(data.ToString());
+            this.SelectedTerminalId = id;
+            if (id != Guid.Empty)
+            {
+                var sensors =
+                    terminalRltSensorRepository.
+                    Orm.Select<TerminalRltSensor, Sensor>()
+                    .Where((a, b) => a.TerminalId == id && a.SensorId == b.Id)
+                    .ToList<Sensor>();
+                this.Sensors = ObjectMapper.Map<List<SensorModel>>(sensors).CreateIndex();
+            }
+        }
+
+        /// <summary>
+        /// 保存关联的传感器信息
+        /// </summary>
+        /// <param name="sensorIds"></param>
+        public bool SaveRelSensor(List<Guid> sensorIds)
+        {
+            if (sensorIds.Any()){
+                sensorIds.ForEach(a =>
+                {
+                    var model = new TerminalRltSensor()
+                    {
+                        SensorId = a,
+                        TerminalId = this.SelectedTerminalId,
+                    };
+                    // 判断是否已经存在
+                    if (!terminalRltSensorRepository.Where(b => b.SensorId == a).Any())
+                    {
+                        terminalRltSensorRepository.Insert(model);
+                    }
+                });
+                Growl.Info("关联成功");
+
+                QueryBindSensorAction(this.SelectedTerminalId);
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// 删除关联的传感器
+        /// </summary>
+        /// <param name="id"></param>
+        public void DelteRltSensor(Guid id)
+        {
+            terminalRltSensorRepository.Delete(a=>a.SensorId==id);
+            Growl.Info("删除成功");
+            QueryBindSensorAction(this.SelectedTerminalId);
+        }
+
+
         /// <summary>
         /// 删除数据
         /// </summary>
@@ -198,7 +264,7 @@ namespace MonitorPlatform.Wpf.ViewModel
             if (obj != null)
             {
                 var id = Guid.Parse(obj.ToString());
-                collectionRepository.Delete(id);
+                terminalRepository.Delete(id);
                 this.Refresh();
             }
         }

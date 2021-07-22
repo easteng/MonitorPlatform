@@ -21,16 +21,16 @@ using System.Threading.Tasks;
 
 namespace MonitorPlatform.Domain.Entities
 {
-    public class DeviceRltClient : BaseEntity<Guid>
+    public class DeviceRltTerminal : BaseEntity<Guid>
     {
-        public DeviceRltClient() { }
-        public DeviceRltClient(Guid deviceId, Guid clientId)
+        public DeviceRltTerminal() { }
+        public DeviceRltTerminal(Guid deviceId, Guid terminalId)
         {
             this.DeviceId = deviceId;
-            this.ClientId = clientId;   
+            this.TerminalId = terminalId;   
         }
-        public CollectionClient Client { get; set; }
-        public Guid ClientId { get; set; }
+        public Terminal Terminal { get; set; }
+        public Guid TerminalId { get; set; }
         public Device Device { get; set; }
         public Guid DeviceId { get; set; }
     }

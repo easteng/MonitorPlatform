@@ -107,7 +107,9 @@ namespace MonitorPlatform.Wpf
             var exit = new ExitConfirm();
             exit.FormExit += (a, b) =>
              {
+                 Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
                  Application.Current.Shutdown();
+                 Environment.Exit(0);
              };
             exit.FormMini += (a, b) =>
             {
@@ -157,8 +159,8 @@ namespace MonitorPlatform.Wpf
                 //展开菜单
                 menuAnimation.To = 200;
                 menuAnimation.From = 0;
-                LeftGrid.BeginAnimation(Grid.WidthProperty, menuAnimation);
                 ChangeChildContentWidth(200);
+                LeftGrid.BeginAnimation(Grid.WidthProperty, menuAnimation);
             }
         }
 

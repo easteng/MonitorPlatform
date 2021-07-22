@@ -28,9 +28,9 @@ namespace MonitorPlatform.Domain.Entities
         /// </summary>
         public string SensorCode { get; set; }
         /// <summary>
-        /// 生成厂家
+        /// 安装位置
         /// </summary>
-        public string Factory { get; set; }
+        public string Position { get; set; }
         /// <summary>
         /// 备注
         /// </summary>

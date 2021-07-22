@@ -1,5 +1,4 @@
-﻿using HandyControl.Controls;
-
+﻿using MonitorPlatform.Wpf.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,20 +17,15 @@ using System.Windows.Shapes;
 namespace MonitorPlatform.Wpf.View
 {
     /// <summary>
-    /// Interaction logic for SensorModal.xaml
+    /// RemoteControl.xaml 的交互逻辑
     /// </summary>
-    public partial class SensorModal : UserControl, ISingleOpen
+    public partial class RemoteControl : UserControl
     {
-        public SensorModal()
+        RemoteControlViewModel remoteControlViewModel;
+        public RemoteControl()
         {
             InitializeComponent();
-        }
-
-        public bool CanDispose => true;
-
-        public void Dispose()
-        {
-           // throw new NotImplementedException();
+            this.DataContext= remoteControlViewModel=new RemoteControlViewModel();
         }
     }
 }

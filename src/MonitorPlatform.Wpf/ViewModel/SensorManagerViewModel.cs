@@ -46,6 +46,12 @@ namespace MonitorPlatform.Wpf.ViewModel
             get { return sensorList; }
             set { sensorList = value; this.DoNotify(); }
         }
+        private List<TerminalModel> terminals;
+        public List<TerminalModel> Terminals
+        {
+            get { return terminals; }
+            set { terminals = value; this.DoNotify(); }
+        }
 
         private bool show;
 
@@ -54,6 +60,27 @@ namespace MonitorPlatform.Wpf.ViewModel
             get { return show; }
             set { show = value; this.DoNotify(); }
         }
+        private bool showTerminal;
+
+        public bool ShowTermainal
+        {
+            get { return showTerminal; }
+            set { showTerminal = value;this.DoNotify(); }
+        } 
+
+        /// <summary>
+        /// 复选列的宽度
+        /// </summary>
+
+        private int columnWidth;
+
+        public int ColumnWidth
+        {
+            get { return columnWidth; }
+            set { columnWidth = value; this.DoNotify(); }
+        }
+
+
 
         public ICommand SaveCommand { get { return new CommandBase(SaveAction); } }
         public ICommand EditCommand { get { return new CommandBase(EditAction); } }
@@ -61,11 +88,19 @@ namespace MonitorPlatform.Wpf.ViewModel
         public ICommand CreateCommand { get { return new CommandBase(OpenDrawAction); } }
         public ICommand DeleteCommand { get { return new CommandBase(DeleteAction); } }
         readonly IBaseRepository<Sensor, Guid> sensorRepository;
+        readonly IBaseRepository<Terminal, Guid> terminalRepository;
+        readonly IBaseRepository<TerminalRltSensor, Guid> terminalTltsensorRepository;
 
         public SensorManagerViewModel()
         {
             sensorRepository = ESTRepository.Builder<Sensor, Guid>();
+            terminalRepository = ESTRepository.Builder<Terminal, Guid>();
+            terminalTltsensorRepository = ESTRepository.Builder<TerminalRltSensor, Guid>();
             this.Refresh();
+
+
+            var terminals=terminalRepository.Where(a=>true).ToList();
+            Terminals = ObjectMapper.Map<List<TerminalModel>>(terminals);
         }
 
         private void Refresh(string code = "")
@@ -141,6 +176,18 @@ namespace MonitorPlatform.Wpf.ViewModel
                 sensorRepository.Delete(id);
                 this.Refresh();
             }
+        }
+
+
+        // 查询采集器下的传感器
+        public void QueryTerminalSensor(Guid id )
+        {
+            var list =
+                terminalTltsensorRepository.
+                Orm.Select<TerminalRltSensor, Sensor>()
+                .Where((t, s) => t.TerminalId == id && t.SensorId == s.Id)
+                .ToList<Sensor>();
+            this.SensorList = ObjectMapper.Map<List<SensorModel>>(list).CreateIndex();
         }
 
     }

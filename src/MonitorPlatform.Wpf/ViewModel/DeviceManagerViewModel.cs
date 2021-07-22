@@ -37,7 +37,7 @@ namespace MonitorPlatform.Wpf.ViewModel
     {
         public Guid SelectId { get; set;  }
         // 临时选中的值
-        public List<DataBindModel> SelectList { get; set; } = new List<DataBindModel>();
+        public List<Guid> SelectList { get; set; } = new List<Guid>();
         // 当前的模式  是绑定传感器还是绑定客户端
         private bool BindSensor { get;set;  }
         // 设备
@@ -66,14 +66,13 @@ namespace MonitorPlatform.Wpf.ViewModel
         }
 
         // 设备绑定的采集客户端
-        private List<CollectionClientModel> clients;
+        private List<TerminalModel> terminalList;
 
-        public List<CollectionClientModel> Clients
+        public List<TerminalModel> TerminalList
         {
-            get { return clients; }
-            set { clients = value; this.DoNotify(); }
+            get { return terminalList; }
+            set { terminalList = value; this.DoNotify(); }
         }
-
 
         // 设备模式
         private List<ComboxItem> deviceTypes;
@@ -84,9 +83,9 @@ namespace MonitorPlatform.Wpf.ViewModel
             set { deviceTypes = value; this.DoNotify(); }
         }
         // 需要绑定的数据源
-        private List<DataBindModel> bindModels;
+        private List<TerminalModel> bindModels;
 
-        public List<DataBindModel> BindModels
+        public List<TerminalModel> BindModels
         {
             get { return bindModels; }
             set { bindModels = value; this.DoNotify(); }
@@ -115,22 +114,19 @@ namespace MonitorPlatform.Wpf.ViewModel
         //public ICommand DebuggerCommand { get { return new CommandBase(OpenBottomAction); } }
         public ICommand CreateCommand { get { return new CommandBase(OpenDrawAction); } }
         public ICommand DeleteCommand { get { return new CommandBase(DeleteAction); } }
-        public ICommand BindSensorCommand { get { return new CommandBase(BindSensorAction); } }
         public ICommand BindClientCommand { get { return new CommandBase(BindClientAction); } }
         public ICommand BindDataSaveComand { get { return new CommandBase(SaveBindAction); } }
         readonly IBaseRepository<Device,Guid> deviceRepository;
         readonly IBaseRepository<Sensor, Guid> sensorRepository;
-        readonly IBaseRepository<CollectionClient, Guid> clientRepository;
-        readonly IBaseRepository<DeviceRltSensor,Guid> rltSensorRepository;
-        readonly IBaseRepository<DeviceRltClient, Guid> rltClientRepository;
+        readonly IBaseRepository<DeviceRltTerminal, Guid> rltClientRepository;
+        readonly IBaseRepository<Terminal, Guid> terminalRepository;
         public DeviceManagerViewModel()
         {
             DeviceTypes = new List<ComboxItem>();
             deviceRepository = ESTRepository.Builder<Device, Guid>();
             sensorRepository = ESTRepository.Builder<Sensor, Guid>();
-            clientRepository = ESTRepository.Builder<CollectionClient, Guid>();
-            rltSensorRepository = ESTRepository.Builder<DeviceRltSensor, Guid>();
-            rltClientRepository = ESTRepository.Builder<DeviceRltClient, Guid>();
+            rltClientRepository = ESTRepository.Builder<DeviceRltTerminal, Guid>();
+            terminalRepository = ESTRepository.Builder<Terminal, Guid>();
             var dic2 = typeof(DeviceCollectionType).GetDescriptionAndValue();
             foreach (var item in dic2)
             {
@@ -140,6 +136,9 @@ namespace MonitorPlatform.Wpf.ViewModel
                     Value = item.Value
                 });
             }
+
+            var list= terminalRepository.Where(a=>true).ToList();
+            this.TerminalList = ObjectMapper.Map<List<TerminalModel>>(list).CreateIndex();
 
             this.Refresh();
         }
@@ -210,37 +209,15 @@ namespace MonitorPlatform.Wpf.ViewModel
             }
         }
 
-        // 删除绑定的传感器
-        public void DelectBindData(bool isSennsor,Guid id)
+        // 删除绑定的终端信息
+        public void DelectBindData(Guid id)
         {
-            if (isSennsor)
-            {
-                rltSensorRepository.Delete(id);
-            }
-            else
-            {
-                rltClientRepository.Delete(id);
-            }
-
-            this.QueryBindAction(this.SelectId);
+            rltClientRepository.Delete(id);
+            this.QueryBindTerminalAction(this.SelectId);
         }
 
 
-        // 绑定传感器操作
-        public void BindSensorAction(object data)
-        {
-            if (this.SelectId == Guid.Empty)
-            {
-                HandyControl.Controls.MessageBox.Show("请先选中设备", "温馨提示");
-                return;
-            }
-            this.BindSensor = true;
-            this.BottomShow = true;
-            this.BindModels = sensorRepository.Where(a=>true).ToList()
-                ?.Select(a => new DataBindModel(a.Id, a?.SensorCode))?.ToList();
-        }
-
-        // 绑定客户端操作
+        // 绑定采集终端操作
         public void BindClientAction(object data)
         {
             if (this.SelectId == Guid.Empty)
@@ -248,10 +225,10 @@ namespace MonitorPlatform.Wpf.ViewModel
                 HandyControl.Controls.MessageBox.Show("请先选中设备", "温馨提示");
                 return;
             }
-            this.BindSensor = false;
             this.BottomShow = true;
-            this.BindModels = clientRepository.Where(a => true).ToList()
-              ?.Select(a => new DataBindModel(a.Id, a?.Name))?.ToList();
+            var list = rltClientRepository.Where(a => true).ToList()
+              ?.Select(a => a.Terminal)?.ToList();
+            this.BindModels = ObjectMapper.Map<List<TerminalModel>>(list);
         }
         // 保存绑定数据
         public void SaveBindAction(object data)
@@ -259,53 +236,33 @@ namespace MonitorPlatform.Wpf.ViewModel
             this.BottomShow = false;
             if (bool.Parse(data.ToString()))
             {
-                // 保存数据
-                if (this.BindSensor)
-                {
-                    this.SelectList?
-                        .ForEach(a =>
-                        {
-                            var entity = new DeviceRltSensor(this.SelectId, a.Id);
-                            rltSensorRepository.Insert(entity);
-                        });
-                    Growl.Info("操作成功");
-                    QueryBindAction(this.SelectId);
-                }
-                else
-                {
-                    this.SelectList?
+                this.SelectList?
                        .ForEach(a =>
                        {
-                           var entity = new DeviceRltClient(this.SelectId, a.Id);
+                           var entity = new DeviceRltTerminal(this.SelectId, a);
                            rltClientRepository.Insert(entity);
                        });
-                    Growl.Info("操作成功");
-                    QueryBindAction(this.SelectId);
-                }
+                Growl.Info("操作成功");
+                QueryBindTerminalAction(this.SelectId);
             }
         }
 
         // 选中设备,查询关联的数据
-        public void QueryBindAction(object data)
+        /// <summary>
+        /// 查询绑定的采集终端
+        /// </summary>
+        /// <param name="data"></param>
+        public void QueryBindTerminalAction(object data)
         {
             var id=Guid.Parse(data.ToString());
             if (id != Guid.Empty)
             {
-
                 SelectId = id;
-                var sensors =
-                    deviceRepository.
-                    Orm.Select<DeviceRltSensor, Sensor>()
-                    .Where((a, b) => a.DeviceId == id && a.SensorId == b.Id)
-                    .ToList<Sensor>();
-                this.Sensors = ObjectMapper.Map<List<SensorModel>>(sensors).CreateIndex(); 
-
-
                 var clients = deviceRepository.
-                    Orm.Select<DeviceRltClient, CollectionClient>()
-                    .Where((a, b) => a.DeviceId == id && a.ClientId == b.Id)
-                    .ToList<CollectionClient>();
-                this.Clients = ObjectMapper.Map<List<CollectionClientModel>>(clients).CreateIndex();
+                    Orm.Select<DeviceRltTerminal, Terminal>()
+                    .Where((a, b) => a.DeviceId == id && a.TerminalId == b.Id)
+                    .ToList<Terminal>();
+                this.BindModels = ObjectMapper.Map<List<TerminalModel>>(clients).CreateIndex();
             }
             this.SelectList.Clear();
         }
@@ -314,17 +271,17 @@ namespace MonitorPlatform.Wpf.ViewModel
         public void SetChecked(Guid id)
         {
             // 不存在
-            if (!this.SelectList.Any(a => a.Id == id))
+            if (!this.SelectList.Any(a => a== id))
             {
-                this.SelectList.Add(this.BindModels.FirstOrDefault(a=> a.Id == id));
+                this.SelectList.Add(id);
             }
         }
-
+        // 取消选中
         public void SetUnChecked(Guid id)
         {
-            if (this.SelectList.Any(a => a.Id == id))
+            if (this.SelectList.Any(a => a== id))
             {
-                this.SelectList.Remove(this.BindModels.FirstOrDefault(a => a.Id == id));   
+                this.SelectList.Remove(id);   
             }
         }
     }

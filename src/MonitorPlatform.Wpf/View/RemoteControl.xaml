@@ -1,0 +1,60 @@
+﻿<UserControl x:Class="MonitorPlatform.Wpf.View.RemoteControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MonitorPlatform.Wpf.View"
+             mc:Ignorable="d" 
+                 xmlns:viewmodel="clr-namespace:MonitorPlatform.Wpf.ViewModel" 
+              xmlns:hc="https://handyorg.github.io/handycontrol" 
+             xmlns:svg="clr-namespace:ESTControl.SvgViewer;assembly=ESTControl.SvgViewer"
+               d:DataContext="{d:DesignInstance Type=viewmodel:RemoteControlViewModel}"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Assets/Styles/GridViewStyle.xaml"/>
+                <ResourceDictionary>
+                    <Style TargetType="TextBlock" x:Key="BaseIcon">
+                        <Setter Property="FontFamily" Value="../Assets/Fonts/#iconfont"/>
+                    </Style>
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <!--运行监测界面-->
+    <Border Style="{StaticResource PageStyle}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <!--面包屑-->
+            <Grid Height="30" Background="#184868">
+                <TextBlock FontFamily="Castellar" Text="监测管理 / 远程控制" VerticalAlignment="Center" Foreground="#fff" Margin="20,0"/>
+            </Grid>
+            <!--工具栏-->
+
+            <!--内容区域-->
+            <Grid Margin="10,0" Grid.Row="1">
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="200"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="500"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Border BorderBrush="{StaticResource FormBorderBrush}" BorderThickness="1">
+                    <UniformGrid>
+                        <Button Width="200" Cursor="Hand" FontSize="20" Style="{StaticResource ButtonDashedWarning}" Height="60" Content="更新远程数据"/>
+                        <Button Width="200" Cursor="Hand" FontSize="20" Style="{StaticResource ButtonDashedPrimary}" Height="60" Content="远程写入数据"/>
+                        <Button Width="200" Cursor="Hand" FontSize="20" Style="{StaticResource ButtonDashedSuccess}" Height="60" Content="重启采集服务"/>
+                        <Button Width="200" Cursor="Hand" FontSize="20" Style="{StaticResource ButtonDashedInfo}" Height="60" Content="监测服务状态"/>
+                    </UniformGrid>
+                </Border>
+            </Grid>
+        </Grid>
+    </Border>
+</UserControl>

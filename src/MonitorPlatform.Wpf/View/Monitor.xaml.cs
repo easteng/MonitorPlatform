@@ -387,5 +387,20 @@ namespace MonitorPlatform.Wpf.View
             }
            
         }
+
+        private void btn_select_sensor_Click(object sender, RoutedEventArgs e)
+        {
+            // 选择传感器
+            var frm = new SensorSelectModal();
+            frm.ShowTerminal = true;
+            frm.Confirm += (e, d) =>
+            {
+                // 确认数据
+                if(d.Any())
+                 this.monitorViewModel.SetSensorCode(d[0]);
+                frm.Close();
+            };
+            frm.ShowDialog();
+        }
     }
 }

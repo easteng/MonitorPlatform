@@ -80,8 +80,7 @@
                         <GridView ColumnHeaderContainerStyle="{StaticResource DefaultGridViewColumnHeader}">
                             <GridViewColumn HeaderContainerStyle="{StaticResource CenterGridViewColumnHeader}"  Width="80"  Header="序号" DisplayMemberBinding="{Binding Index}"/>
                             <GridViewColumn Width="100" Header="传感器编号" DisplayMemberBinding="{Binding SensorCode}"/>
-                            <GridViewColumn Width="200" Header="厂家" DisplayMemberBinding="{Binding Factory}"/>
-                            <GridViewColumn Width="400" Header="说明" DisplayMemberBinding="{Binding Remark}"/>
+                            <GridViewColumn Width="200" Header="安装位置" DisplayMemberBinding="{Binding Position}"/>
                             <GridViewColumn HeaderContainerStyle="{StaticResource CenterGridViewColumnHeader}" Width="150" Header="操作">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
@@ -155,10 +154,10 @@
                                 Background="{StaticResource FormBackground}" 
                                 BorderBrush="{StaticResource FormBorderBrush}"
                                 Foreground="{StaticResource FormForeground}"
-                                hc:InfoElement.Placeholder="生产厂家"
-                                hc:InfoElement.Title="生产厂家" 
+                                hc:InfoElement.Placeholder="请输入安装位置"
+                                hc:InfoElement.Title="安装位置" 
                                 hc:InfoElement.Necessary="False" 
-                                Text="{Binding SensorModel.Factory}"
+                                Text="{Binding SensorModel.Position}"
                                 Margin="0,16,0,0"/>
                             <hc:TextBox 
                                 Background="{StaticResource FormBackground}" 

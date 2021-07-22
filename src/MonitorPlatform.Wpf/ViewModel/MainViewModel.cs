@@ -128,8 +128,9 @@ namespace MonitorPlatform.Wpf.ViewModel
                 MenuItems = new List<MenuItemModel>()
                 {
                     new MenuItemModel(){Name="传感器管理",Link="SensorManager"},
-                    new MenuItemModel(){Name="采集服务管理",Link="ServerManager"},
+                    new MenuItemModel(){Name="采集器管理",Link="ServerManager"},
                     new MenuItemModel(){Name="设备管理",Link="DeviceManager"},
+                    new MenuItemModel(){Name="远程控制",Link="RemoteControl"},
                 }
             });
             this.MenuModels.Add(new MenuModel()

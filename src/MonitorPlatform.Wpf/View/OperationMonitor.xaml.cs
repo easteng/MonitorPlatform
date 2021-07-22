@@ -83,5 +83,24 @@ namespace MonitorPlatform.Wpf.View
                 operationMonitorViewModel.TreeSelected(treeView);
             }
         }
+        private bool IsMax = false;
+        private void btn_max_show_Click(object sender, RoutedEventArgs e)
+        {
+            // 点击最大化图纸显示区域
+            if (IsMax)
+            {
+                // 图纸缩小，恢复原位
+                this.border_station_info.Width = 200;
+                IsMax = false;
+            }
+            else
+            {
+                // 图纸放大
+                this.border_station_info.Width = 0;
+
+
+                IsMax = true;
+            }
+        }
     }
 }

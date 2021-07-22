@@ -1,0 +1,105 @@
+﻿<Window x:Class="MonitorPlatform.Wpf.View.SensorSelectModal"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MonitorPlatform.Wpf.View"
+        mc:Ignorable="d"
+         WindowStyle="None"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen"
+            xmlns:viewmodel="clr-namespace:MonitorPlatform.Wpf.ViewModel" 
+          d:DataContext="{d:DesignInstance Type=viewmodel:SensorManagerViewModel}"
+        AllowsTransparency="True"
+        xmlns:hc="https://handyorg.github.io/handycontrol"
+        Title="SensorSelectModal" Height="400" Width="700">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Assets/Styles/GridViewStyle.xaml"/>
+                <ResourceDictionary>
+                    <Style TargetType="TextBlock" x:Key="BaseIcon">
+                        <Setter Property="FontFamily" Value="../Assets/Fonts/#iconfont"/>
+                    </Style>
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <!--系统退出确认框-->
+    <Border Background="{StaticResource FormBackground}" BorderBrush="{StaticResource FormBorderBrush}" BorderThickness="1">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"/>
+                <RowDefinition/>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="40"/>
+            </Grid.RowDefinitions>
+            <Border Background="#57575A" MouseLeftButtonDown="Border_MouseLeftButtonDown">
+                <TextBlock Text="传感器选择" VerticalAlignment="Center" Foreground="#fff" Margin="10,0"/>
+            </Border>
+            <Grid Grid.Row="1" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Border Width="200" 
+                        Name="border_terminal_info"
+                        Margin="0">
+                    <Grid>
+                        <TextBlock Text="采集终端" Foreground="#fff" VerticalAlignment="Top" Margin="10"  HorizontalAlignment="Left"/>
+                        <ListBox Margin="10,30,10,0"
+                                 ItemsSource="{Binding Terminals}"
+                                 SelectionChanged="ListBox_SelectionChanged"
+                                 Background="{StaticResource FormBackground}" BorderBrush="{StaticResource FormBorderBrush}">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Name}"/>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </Grid>
+                </Border>
+
+                <Grid Grid.Column="1">
+                    <StackPanel x:Name="radiopanel" Orientation="Vertical" Height="auto" HorizontalAlignment="Stretch">
+                        <ListView 
+                               MaxHeight="330"
+                               Width="auto"
+                               ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                               ItemsSource="{Binding SensorList}"  
+                            SelectionChanged="ListView_SelectionChanged"
+                               Style="{StaticResource DefaultListView}">
+                            <ListView.View>
+                                <GridView ColumnHeaderContainerStyle="{StaticResource DefaultGridViewColumnHeader}">
+                                    <GridViewColumn HeaderContainerStyle="{StaticResource CenterGridViewColumnHeader}"  Width="{Binding ColumnWidth}">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                                    <CheckBox x:Name="rowselect" Checked="rowselect_Checked"  Tag="{Binding Id}"/>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                    <GridViewColumn HeaderContainerStyle="{StaticResource CenterGridViewColumnHeader}"  Width="80"  Header="序号" DisplayMemberBinding="{Binding Index}"/>
+                                    <GridViewColumn Width="100" Header="传感器编号" DisplayMemberBinding="{Binding SensorCode}"/>
+                                    <GridViewColumn Width="200" Header="安装位置" DisplayMemberBinding="{Binding Position}"/>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+                        <!--总数据条数-->
+                        <StackPanel Orientation="Horizontal" Margin="10,0" VerticalAlignment="Bottom">
+                            <TextBlock Foreground="#fff">当前数据：</TextBlock>
+                            <TextBlock Foreground="#fff" Text="{Binding SensorList.Count}"/>
+                            <TextBlock Foreground="#fff">条</TextBlock>
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="3">
+                <Button Width="60" Height="25" Name="btn_cancle" Click="btn_cancle_Click"  Content="取消" Margin="5" Style="{StaticResource ButtonPrimary}"/>
+                <Button Width="60" Height="25" Name="btn_confirm" Click="btn_confirm_Click" Content="确认" Margin="5" Style="{StaticResource ButtonSuccess}"/>
+            </StackPanel>
+        </Grid>
+    </Border>
+</Window>

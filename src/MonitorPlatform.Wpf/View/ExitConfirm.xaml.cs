@@ -32,7 +32,7 @@ namespace MonitorPlatform.Wpf.View
             }
         }
 
-        private bool Exit { get; set; }
+        private bool Exit { get; set; } = true;
         private bool Minimize { get; set; }
 
         private void Item_Unchecked(object sender, RoutedEventArgs e)

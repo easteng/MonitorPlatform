@@ -47,6 +47,8 @@ namespace MonitorPlatform.Wpf
                 cfg.CreateMap<Diagram, DiagramModel>();
                 cfg.CreateMap<TemplateModel, TemplateStyle>();
                 cfg.CreateMap<TemplateStyle, TemplateModel>();
+                cfg.CreateMap<TerminalModel, Terminal>();
+                cfg.CreateMap<Terminal, TerminalModel>();
             });
         }
     }

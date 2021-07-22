@@ -28,22 +28,22 @@ namespace MonitorPlatform.Wpf.Model
         public string SensorCode
         {
             get { return sensorCode; }
-            set { sensorCode = value; }
+            set { sensorCode = value; this.DoNotify(); }
         }
 
-        private string  factory;
+        private string position;
 
-        public string  Factory
+        public string Position
         {
-            get { return factory; }
-            set { factory = value; }
+            get { return position; }
+            set { position = value; this.DoNotify(); }
         }
         private string  remark;
 
         public string  Remark
         {
             get { return remark; }
-            set { remark = value; }
+            set { remark = value; this.DoNotify(); }
         }
 
     }

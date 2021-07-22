@@ -67,6 +67,11 @@ namespace MonitorPlatform.Wpf.View
             }
         }
 
+       /// <summary>
+       /// 数据行的选中事件
+       /// </summary>
+       /// <param name="sender"></param>
+       /// <param name="e"></param>
         private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             //DeviceListView
@@ -74,26 +79,13 @@ namespace MonitorPlatform.Wpf.View
             
             if(row != null)
             {
-                this.deviceManagerViewModel.QueryBindAction(row.Id);
+                this.deviceManagerViewModel.QueryBindTerminalAction(row.Id);
             }
         }
 
         private void rowselect_Checked(object sender, RoutedEventArgs e)
         {
-            // 复选框选中事件
-            var checkbox = (CheckBox)sender;
-            var id = Guid.Parse(checkbox.Tag.ToString());
-            if (checkbox != null && checkbox.IsChecked.Value)
-            {
-                
-                // 选中
-                this.deviceManagerViewModel.SetChecked(id);
-            }
-            else
-            {
-                // 取消选中
-                this.deviceManagerViewModel.SetUnChecked(id);
-            }
+           
         }
 
         private void deleteBindClient_Click(object sender, RoutedEventArgs e)
@@ -103,7 +95,7 @@ namespace MonitorPlatform.Wpf.View
             {
                 Button btn = (Button)sender;
                 var id=Guid.Parse(btn.Tag.ToString());  
-                deviceManagerViewModel.DelectBindData(false,id);
+                deviceManagerViewModel.DelectBindData(id);
             }
         }
 
@@ -114,8 +106,26 @@ namespace MonitorPlatform.Wpf.View
             {
                 Button btn = (Button)sender;
                 var id = Guid.Parse(btn.Tag.ToString());
-                deviceManagerViewModel.DelectBindData(true, id);
+                deviceManagerViewModel.DelectBindData(id);
             }
+        }
+
+        private void rowselect_Checked_1(object sender, RoutedEventArgs e)
+        {
+            // 复选框选中事件
+            var checkbox = (CheckBox)sender;
+            var id = Guid.Parse(checkbox.Tag.ToString());
+            if (checkbox != null && checkbox.IsChecked.Value)
+                // 选中
+            this.deviceManagerViewModel.SetChecked(id);
+        }
+
+        private void rowselect_Unchecked(object sender, RoutedEventArgs e)
+        {
+            var checkbox = (CheckBox)sender;
+            var id = Guid.Parse(checkbox.Tag.ToString());
+            // 取消选中
+            this.deviceManagerViewModel.SetUnChecked(id);
         }
     }
 }

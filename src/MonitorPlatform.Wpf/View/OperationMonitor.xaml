@@ -32,18 +32,21 @@
             </Grid.RowDefinitions>
             <!--面包屑-->
             <Grid Height="30" Background="#184868">
-                <TextBlock FontFamily="Castellar" Text="系统管理 / 运行监测" VerticalAlignment="Center" Foreground="#fff" Margin="20,0"/>
+                <TextBlock FontFamily="Castellar" Text="监测管理 / 运行监测" VerticalAlignment="Center" Foreground="#fff" Margin="20,0"/>
             </Grid>
             <!--工具栏-->
 
             <!--内容区域-->
             <Grid Margin="10,0" Grid.Row="1">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="200"/>
-                    <ColumnDefinition/>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <Border BorderBrush="{StaticResource FormBorderBrush}"
+                <Border 
+                    Width="200"
+                    BorderBrush="{StaticResource FormBorderBrush}"
                         Margin="0,20"
+                        Name="border_station_info"
                         BorderThickness="1">
                     <StackPanel>
                         <Grid Height="30">
@@ -84,6 +87,23 @@
                             <hc:Shield Margin="5,0" Subject="测温个数：" Status="{Binding DiagramConfigModels.Count}" Color="#1182c3"/>
                             <hc:Shield Margin="5,0" Subject="预警个数：" Status="0" Color="#D38734"/>
                             <hc:Shield Margin="5,0" Subject="报警个数：" Status="0" Color="#DA4447"/>
+                             <!--组件缩放按钮-->
+                            <Button x:Name="btn_max_show" Click="btn_max_show_Click" HorizontalAlignment="Right">
+                                <Button.Template>
+                                    <ControlTemplate>
+                                        <TextBlock Style="{StaticResource BaseIcon}" 
+                                            Foreground="#fff"
+                                            FontSize="15"
+                                            Cursor="Hand"
+                                            Margin="10,0"
+                                            Text="&#xe671;" VerticalAlignment="Center" HorizontalAlignment="Right">
+                                            <hc:Poptip.Instance>
+                                                <hc:Poptip Content="最大化显示" PlacementType="Top" Background="{StaticResource FormBackground}"/>
+                                             </hc:Poptip.Instance>
+                                        </TextBlock>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
                         </StackPanel>
                         <!--svg 图片显示区域-->
                         <Grid Grid.Row="1">

@@ -13,6 +13,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="ViewModel\TerminalViewModel.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Assets\Fonts\iconfont.ttf" />
     <None Remove="Assets\Images\back.ico" />
     <None Remove="Assets\Images\login_back.png" />

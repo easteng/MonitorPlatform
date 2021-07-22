@@ -39,7 +39,7 @@ namespace MonitorPlatform.Domain.Entities
         ///绑定的传感器
         /// </summary>
         public IEnumerable<DeviceRltSensor> Sensors { get; set; }
-        public IEnumerable<DeviceRltClient> Clients { get; set; }
+        public IEnumerable<DeviceRltTerminal> Clients { get; set; }
 
     }
 }
