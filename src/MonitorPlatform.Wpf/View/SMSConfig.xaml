@@ -5,8 +5,162 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MonitorPlatform.Wpf.View"
              mc:Ignorable="d" 
+              xmlns:viewmodel="clr-namespace:MonitorPlatform.Wpf.ViewModel" 
+             xmlns:xfc="clr-namespace:XamlFlair.Controls;assembly=XamlFlair.WPF"
+             d:DataContext="{d:DesignInstance Type=viewmodel:SMSConfigViewModel}"
+                 xmlns:hc="https://handyorg.github.io/handycontrol" 
+              Width="800"
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-            
-    </Grid>
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Assets/Styles/GridViewStyle.xaml"/>
+                <ResourceDictionary>
+                    <Style TargetType="TextBlock" x:Key="BaseIcon">
+                        <Setter Property="FontFamily" Value="../Assets/Fonts/#iconfont"/>
+                    </Style>
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Border Style="{StaticResource PageStyle}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="60"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <!--面包屑-->
+            <Grid Height="30" Background="#184868">
+                <TextBlock Text="系统管理 / 短信管理" VerticalAlignment="Center" Foreground="#fff" Margin="20,0"/>
+            </Grid>
+            <!--工具栏-->
+            <StackPanel Margin="20,0" Orientation="Horizontal" Height="40" Grid.Row="1">
+                <Button
+                    x:Name="btnAdd"
+                    Content="添加"
+                    Command="{Binding OpenDrawCommand}"
+                    CommandParameter="true"
+                    Margin="5" Style="{StaticResource ButtonPrimary}" Width="60" Height="30" Padding="10,0"/>
+            </StackPanel>
+            <!--内容区域-->
+            <Grid Margin="20,0" Grid.Row="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="60"/>
+                </Grid.RowDefinitions>
+                <ListView 
+                    ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                    ItemsSource="{Binding SMSConfigs}"  Style="{StaticResource DefaultListView}">
+                    <ListView.View>
+                        <GridView ColumnHeaderContainerStyle="{StaticResource DefaultGridViewColumnHeader}">
+                            <GridViewColumn HeaderContainerStyle="{StaticResource CenterGridViewColumnHeader}"  Width="80"  Header="序号" DisplayMemberBinding="{Binding Index}"/>
+                            <GridViewColumn Width="100" Header="串口号" DisplayMemberBinding="{Binding ComName}"/>
+                            <GridViewColumn Width="200" Header="波特率" DisplayMemberBinding="{Binding BaudRate}"/>
+                            <GridViewColumn HeaderContainerStyle="{StaticResource CenterGridViewColumnHeader}" Width="200" Header="操作">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                            <Button
+                                          Content="编辑"
+                                                Name="btn_edit"
+                                                Click="btn_edit_Click"
+                                          Cursor="Hand"
+                                          Tag="{Binding Id}"
+                                                Command="{Binding EditCommand}"
+                                                CommandParameter="{Binding Id}"
+                                          Margin="5,0" Style="{StaticResource ButtonSuccess}" Width="40" Height="20" Padding="5,0"/>
+                                            <Button
+                                          Content="删除"
+                                                Name="btn_delete"
+                                                Click="btn_delete_Click"
+                                          Cursor="Hand"
+                                          Tag="{Binding Id}"
+                                          Margin="5,0" Style="{StaticResource ButtonDanger}" Width="40" Height="20" Padding="5,0"/>
+                                            <Button
+                                                Name="btn_enable"
+                                          Content="启用"
+                                          Click="btn_enable_Click"
+                                          Cursor="Hand"
+                                          Tag="{Binding Id}"
+                                          Margin="5,0" Style="{StaticResource  ButtonDashedWarning}" Width="40" Height="20" Padding="5,0"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+
+                <!--总数据条数-->
+                <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,10">
+                    <TextBlock Foreground="#fff">当前数据：</TextBlock>
+                    <TextBlock Foreground="#fff" Text="{Binding SMSConfigs.Count}"/>
+                    <TextBlock Foreground="#fff">条</TextBlock>
+                </StackPanel>
+            </Grid>
+
+            <!--抽屉-->
+            <hc:Drawer Name="DrawerLeft" MaskCanClose="False" IsOpen="{Binding Open}">
+                <Border Margin="0,50,5,30" Background="{DynamicResource FormBackground}" Width="300" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource BorderBrush}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="40"/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Margin="0,20,0,0" Text="用户信息管理" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#fff" FontSize="16"/>
+                        <StackPanel Grid.Row="1" Margin="20,0">
+                            <hc:ComboBox ItemsSource="{Binding ComNames}"
+                                         Name="com_comname"
+                                      hc:ItemContainerStyle="{StaticResource hc-comboBoxStyle}"
+                                      hc:InfoElement.TitleWidth="80"
+                                      SelectedItem="{Binding SMSConfig.ComName}"
+                                      Style="{StaticResource ComboBoxExtend}"
+                                      Background="{StaticResource FormBackground}" 
+                                      BorderBrush="{StaticResource FormBorderBrush}"
+                                      Foreground="{StaticResource FormForeground}"
+                                      hc:InfoElement.Placeholder="请选择串口号" 
+                                      hc:InfoElement.TitlePlacement="Left" 
+                                      hc:InfoElement.Title="串口号:" 
+                                      hc:InfoElement.Necessary="True"
+                                         SelectionChanged="com_comname_SelectionChanged"
+                                      Margin="0,16,0,0"/>
+                            <hc:ComboBox ItemsSource="{Binding BaudRates}"
+                                         Name="com_baudrate"
+                                      hc:ItemContainerStyle="{StaticResource hc-comboBoxStyle}"
+                                      hc:InfoElement.TitleWidth="80"
+                                      SelectedItem="{Binding SMSConfig.BaudRate}"
+                                      Style="{StaticResource ComboBoxExtend}"
+                                      Background="{StaticResource FormBackground}" 
+                                      BorderBrush="{StaticResource FormBorderBrush}"
+                                      Foreground="{StaticResource FormForeground}"
+                                      hc:InfoElement.Placeholder="请选择波特率" 
+                                      hc:InfoElement.TitlePlacement="Left" 
+                                      hc:InfoElement.Title="波特率:" 
+                                      hc:InfoElement.Necessary="True"
+                                         SelectionChanged="com_baudrate_SelectionChanged"
+                                      Margin="0,16,0,0"/>
+                            <StackPanel Orientation="Horizontal" Margin="0,10" HorizontalAlignment="Right">
+                                <Button
+                                     x:Name="btnCancle"
+                                     Content="取消"
+                                     Command="{Binding OpenDrawCommand}"
+                                     CommandParameter="false"
+                                     Margin="5" Style="{StaticResource ButtonPrimary}" 
+                                     Width="60" Height="25" Padding="10,0"/>
+                                <Button
+                                     x:Name="btnSave"
+                                     Content="保存"
+                                     Command="{Binding CreateCommand}"
+                                     CommandParameter="{Binding SMSConfig}"
+                                     Margin="5" Style="{StaticResource ButtonSuccess}" 
+                                     Width="60" Height="25" Padding="10,0"/>
+                            </StackPanel>
+
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </hc:Drawer>
+        </Grid>
+    </Border>
 </UserControl>

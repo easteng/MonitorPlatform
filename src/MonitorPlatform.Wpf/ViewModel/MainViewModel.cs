@@ -140,8 +140,8 @@ namespace MonitorPlatform.Wpf.ViewModel
                 MenuItems = new List<MenuItemModel>()
                 {
                     new MenuItemModel(){Name="用户管理",Link="UserManager"},
-                    new MenuItemModel(){Name="数据维护",Link="network"},
-                    new MenuItemModel(){Name="短息管理",Link="network"}
+                    //new MenuItemModel(){Name="数据维护",Link="network"},
+                    new MenuItemModel(){Name="短息管理",Link="SMSConfig"}
                 }
             });
         }

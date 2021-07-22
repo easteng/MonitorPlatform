@@ -16,21 +16,21 @@ namespace MonitorPlatform.Wpf.Model
         /// <summary>
         /// 波特率
         /// </summary>
-        private int BaudRate { get => baudRate; set { baudRate = value; this.DoNotify(); } }
+        public int BaudRate { get => baudRate; set { baudRate = value; this.DoNotify(); } }
         /// <summary>
-        public int baudRate;
+        private int baudRate;
         /// <summary>
         /// 数据位
         /// </summary>
-        private int DataBits { get => dataBits; set { dataBits = value; this.DoNotify(); } }
+        private int dataBits;
         /// <summary>
-        public int dataBits;
+        public int DataBits { get => dataBits; set { dataBits = value; this.DoNotify(); } }
 
         /// <summary>
         /// 是否启用
         /// </summary>
-        private bool Enable { get => enable; set { enable = value; this.DoNotify(); } }
+        public bool Enable { get => enable; set { enable = value; this.DoNotify(); } }
         /// <summary>
-        public bool enable;
+        private bool enable;
     }
 }
