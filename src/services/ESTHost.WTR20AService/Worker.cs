@@ -1,4 +1,7 @@
 using ESTCore.Message;
+using ESTCore.Message.Client;
+
+using ESTHost.Core.Message;
 
 using MassTransit;
 
@@ -16,20 +19,27 @@ namespace ESTHost.WTR20AService
     public class Worker : BackgroundService
     {
         private readonly ILogger<Worker> _logger;
-        readonly IBus _bus;
-        readonly ICommandSender<ServiceStatusMessage> _commandSender;  // √¸¡Ó∑¢ÀÕ
-        public Worker(ILogger<Worker> logger, IBus bus = null, ICommandSender<ServiceStatusMessage> commandSender = null)
+        private readonly IMessageClientProvider messageClient;
+
+        public Worker(
+            ILogger<Worker> logger,
+            ICommandSender<ServiceStatusMessage> commandSender = null, IMessageClientProvider messageClient = null)
         {
             _logger = logger;
-            _bus = bus;
-            _commandSender = commandSender;
+            this.messageClient = messageClient;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                await _commandSender.Send(ServiceType.CollectionWTR20A, ServiceStatus.Runting);
+                var message = new IOTMessage()
+                {
+                    Code = "01",
+                    Time = DateTime.Now,
+                    Value = new Random().NextDouble(),
+                };
+                await messageClient.SendMessage(message);
                 _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
                 await Task.Delay(1000, stoppingToken);
             }
@@ -37,13 +47,11 @@ namespace ESTHost.WTR20AService
 
         public override Task StartAsync(CancellationToken cancellationToken)
         {
-            _commandSender.Send(ServiceType.CollectionWTR20A, ServiceStatus.Start);
             return base.StartAsync(cancellationToken);
         }
 
         public override Task StopAsync(CancellationToken cancellationToken)
         {
-            _commandSender.Send(ServiceType.CollectionWTR20A, ServiceStatus.Stop);
             return base.StopAsync(cancellationToken);
         }
     }

@@ -45,13 +45,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ESTHost.ServerManager", "sr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonitorPlatform.Contracts", "src\MonitorPlatform.Contracts\MonitorPlatform.Contracts.csproj", "{8D68124B-B0A1-48FC-87CC-EE0D0CE6F737}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ESTHost.SMSService", "src\Services\ESTHost.SMSService\ESTHost.SMSService.csproj", "{E9BC2CF7-1813-480B-8B33-2AEA028731F7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ESTHost.SMSService", "src\Services\ESTHost.SMSService\ESTHost.SMSService.csproj", "{E9BC2CF7-1813-480B-8B33-2AEA028731F7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ESTHost.WTR20AService", "src\Services\ESTHost.WTR20AService\ESTHost.WTR20AService.csproj", "{E5D75AA5-CEAF-4E6A-B578-9A6EB88797E1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ESTHost.WTR20AService", "src\Services\ESTHost.WTR20AService\ESTHost.WTR20AService.csproj", "{E5D75AA5-CEAF-4E6A-B578-9A6EB88797E1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ESTHost.WTR31Service", "src\Services\ESTHost.WTR31Service\ESTHost.WTR31Service.csproj", "{2897D538-2231-429C-BF65-FDD2AD24C78A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ESTHost.WTR31Service", "src\Services\ESTHost.WTR31Service\ESTHost.WTR31Service.csproj", "{2897D538-2231-429C-BF65-FDD2AD24C78A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ESTHost.StorageService", "src\Services\ESTHost.StorageService\ESTHost.StorageService.csproj", "{A38731B7-E478-4C09-BFD1-8657A8DF3182}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ESTHost.StorageService", "src\Services\ESTHost.StorageService\ESTHost.StorageService.csproj", "{A38731B7-E478-4C09-BFD1-8657A8DF3182}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ESTHost.DataCenter", "src\Services\ESTHost.DataCenter\ESTHost.DataCenter.csproj", "{69EDDA1A-B23D-4E4A-8813-8971B6A64772}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -139,6 +141,10 @@ Global
 		{A38731B7-E478-4C09-BFD1-8657A8DF3182}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A38731B7-E478-4C09-BFD1-8657A8DF3182}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A38731B7-E478-4C09-BFD1-8657A8DF3182}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69EDDA1A-B23D-4E4A-8813-8971B6A64772}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69EDDA1A-B23D-4E4A-8813-8971B6A64772}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69EDDA1A-B23D-4E4A-8813-8971B6A64772}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69EDDA1A-B23D-4E4A-8813-8971B6A64772}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -167,6 +173,7 @@ Global
 		{E5D75AA5-CEAF-4E6A-B578-9A6EB88797E1} = {375B0263-5BC0-40F0-A37B-9D43A48BBBDA}
 		{2897D538-2231-429C-BF65-FDD2AD24C78A} = {375B0263-5BC0-40F0-A37B-9D43A48BBBDA}
 		{A38731B7-E478-4C09-BFD1-8657A8DF3182} = {375B0263-5BC0-40F0-A37B-9D43A48BBBDA}
+		{69EDDA1A-B23D-4E4A-8813-8971B6A64772} = {375B0263-5BC0-40F0-A37B-9D43A48BBBDA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {730832CF-56CC-4D95-A38D-A6AB7952AB5F}

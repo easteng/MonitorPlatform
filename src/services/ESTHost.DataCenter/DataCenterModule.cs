@@ -1,11 +1,11 @@
 ﻿/**********************************************************************
-*******命名空间： ESTHost.WTR20A.Service
-*******类 名 称： CollectionModule
-*******类 说 明： 
+*******命名空间： ESTHost.DataCenter
+*******类 名 称： DataCenterModule
+*******类 说 明： 数据中心模块
 *******作    者： Easten
 *******机器名称： EASTEN
 *******CLR 版本： 4.0.30319.42000
-*******创建时间： 7/13/2021 2:49:31 PM
+*******创建时间： 7/23/2021 10:18:30 AM
 *******联系方式： 1301485237@qq.com
 ***********************************************************************
 ******* ★ Copyright @Easten 2020-2021. All rights reserved ★ *********
@@ -18,7 +18,8 @@ using ESTCore.Caching;
 using ESTCore.Message;
 using ESTCore.Message.Services;
 
-using MassTransit;
+using ESTHost.Core;
+using ESTHost.Core.Message;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -32,14 +33,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ESTHost.WTR20AService
+namespace ESTHost.DataCenter
 {
     [DependsOn(
-         //  typeof(FreeSqlModule), 
-         typeof(ESTRedisCacheModule),
-         typeof(ESTMessageModule)
-         )]
-    public class CollectionModule : StartUpModule
+       //  typeof(FreeSqlModule), 
+       typeof(ESTRedisCacheModule),
+       typeof(ESTMessageModule)
+       )]
+    public class DataCenterModule : StartUpModule
     {
         public override Task Initialize(ApplicationContext applicationContext)
         {
@@ -48,19 +49,26 @@ namespace ESTHost.WTR20AService
 
         protected override void RegisterServices(ContainerBuilder builder)
         {
-            // 注册消息中心
             var config = EngineContext.Current.Resolve<IConfiguration>();
             var service = new ServiceCollection();
-
-            service.UseMessageCenterClient(build=>
+            // 注册消息中心
+            //service.UseMessageCenterServer(b =>
+            //{
+            //    b.AddRepeater<IotMessageRepeater>(); //物联网数据转换器
+            //    b.AddRepeater<CommandRepeater>();// 添加命令转换器
+            //    b.Build();
+            //});
+            builder.RegisterMessageCenter(reg =>
             {
-                build.ReConnectTimeSpan = TimeSpan.FromSeconds(2); // 2s 重新连接一次服务
-                build.AddReceiver<CommandReceiver>(); // 添加命令接收机
-                build.Build(); // 客户端创建
+                reg.OptionServer(o =>
+                {
+                    o.AddRepeater<IotMessageRepeater>(MessageTopic.Iot); // 添加物联网转换器
+                    o.AddRepeater<CommandRepeater>(MessageTopic.Command); // 添加命令转换器
+                    o.Build(); // 构建服务
+                });
             });
             service.AddHostedService<Worker>();
             builder.Populate(service);
-            base.RegisterServices(builder);
         }
     }
 }
