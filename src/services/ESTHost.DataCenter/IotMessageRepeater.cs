@@ -11,6 +11,7 @@
 ******* ★ Copyright @Easten 2020-2021. All rights reserved ★ *********
 ***********************************************************************
  */
+using ESTCore.Common.WebSocket;
 using ESTCore.Message;
 using ESTCore.Message.Handler;
 using ESTCore.Message.Message;
@@ -28,10 +29,43 @@ namespace ESTHost.DataCenter
     /// </summary>
     public class IotMessageRepeater : IMessageRepeaterHandler
     {
-        public Task Repeater(BaseMessage message, ServerContext context)
+        IMessageServerProvider serverProvider;
+        public IotMessageRepeater(IMessageServerProvider serverProvider = null)
+        {
+            this.serverProvider = serverProvider;
+        }
+        public Task Repeater(BaseMessage message)
         {
             var iot = message.GetMessage<IOTMessage>();
-            context.Publish<IOTMessage>("iot", iot);
+
+            var newMsg= BaseMessage.CreateMessage(iot);
+
+            if (iot.Value > 50)
+            {
+                var alertMessage = new AlertMessage()
+                {
+                    Value = iot.Value,
+                    Code = iot.Code
+                };
+                // 模拟报警
+                serverProvider.Publish(MessageTopic.Alert, BaseMessage.CreateMessage(alertMessage));
+            }
+
+            var store = new StorageMessge()
+            {
+                Value = iot.Value,
+                Code = iot.Code
+            };
+            // 将数据发送数据存储服务进行数据存储
+            serverProvider.Publish(MessageTopic.Storage, BaseMessage.CreateMessage(store));
+
+
+            var real = new RealtimeMessage()
+            {
+                Value = iot.Value,
+                Code = iot.Code
+            };
+            serverProvider.Publish(MessageTopic.Realtime, BaseMessage.CreateMessage(real));
             Console.WriteLine("接收的物联网数据并转发");
             return Task.CompletedTask;
         }

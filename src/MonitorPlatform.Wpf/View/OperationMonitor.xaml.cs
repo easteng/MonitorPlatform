@@ -1,4 +1,6 @@
-﻿using HandyControl.Data;
+﻿using ESTHost.Core.Message;
+
+using HandyControl.Data;
 using HandyControl.Tools;
 
 using Microsoft.Win32;
@@ -37,6 +39,24 @@ namespace MonitorPlatform.Wpf.View
             InitializeComponent();
             operationMonitorViewModel.ReloadImage += OperationMonitorViewModel_ReloadImage;
             operationMonitorViewModel.InitPoint += OperationMonitorViewModel_InitPoint;
+
+            // 订阅实时数据委托,更新数据
+            GlableDelegateHandler.UpdateRealtimeData = (data) =>
+            {
+                var names = operationMonitorViewModel.GetPointPropNameBySensorCode(data.Code);
+
+                PointStatus state = PointStatus.Normal;
+                if (data.Value < 30)
+                {
+                    state = PointStatus.Normal;
+                }else if(data.Value > 50&&data.Value < 70)
+                {
+                    state = PointStatus.Warning;
+                }else if (data.Value > 70 ){
+                    state = PointStatus.Alerting;
+                }
+                this.SvgContainer.UpdateValueAsync(names, data.Code, data.Value, (int)state);
+            };
         }
 
         /// <summary>
@@ -53,7 +73,7 @@ namespace MonitorPlatform.Wpf.View
             {
                 var point = new Point(item.PointX, item.PointY);
                 var template = new Template();
-                template.UpdateElement(this.operationMonitorViewModel.TemplateModel);
+                template.UpdateElement(this.operationMonitorViewModel.TemplateModel,item.SensorCode);
                 template.Name = item.PropName;
                 this.SvgContainer.AddUIElement(template, point);
             }

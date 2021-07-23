@@ -32,7 +32,7 @@ namespace MonitorPlatform.Wpf
                 {
                     config.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
                 })
-                .RegisterLmsServices<MinitorPlatformModule>();  // 注册服务
+                .RegisterLmsServices<MonitorPlatformModule>();  // 注册服务
             return host;
         }
         public App()

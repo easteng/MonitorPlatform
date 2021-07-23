@@ -22,7 +22,7 @@
                 Height="{Binding TemplateModel.BorderHeight}"
                 Background="{Binding TemplateModel.BorderBackground}">
         <hc:Badge Status="Processing" Name="est_badge" hc:Background="{Binding TemplateModel.BadgeBackground}" hc:BorderBrush="{Binding TemplateModel.BadgeBackground}" >
-            <TextBlock x:Name="est_text" Text="00.0" FontSize="{Binding TemplateModel.FontSize}" FontWeight="Bold" Foreground="{Binding TemplateModel.ValueForeground}"  HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <TextBlock x:Name="est_text" Text="{Binding TemplateModel.Value}" FontSize="{Binding TemplateModel.FontSize}" FontWeight="Bold" Foreground="{Binding TemplateModel.ValueForeground}"  HorizontalAlignment="Center" VerticalAlignment="Center"/>
         </hc:Badge>
     </Border>
 </UserControl>

@@ -12,6 +12,7 @@
 ***********************************************************************
  */
 using ESTCore.Message.Client;
+using ESTCore.Message.Handler;
 using ESTCore.Message.Message;
 
 using ESTHost.Core.Command;
@@ -27,8 +28,18 @@ namespace ESTHost.WTR20AService
     /// <summary>
     ///  控制命令接收机
     /// </summary>
-    public class CommandReceiver: BaseReceiver<ServerCommand>
+    public class CommandReceiver : IMessageReceiverHandler
     {
-
+        readonly CommandReceiver commandReceiver;
+        public CommandReceiver(CommandReceiver commandReceiver = null)
+        {
+            this.commandReceiver = commandReceiver;
+        }
+        public Task Receive(BaseMessage message)
+        {
+            // 接收到命令
+            Console.WriteLine("接收到命令消息");
+            return Task.CompletedTask;
+        }
     }
 }

@@ -16,9 +16,10 @@ using Autofac.Extensions.DependencyInjection;
 
 using ESTCore.Caching;
 using ESTCore.Message;
+using ESTCore.Message.Services;
 using ESTCore.ORM.FreeSql;
 
-using MassTransit;
+using ESTHost.Core;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -52,31 +53,21 @@ namespace ESTHost.StorageService
         }
         protected override void RegisterServices(ContainerBuilder builder)
         {
-            // 注册消息中心
-            config = EngineContext.Current.Resolve<IConfiguration>();
+           
             var service = new ServiceCollection();
-            service.AddMassTransit(c =>
+            // 注册消息中心
+            builder.RegisterMessageCenter(b =>
             {
-                c.UsingRabbitMq((context, conf) =>
+                b.OptionClient(o =>
                 {
-                    var host = config["Rabbitmq:Host"];
-                    var user = config["Rabbitmq:Username"];
-                    var pwd = config["Rabbitmq:Password"];
-                    conf.Host(host, cc => {
-                        cc.Username(user);
-                        cc.Password(pwd);
-                    });
-
-                    // 设置订阅频道
-                    conf.ReceiveEndpoint("storge", e =>
+                    // 添加报警数据接收机，用来处理报警数据，并发送短信
+                    o.AddReceiver<IotMessageReceiver>(a =>
                     {
-                        // 注册消费者  消费需要保存的物联网数据
-                        e.Consumer<StandardDataConsumer>();
+                        a.Name = MessageTopic.Storage;  // 接收报警数据
                     });
+                    o.Build();
                 });
             });
-            service.AddMassTransitHostedService();
-            service.AddSingleton<IBus>(provider => provider.GetRequiredService<IBusControl>());
             service.AddHostedService<Worker>();
             builder.Populate(service);
            // base.RegisterServices(builder);

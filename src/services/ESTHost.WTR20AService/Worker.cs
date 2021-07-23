@@ -3,8 +3,6 @@ using ESTCore.Message.Client;
 
 using ESTHost.Core.Message;
 
-using MassTransit;
-
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
@@ -22,8 +20,7 @@ namespace ESTHost.WTR20AService
         private readonly IMessageClientProvider messageClient;
 
         public Worker(
-            ILogger<Worker> logger,
-            ICommandSender<ServiceStatusMessage> commandSender = null, IMessageClientProvider messageClient = null)
+            ILogger<Worker> logger, IMessageClientProvider messageClient = null)
         {
             _logger = logger;
             this.messageClient = messageClient;
@@ -35,12 +32,20 @@ namespace ESTHost.WTR20AService
             {
                 var message = new IOTMessage()
                 {
-                    Code = "01",
+                    Code = "202001",
                     Time = DateTime.Now,
-                    Value = new Random().NextDouble(),
+                    Value = new Random().Next(0,100),
+                };
+                var message1 = new IOTMessage()
+                {
+                    Code = "202002",
+                    Time = DateTime.Now,
+                    Value = new Random().Next(10, 100),
                 };
                 await messageClient.SendMessage(message);
-                _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
+
+                await messageClient.SendMessage(message1);
+                //_logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
                 await Task.Delay(1000, stoppingToken);
             }
         }

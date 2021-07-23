@@ -16,19 +16,15 @@ using Autofac.Extensions.DependencyInjection;
 
 using ESTCore.Caching;
 using ESTCore.Message;
+using ESTCore.Message.Services;
 
-using MassTransit;
+using ESTHost.Core;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 using Silky.Lms.Core;
 using Silky.Lms.Core.Modularity;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ESTHost.SMSService
@@ -46,30 +42,25 @@ namespace ESTHost.SMSService
         }
         protected override void RegisterServices(ContainerBuilder builder)
         {
-            // 注册消息中心
-            var config = EngineContext.Current.Resolve<IConfiguration>();
-            var service = new ServiceCollection();
-            service.AddMassTransit(c =>
+            //  注册消息中心
+            //  注册客户端
+            builder.RegisterMessageCenter(b =>
             {
-                c.UsingRabbitMq((context, conf) =>
+                b.OptionClient(o =>
                 {
-                    var host = config["Rabbitmq:Host"];
-                    var user = config["Rabbitmq:Username"];
-                    var pwd = config["Rabbitmq:Password"];
-                    conf.Host(host, cc => {
-                        cc.Username(user);
-                        cc.Password(pwd);
+                    // 添加报警数据接收机，用来处理报警数据，并发送短信
+                    o.AddReceiver<AlertDataReceiver>(a =>
+                    {
+                        a.Name = MessageTopic.Alert;  // 接收报警数据
                     });
 
-                    // 设置订阅频道
-                    conf.ReceiveEndpoint("storge", e =>
-                    {
-                        // 注册消费者  消费需要保存的物联网数据
-                        e.Consumer<StandardDataConsumer>();
-                    });
+                    // 添加服务命令接收机，用来操作当前的服务
+                    o.AddReceiver<SMSCommandReveiver>(a => a.Name = MessageTopic.SmsCommand);
+
+                    o.Build();
                 });
             });
-            service.AddSingleton<IBus>(provider => provider.GetRequiredService<IBusControl>());
+            var service = new ServiceCollection();
             service.AddHostedService<Worker>();
             builder.Populate(service);
             //base.RegisterServices(builder);

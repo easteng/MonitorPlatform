@@ -5,6 +5,10 @@
     <UserSecretsId>dotnet-ESTHost.WTR20AService-38A83AAA-1687-48A4-9749-431D1B48CA58</UserSecretsId>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>..\Services\WTR20A</OutputPath>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />

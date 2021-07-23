@@ -52,7 +52,7 @@ namespace MonitorPlatform.Wpf.View
             {
                 var point = new Point(item.PointX, item.PointY);
                 var template = new Template();
-                template.UpdateElement(this.monitorViewModel.TemplateModel);
+                template.UpdateElement(this.monitorViewModel.TemplateModel,item.SensorCode);
                 template.Name = item.PropName;
                 this.SvgContainer.AddUIElement(template, point);
             }
@@ -83,7 +83,7 @@ namespace MonitorPlatform.Wpf.View
             // 对坐标进行转换，需要与温度模板的长宽做计算
             var template=new Template();
             template.Name = GenerateName();
-            template.UpdateElement(this.monitorViewModel.TemplateModel);
+            template.UpdateElement(this.monitorViewModel.TemplateModel,"");
             this.SvgContainer.AddUIElement(template, point);
             this.monitorViewModel.NewPoint(template.Name, point);
         }
@@ -200,7 +200,7 @@ namespace MonitorPlatform.Wpf.View
         {
             // 配置温度
             this.monitorViewModel.OpenConfigDrawAction(true);
-            this.monitorViewModel.TemplateModel=this.ValueTemplate.UpdateElement(this.monitorViewModel.TemplateModel);
+            this.monitorViewModel.TemplateModel=this.ValueTemplate.UpdateElement(this.monitorViewModel.TemplateModel,"");
             // 初始化按钮的颜色
             btn_background.Background = GetBrush(this.monitorViewModel.TemplateModel.BorderBackground);
             btn_bordercolor.Background = GetBrush(this.monitorViewModel.TemplateModel.BorderBrush);
@@ -235,7 +235,7 @@ namespace MonitorPlatform.Wpf.View
         /// </summary>
         private void UpdateElement()
         {
-            this.ValueTemplate.UpdateElement(this.monitorViewModel.TemplateModel);
+            this.ValueTemplate.UpdateElement(this.monitorViewModel.TemplateModel,"");
         }
         private void OpenColorPickWindow(FrameworkElement element,Action<string> change,Action<string> confirm)
         {

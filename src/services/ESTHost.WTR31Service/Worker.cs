@@ -1,6 +1,5 @@
 using ESTCore.Message;
 
-using MassTransit;
 
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -16,34 +15,27 @@ namespace ESTHost.WTR31Service
     public class Worker : BackgroundService
     {
         private readonly ILogger<Worker> _logger;
-        readonly IBus _bus;
-        readonly ICommandSender<ServiceStatusMessage> _commandSender;  // √¸¡Ó∑¢ÀÕ
-        public Worker(ILogger<Worker> logger, IBus bus = null, ICommandSender<ServiceStatusMessage> commandSender = null)
+        public Worker(ILogger<Worker> logger)
         {
             _logger = logger;
-            _bus = bus;
-            _commandSender = commandSender;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                await _commandSender.Send(ServiceType.CollectionWTR31, ServiceStatus.Runting);
-                _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
+               // _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
                 await Task.Delay(1000, stoppingToken);
             }
         }
 
         public override Task StartAsync(CancellationToken cancellationToken)
         {
-            _commandSender.Send(ServiceType.CollectionWTR31, ServiceStatus.Start);
             return base.StartAsync(cancellationToken);
         }
 
         public override Task StopAsync(CancellationToken cancellationToken)
         {
-            _commandSender.Send(ServiceType.CollectionWTR31, ServiceStatus.Stop);
             return base.StopAsync(cancellationToken);
         }
     }

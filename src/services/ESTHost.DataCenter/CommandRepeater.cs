@@ -13,6 +13,7 @@
  */
 using ESTCore.Message;
 using ESTCore.Message.Handler;
+using ESTCore.Message.Message;
 
 using ESTHost.Core.Command;
 
@@ -27,8 +28,12 @@ namespace ESTHost.DataCenter
     /// <summary>
     ///  控制命令转换器
     /// </summary>
-    public class CommandRepeater:BaseRepeater<ServerCommand>
+    public class CommandRepeater : IMessageRepeaterHandler
     {
-
+        public Task Repeater(BaseMessage message)
+        {
+            Console.WriteLine("收到命令，进行解析并准发");
+            return Task.CompletedTask;
+        }
     }
 }

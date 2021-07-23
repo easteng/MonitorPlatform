@@ -41,7 +41,7 @@ namespace MonitorPlatform.Wpf.ViewModel
         // 赋初始值
         private void InitDefaultTemplateValue()
         {
-            templateModel = new TemplateModel()
+            TemplateModel = new TemplateModel()
             {
                 BorderBackground = "#286A7B",
                 BorderThickness = 2,
@@ -69,9 +69,9 @@ namespace MonitorPlatform.Wpf.ViewModel
         /// 外部控件传值并初始化
         /// </summary>
         /// <param name="model"></param>
-        public TemplateModel InitTemplate(TemplateModel model)
+        public TemplateModel InitTemplate(TemplateModel model,string code)
         {
-            if(model == null)
+            if (model == null)
             {
                 InitDefaultTemplateValue();
             }
@@ -80,7 +80,7 @@ namespace MonitorPlatform.Wpf.ViewModel
                 this.TemplateModel = model;
                 GetDefaultColor(this.TemplateModel);
             }
-
+            this.TemplateModel.SensorCode = code;
             return this.TemplateModel;
         }
         /// <summary>

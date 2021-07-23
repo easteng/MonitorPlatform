@@ -177,5 +177,19 @@ namespace MonitorPlatform.Wpf.ViewModel
                 this.TemplateModel = null;
             }
         }
+
+        /// <summary>
+        /// 通过传感器编码查找温度点的名称
+        /// </summary>
+        /// <param name="code"></param>
+        /// <returns></returns>
+        public string[] GetPointPropNameBySensorCode(string code)
+        {
+            var names = diagramConfigRepository
+                .Where(a => a.SensorCode == code)
+                .ToList()
+                .Select(a => a.PropName);
+            return names?.ToArray();
+        }
     }
 }

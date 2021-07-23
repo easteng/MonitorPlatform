@@ -18,7 +18,7 @@ using ESTCore.Caching;
 using ESTCore.Message;
 using ESTCore.Message.Services;
 
-using MassTransit;
+using ESTHost.Core;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -50,17 +50,25 @@ namespace ESTHost.WTR20AService
         {
             // 注册消息中心
             var config = EngineContext.Current.Resolve<IConfiguration>();
-            var service = new ServiceCollection();
 
-            service.UseMessageCenterClient(build=>
+            //  注册客户端
+            builder.RegisterMessageCenter(b =>
             {
-                build.ReConnectTimeSpan = TimeSpan.FromSeconds(2); // 2s 重新连接一次服务
-                build.AddReceiver<CommandReceiver>(); // 添加命令接收机
-                build.Build(); // 客户端创建
+                b.OptionClient(o =>
+                {
+                    o.AddReceiver<CommandReceiver>(a =>
+                    {
+                        a.Name = MessageTopic.Command;
+                        a.Topic = MessageTopic.Iot;
+                    });
+                    o.Build();
+                });
             });
+
+            var service = new ServiceCollection();
             service.AddHostedService<Worker>();
             builder.Populate(service);
-            base.RegisterServices(builder);
+           // base.RegisterServices(builder);
         }
     }
 }

@@ -17,7 +17,6 @@ using Autofac.Extensions.DependencyInjection;
 using ESTCore.Caching;
 using ESTCore.Message;
 
-using MassTransit;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -50,28 +49,7 @@ namespace ESTHost.WTR31Service
             // 注册消息中心
             var config = EngineContext.Current.Resolve<IConfiguration>();
             var service = new ServiceCollection();
-            service.AddMassTransit(c =>
-            {
-                c.UsingRabbitMq((context, conf) =>
-                {
-                    var host = config["Rabbitmq:Host"];
-                    var user = config["Rabbitmq:Username"];
-                    var pwd = config["Rabbitmq:Password"];
-                    conf.Host(host, cc => {
-                        cc.Username(user);
-                        cc.Password(pwd);
-                    });
-
-                    // 设置订阅频道
-                    conf.ReceiveEndpoint("storge", e =>
-                    {
-                        // 注册消费者  消费需要保存的物联网数据
-                        // e.Consumer<StandardDataConsumer>();
-                    });
-                });
-            });
-            service.AddMassTransitHostedService();
-            service.AddSingleton<IBus>(provider => provider.GetRequiredService<IBusControl>());
+           
             service.AddHostedService<Worker>();
             builder.Populate(service);
             base.RegisterServices(builder);
