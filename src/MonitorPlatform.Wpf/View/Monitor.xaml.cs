@@ -390,7 +390,7 @@ namespace MonitorPlatform.Wpf.View
 
         private void btn_select_sensor_Click(object sender, RoutedEventArgs e)
         {
-            // 选择传感器
+            // 选择传感器 传感选择界面中只能展示当前站点关联设备所关联的采集器  再通过采集器进行筛选传感器信息
             var frm = new SensorSelectModal();
             frm.ShowTerminal = true;
             frm.Confirm += (e, d) =>
@@ -401,6 +401,11 @@ namespace MonitorPlatform.Wpf.View
                 frm.Close();
             };
             frm.ShowDialog();
+        }
+
+        private void com_device_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
         }
     }
 }

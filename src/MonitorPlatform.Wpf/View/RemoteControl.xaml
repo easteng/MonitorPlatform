@@ -36,7 +36,7 @@
             <!--工具栏-->
 
             <!--内容区域-->
-            <Grid Margin="10,0" Grid.Row="1">
+            <Grid Margin="20" Grid.Row="1">
 
                 <Grid.RowDefinitions>
                     <RowDefinition Height="200"/>
@@ -48,10 +48,10 @@
                 </Grid.ColumnDefinitions>
                 <Border BorderBrush="{StaticResource FormBorderBrush}" BorderThickness="1">
                     <UniformGrid>
-                        <Button Width="200" Cursor="Hand" FontSize="20" Style="{StaticResource ButtonDashedWarning}" Height="60" Content="更新远程数据"/>
-                        <Button Width="200" Cursor="Hand" FontSize="20" Style="{StaticResource ButtonDashedPrimary}" Height="60" Content="远程写入数据"/>
-                        <Button Width="200" Cursor="Hand" FontSize="20" Style="{StaticResource ButtonDashedSuccess}" Height="60" Content="重启采集服务"/>
-                        <Button Width="200" Cursor="Hand" FontSize="20" Style="{StaticResource ButtonDashedInfo}" Height="60" Content="监测服务状态"/>
+                        <Button Width="200" x:Name="btn_update_data" Click="btn_update_data_Click" Cursor="Hand" FontSize="20" Style="{StaticResource ButtonDashedWarning}" Height="60" Content="更新远程数据"/>
+                        <Button Width="200" x:Name="btn_remote_write" Click="btn_remote_write_Click" Cursor="Hand" FontSize="20" Style="{StaticResource ButtonDashedPrimary}" Height="60" Content="远程写入数据"/>
+                        <Button Width="200" x:Name="btn_restart_server" Click="btn_restart_server_Click" Cursor="Hand" FontSize="20" Style="{StaticResource ButtonDashedSuccess}" Height="60" Content="重启采集服务"/>
+                        <Button Width="200" x:Name="btn_restart_sms" Click="btn_restart_sms_Click" Cursor="Hand" FontSize="20" Style="{StaticResource ButtonDashedInfo}" Height="60" Content="重启短信服务"/>
                     </UniformGrid>
                 </Border>
             </Grid>

@@ -64,6 +64,7 @@ namespace ESTHost.DataCenter
                 {
                     o.AddRepeater<IotMessageRepeater>(MessageTopic.Iot); // 添加物联网转换器
                     o.AddRepeater<CommandRepeater>(MessageTopic.Command); // 添加命令转换器
+                    o.AddRepeater<NoticeMessageRepeater>(MessageTopic.Notice); // 添加通知消息转换器
                     o.Build(); // 构建服务
                 });
             });

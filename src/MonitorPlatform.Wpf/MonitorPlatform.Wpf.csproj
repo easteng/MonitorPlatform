@@ -66,6 +66,7 @@
     <ProjectReference Include="..\..\..\..\main-project\EST.Components\src\core\ESTCore.ORM.FreeSql\ESTCore.ORM.FreeSql.csproj" />
     <ProjectReference Include="..\..\..\..\main-project\EST.Components\src\core\ESTCore.Message\ESTCore.Message.csproj" />
     <ProjectReference Include="..\..\..\..\main-project\EST.Components\src\controls\svg-viewer\ESTControl.SvgViewer\ESTControl.SvgViewer.csproj" />
+    <ProjectReference Include="..\MonitorPlatform.Contracts\MonitorPlatform.Contracts.csproj" />
     <ProjectReference Include="..\MonitorPlatform.Domain\MonitorPlatform.Domain.csproj" />
     <ProjectReference Include="..\MonitorPlatform.Share\MonitorPlatform.Share.csproj" />
     <ProjectReference Include="..\Services\ESTHost.Core\ESTHost.Core.csproj" />

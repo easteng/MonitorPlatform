@@ -333,6 +333,24 @@
                 </hc:NotifyIcon.ContextContent>
             </hc:NotifyIcon>
 
+            <!--系统通知-->
+            <hc:NotifyIcon Token="monitor" Text="HandyControl" IsBlink="{Binding ContextMenuIsBlink}" Visibility="{Binding ContextMenuIsShow,Converter={StaticResource Boolean2VisibilityConverter}}">
+                <hc:NotifyIcon.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Command="{Binding SendNotificationCmd}" Header="123"/>
+                        <MenuItem Command="hc:ControlCommands.PushMainWindow2Top" Header="333"/>
+                        <MenuItem Command="hc:ControlCommands.ShutdownApp" Header="444"/>
+                    </ContextMenu>
+                </hc:NotifyIcon.ContextMenu>
+                <hc:Interaction.Triggers>
+                    <hc:EventTrigger EventName="Click">
+                        <hc:EventToCommand Command="hc:ControlCommands.PushMainWindow2Top"/>
+                    </hc:EventTrigger>
+                    <hc:EventTrigger EventName="MouseDoubleClick">
+                        <hc:EventToCommand Command="{Binding MouseCmd}" CommandParameter="MouseDoubleClick"/>
+                    </hc:EventTrigger>
+                </hc:Interaction.Triggers>
+            </hc:NotifyIcon>
         </Grid>
     </Border>
 </Window>

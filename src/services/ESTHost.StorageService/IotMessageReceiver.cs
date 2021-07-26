@@ -31,7 +31,7 @@ namespace ESTHost.StorageService
     {
         public Task Receive(BaseMessage message)
         {
-            Console.WriteLine("接收到物联网数据，并进行存储");
+            Console.WriteLine($"接收到物联网数据，并进行存储:{DateTime.Now.ToLocalTime()}");
             return Task.FromResult(0);  
         }
     }

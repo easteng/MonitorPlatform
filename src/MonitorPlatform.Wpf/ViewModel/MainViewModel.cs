@@ -11,6 +11,8 @@
 ******* ★ Copyright @easten company 2021-2022. All rights reserved ★ *********
 ***********************************************************************
  */
+using HandyControl.Controls;
+using HandyControl.Data;
 using MonitorPlatform.Domain.Entities;
 using MonitorPlatform.Share;
 using MonitorPlatform.Wpf.Common;
@@ -54,10 +56,11 @@ namespace MonitorPlatform.Wpf.ViewModel
         {
             MenuModels = new List<MenuModel>();
 
-            GlableDelegateHandler.UpdateRuntime = (s) =>
-            {
-                RuntimeDataModel.Name = s;
-            };
+            // 更新
+            //GlableDelegateHandler.UpdateRuntime = (s) =>
+            //{
+            //    RuntimeDataModel.Name = s;
+            //};
             this.BuilderMenus();
             //this.LeftMenuClick("Dashboard");
 
@@ -74,6 +77,14 @@ namespace MonitorPlatform.Wpf.ViewModel
                 RealTime = DateTime.Now.ToString("HH:mm:ss");
             };
             time.Start();
+
+            // 委托定义
+            // 系统通知
+            GlableDelegateHandler.SystemNotice = (content) =>
+            {
+                NotifyIcon.ShowBalloonTip("服务提示", content, NotifyIconInfoType.Info, "monitor");
+            };
+
         }
 
         private void LeftMenuClick(object obj)

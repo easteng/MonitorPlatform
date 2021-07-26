@@ -4,4 +4,8 @@
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\MonitorPlatform.Domain\MonitorPlatform.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

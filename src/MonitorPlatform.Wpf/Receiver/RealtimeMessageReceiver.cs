@@ -33,7 +33,6 @@ namespace MonitorPlatform.Wpf.Receiver
     {
         public Task Receive(BaseMessage message)
         {
-            
             var real = message.GetMessage<RealtimeMessage>();
             GlableDelegateHandler.UpdateRealtimeData?.Invoke(real); //
             return Task.FromResult(0);

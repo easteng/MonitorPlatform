@@ -27,7 +27,8 @@ namespace MonitorPlatform.Wpf.View
         List<Guid> SelectedSensors { get; set;  }=new List<Guid>();
 
         public bool ShowTerminal=false;
-
+        // 串口服务器器  用来过滤采集器
+        public Guid DeviceId { get;set; }
         public SensorSelectModal()
         {
             

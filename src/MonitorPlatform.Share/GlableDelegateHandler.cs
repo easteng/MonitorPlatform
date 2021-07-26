@@ -23,6 +23,7 @@ namespace MonitorPlatform.Share
 {
     public delegate void UpdateRuntimeDelegate(string mes);
     public delegate void UpdateRealtimeDataDelegate(RealtimeMessage message);
+    public delegate void SystemNoticeDelegate(string content);
     public class GlableDelegateHandler
     {
         public static UpdateRuntimeDelegate UpdateRuntime;
@@ -30,5 +31,10 @@ namespace MonitorPlatform.Share
         /// 更新实时数据
         /// </summary>
         public static UpdateRealtimeDataDelegate UpdateRealtimeData;
+        /// <summary>
+        /// 系统通知委托
+        /// </summary>
+        public static SystemNoticeDelegate SystemNotice;
+
     }
 }

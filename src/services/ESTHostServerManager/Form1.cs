@@ -46,7 +46,7 @@ namespace ESTHostServerManager
                 Thread.Sleep(1000);
             }
 
-            Task.Run(() => Process.Start("sc.exe", $"delete EST_DataStorage")).Result);
+           // Task.Run(() => Process.Start("sc.exe", $"delete EST_DataStorage")).Result);
             MessageBox.Show("服务已卸载");
         }
 

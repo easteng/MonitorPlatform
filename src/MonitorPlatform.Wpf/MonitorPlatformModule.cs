@@ -13,7 +13,7 @@
  */
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
-
+using ESTCore.Caching;
 using ESTCore.Message;
 using ESTCore.Message.Services;
 using ESTCore.ORM.FreeSql;
@@ -30,7 +30,11 @@ using Silky.Lms.Core.Modularity;
 
 namespace MonitorPlatform.Wpf
 {
-    [DependsOn(typeof(FreeSqlModule), typeof(ESTMessageModule))]
+    [DependsOn(
+        typeof(FreeSqlModule),
+        typeof(ESTMessageModule),
+        typeof(ESTRedisCacheModule)
+        )]
     public class MonitorPlatformModule: StartUpModule
     {
         protected override void RegisterServices(ContainerBuilder builder)
@@ -41,7 +45,8 @@ namespace MonitorPlatform.Wpf
             {
                 reg.OptionClient(o =>
                 {
-                    o.AddReceiver<RealtimeMessageReceiver>(a => a.Name = MessageTopic.Realtime);
+                    o.AddReceiver<RealtimeMessageReceiver>(a => a.Name = MessageTopic.Realtime); // 添加实时数据接收机
+                    o.AddReceiver<NoticeMessageReceiver>(a => a.Name = MessageTopic.Notice); // 添加通知消息接收机
                     o.Build(); // 构建服务
                 });
             });

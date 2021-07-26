@@ -88,12 +88,14 @@ namespace MonitorPlatform.Wpf.ViewModel
         public ICommand CreateCommand { get { return new CommandBase(OpenDrawAction); } }
         public ICommand DeleteCommand { get { return new CommandBase(DeleteAction); } }
         readonly IBaseRepository<Sensor, Guid> sensorRepository;
+        readonly IBaseRepository<DeviceRltTerminal, Guid> deviceRltTerminalRepository;
         readonly IBaseRepository<Terminal, Guid> terminalRepository;
         readonly IBaseRepository<TerminalRltSensor, Guid> terminalTltsensorRepository;
 
         public SensorManagerViewModel()
         {
             sensorRepository = ESTRepository.Builder<Sensor, Guid>();
+            deviceRltTerminalRepository = ESTRepository.Builder<DeviceRltTerminal, Guid>();
             terminalRepository = ESTRepository.Builder<Terminal, Guid>();
             terminalTltsensorRepository = ESTRepository.Builder<TerminalRltSensor, Guid>();
             this.Refresh();

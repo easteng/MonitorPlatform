@@ -22,6 +22,6 @@ namespace MonitorPlatform.Share
     public class ComboxItem
     {
         public string Key { get; set;  }
-        public int Value { get; set; }   
+        public object Value { get; set; }   
     }
 }

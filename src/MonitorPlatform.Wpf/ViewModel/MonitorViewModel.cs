@@ -155,11 +155,22 @@ namespace MonitorPlatform.Wpf.ViewModel
             get { return monitorTypes; }
             set { monitorTypes = value; this.DoNotify(); }
         }
+
+        // 串口服务器
+        private List<ComboxItem> deviceList;
+
+        public List<ComboxItem> DeviceList
+        {
+            get { return deviceList; }
+            set { deviceList = value; this.DoNotify(); }
+        }
+
         readonly IBaseRepository<Monitor, Guid> monitorRepositiry;
         readonly IBaseRepository<Diagram, Guid> diagramrRepositiry;
         readonly IBaseRepository<TemplateStyle, Guid> styleRepository;
         readonly IBaseRepository<DiagramConfig, Guid> diagramConfigRepository;
         readonly IBaseRepository<Sensor, Guid> sensorRepository;
+        readonly IBaseRepository<Device,Guid> deviceRepository;
 
         public ICommand OpenLeftDrawCommand { get { return new CommandBase(OpenLeftDrawAction); } }
         public ICommand SaveMonitorCommand { get { return new CommandBase(SaveMonitorAction); } }
@@ -170,14 +181,16 @@ namespace MonitorPlatform.Wpf.ViewModel
         public ICommand OpenRightDrawCommand { get { return new CommandBase(OpenRightDrawAction); } }
         public MonitorViewModel()
         {
-            this.ConfigModel=new ConfigModel();
+            this.ConfigModel = new ConfigModel();
             this.MonitorModels = new List<MonitorModel>();
+            this.DeviceList = new List<ComboxItem>();
             this.MonitorModels.Add(new MonitorModel() { Name = "请添顶级监测点" });
             monitorRepositiry = ESTRepository.Builder<Monitor, Guid>();
             diagramrRepositiry = ESTRepository.Builder<Diagram, Guid>();
             styleRepository = ESTRepository.Builder<TemplateStyle, Guid>();
             diagramConfigRepository = ESTRepository.Builder<DiagramConfig, Guid>();
             sensorRepository = ESTRepository.Builder<Sensor, Guid>();
+            deviceRepository = ESTRepository.Builder<Device, Guid>();
             MonitorTypes = new List<ComboxItem>();
             this.Refresh();
             // 监测点类型
@@ -190,6 +203,19 @@ namespace MonitorPlatform.Wpf.ViewModel
                     Value = item.Value
                 });
             }
+
+            // 绑定串口服务器
+            var deviceList = deviceRepository.Where(a => true).ToList();
+
+            deviceList?.ForEach(a =>
+            {
+                var item = new ComboxItem();
+                item.Key = a.Name;
+                item.Value = a.Id;
+                this.DeviceList.Add(item);
+            });
+
+
             // 绑定传感器数据
            this.SensorList = sensorRepository.Where(a => true)
                 .ToList()

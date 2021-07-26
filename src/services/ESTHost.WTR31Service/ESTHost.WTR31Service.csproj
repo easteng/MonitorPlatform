@@ -15,5 +15,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ESTHost.Core\ESTHost.Core.csproj" />
+    <ProjectReference Include="..\ESTHost.WTR20AService\ESTHost.WTR20AService.csproj" />
   </ItemGroup>
 </Project>

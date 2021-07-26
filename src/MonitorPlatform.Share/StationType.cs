@@ -29,12 +29,6 @@ namespace MonitorPlatform.Share
         /// <summary>
         /// 配电室
         /// </summary>
-        Region,
-        [Display(Name = "设备")]
-        [Description("设备")]
-        /// <summary>
-        /// 具体的设备
-        /// </summary>
-        Device
+        Region
     }
 }

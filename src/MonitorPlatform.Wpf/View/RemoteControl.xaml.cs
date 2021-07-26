@@ -27,5 +27,25 @@ namespace MonitorPlatform.Wpf.View
             InitializeComponent();
             this.DataContext= remoteControlViewModel=new RemoteControlViewModel();
         }
+
+        private void btn_update_data_Click(object sender, RoutedEventArgs e)
+        {
+            // 更新远程数据
+        }
+
+        private void btn_remote_write_Click(object sender, RoutedEventArgs e)
+        {
+            // 远程写入数据，包括写入传感器编码 温度报警等
+        }
+
+        private void btn_restart_server_Click(object sender, RoutedEventArgs e)
+        {
+            // 重启远程数据采集服务
+        }
+
+        private void btn_restart_sms_Click(object sender, RoutedEventArgs e)
+        {
+            // 重启短信发送服务
+        }
     }
 }

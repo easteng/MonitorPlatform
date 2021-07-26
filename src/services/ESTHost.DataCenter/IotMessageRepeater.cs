@@ -66,7 +66,7 @@ namespace ESTHost.DataCenter
                 Code = iot.Code
             };
             serverProvider.Publish(MessageTopic.Realtime, BaseMessage.CreateMessage(real));
-            Console.WriteLine("接收的物联网数据并转发");
+            Console.WriteLine($"接收的物联网数据并转发:{DateTime.Now.ToLocalTime()}");
             return Task.CompletedTask;
         }
     }

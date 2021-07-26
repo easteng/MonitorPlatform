@@ -28,6 +28,11 @@ namespace MonitorPlatform.Wpf.Model
         public string Name { get => name; set { name = value; this.DoNotify(); } }
         private StationType type { get; set; }
         public StationType Type { get => type; set { type = value; this.DoNotify(); } }
+        /// <summary>
+        /// 设备信息
+        /// </summary>
+        private DeviceModel device { get; set; }
+        public DeviceModel Device { get => device; set { device = value; this.DoNotify(); } }
 
         private MonitorModel parent { get; set; }
         public MonitorModel Parent { get => parent; set { parent = value; this.DoNotify(); } }

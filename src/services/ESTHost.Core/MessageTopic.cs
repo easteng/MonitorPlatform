@@ -13,5 +13,6 @@ namespace ESTHost.Core
         public static readonly string SmsCommand = "SMSCOMMAND";
         public static readonly string Storage = "STORAGE";
         public static readonly string StorageCommand = "STORAGECOMMAND";
+        public static readonly string Notice = "NOTICE";
     }
 }
