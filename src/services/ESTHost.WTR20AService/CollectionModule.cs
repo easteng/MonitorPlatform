@@ -19,6 +19,7 @@ using ESTCore.Message;
 using ESTCore.Message.Services;
 
 using ESTHost.Core;
+using ESTHost.Core.Colleaction;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,10 +27,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Silky.Lms.Core;
 using Silky.Lms.Core.Modularity;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ESTHost.WTR20AService
@@ -56,16 +53,16 @@ namespace ESTHost.WTR20AService
             {
                 b.OptionClient(o =>
                 {
-                    o.AddReceiver<CommandReceiver>(a =>
-                    {
-                        a.Name = MessageTopic.Command;
-                        a.Topic = MessageTopic.Iot;
-                    });
+                    o.AddReceiver<CommandReceiver>(a =>a.Name=MessageTopic.RemoteControlCommand);   // 订阅消息接收机，用来接收客户端发送的控制命令
                     o.Build();
                 });
             });
-
             var service = new ServiceCollection();
+
+
+            // 注册元数据接收类，用于接收modbus服务端返回的数据，对数据进行解析和处理等一些列操作
+            service.AddSingleton(typeof(IEventBus), typeof(MateDataReceiver));
+
             service.AddHostedService<Worker>();
             builder.Populate(service);
            // base.RegisterServices(builder);

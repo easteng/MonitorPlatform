@@ -11,7 +11,6 @@
 ******* ★ Copyright @easten company 2021-2022. All rights reserved ★ *********
 ***********************************************************************
  */
-using ESTHost.Core.Message;
 
 using System;
 using System.Collections.Generic;
@@ -22,7 +21,6 @@ using System.Threading.Tasks;
 namespace MonitorPlatform.Share
 {
     public delegate void UpdateRuntimeDelegate(string mes);
-    public delegate void UpdateRealtimeDataDelegate(RealtimeMessage message);
     public delegate void SystemNoticeDelegate(string content);
     public class GlableDelegateHandler
     {
@@ -30,7 +28,7 @@ namespace MonitorPlatform.Share
         /// <summary>
         /// 更新实时数据
         /// </summary>
-        public static UpdateRealtimeDataDelegate UpdateRealtimeData;
+        //public static UpdateRealtimeDataDelegate UpdateRealtimeData;
         /// <summary>
         /// 系统通知委托
         /// </summary>

@@ -20,6 +20,7 @@ using ESTCore.Message.Services;
 
 using ESTHost.Core;
 using ESTHost.Core.Message;
+using ESTHost.DataCenter.Repeater;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -51,19 +52,12 @@ namespace ESTHost.DataCenter
         {
             var config = EngineContext.Current.Resolve<IConfiguration>();
             var service = new ServiceCollection();
-            // 注册消息中心
-            //service.UseMessageCenterServer(b =>
-            //{
-            //    b.AddRepeater<IotMessageRepeater>(); //物联网数据转换器
-            //    b.AddRepeater<CommandRepeater>();// 添加命令转换器
-            //    b.Build();
-            //});
             builder.RegisterMessageCenter(reg =>
             {
                 reg.OptionServer(o =>
                 {
                     o.AddRepeater<IotMessageRepeater>(MessageTopic.Iot); // 添加物联网转换器
-                    o.AddRepeater<CommandRepeater>(MessageTopic.Command); // 添加命令转换器
+                    o.AddRepeater<RemoteControlRepeater>(MessageTopic.RemoteControlCommand); // 添加远程控制命转发器
                     o.AddRepeater<NoticeMessageRepeater>(MessageTopic.Notice); // 添加通知消息转换器
                     o.Build(); // 构建服务
                 });

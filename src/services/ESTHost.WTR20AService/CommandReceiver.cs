@@ -39,6 +39,13 @@ namespace ESTHost.WTR20AService
         {
             // 接收到命令
             Console.WriteLine("接收到命令消息");
+
+            // 重启命令  
+            // 写入传感器
+            // 写入可控制的传感器数量
+            // 消息内容包括：命令类型（read\write\restart）  设备id（名称，用来定位到具体的服务中去） 终端id 用来定位到具体的终端  
+            // 写入命令有终端类自动解析  每次操作都需要更新缓存数据
+
             return Task.CompletedTask;
         }
     }

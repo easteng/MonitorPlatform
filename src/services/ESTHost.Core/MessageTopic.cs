@@ -2,6 +2,9 @@
 
 namespace ESTHost.Core
 {
+    /// <summary>
+    /// 消息体
+    /// </summary>
     public class MessageTopic
     {
         public static readonly string Alert = "ALERT";
@@ -14,5 +17,6 @@ namespace ESTHost.Core
         public static readonly string Storage = "STORAGE";
         public static readonly string StorageCommand = "STORAGECOMMAND";
         public static readonly string Notice = "NOTICE";
+        public static readonly string RemoteControlCommand = "REMOTECONTROL";
     }
 }
