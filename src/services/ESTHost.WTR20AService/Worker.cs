@@ -48,8 +48,8 @@ namespace ESTHost.WTR20AService
             list.Add(new CollectionServerCacheItem()
             {
                 Name = "test",
-                Ip="127.0.0.1",
-                Port=502
+                Ip="192.168.1.254",
+                Port= 30003
             });
             try
             {
