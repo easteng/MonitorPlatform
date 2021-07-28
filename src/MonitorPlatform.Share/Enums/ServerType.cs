@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace ESTHost.Core
+namespace MonitorPlatform.Share
 {
     /// <summary>
     /// 服务类型

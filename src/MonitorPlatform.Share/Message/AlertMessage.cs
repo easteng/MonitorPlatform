@@ -1,31 +1,29 @@
 ﻿/**********************************************************************
 *******命名空间： ESTHost.Core.Message
-*******类 名 称： ControlCommandMessage
-*******类 说 明： 控制命令消息体
+*******类 名 称： AlertMessage
+*******类 说 明： 
 *******作    者： Easten
-*******机器名称： EASTEN
+*******机器名称： DESKTOP-EC8U0GP
 *******CLR 版本： 4.0.30319.42000
-*******创建时间： 7/27/2021 6:09:00 PM
+*******创建时间： 7/24/2021 12:59:19 AM
 *******联系方式： 1301485237@qq.com
 ***********************************************************************
-******* ★ Copyright @Easten 2020-2021. All rights reserved ★ *********
+******* ★ Copyright @easten company 2021-2022. All rights reserved ★ *********
 ***********************************************************************
  */
-using ESTCore.Message;
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ESTHost.Core.Message
+namespace MonitorPlatform.Share
 {
     /// <summary>
-    ///  远程控制消息体
+    /// 报警的数据实体，用于短信服务接收并做相应的处理
     /// </summary>
-    public class RemoteControlMessage:AbstractMessage
+    public class AlertMessage: IOTMessage
     {
-
+        public override string Topic { get => MessageTopic.Alert; set => base.Topic = value; }
     }
 }

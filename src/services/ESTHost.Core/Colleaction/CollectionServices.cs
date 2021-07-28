@@ -72,7 +72,7 @@ namespace ESTHost.Core.Colleaction
             this.modbus.ConnectTimeOut = 2000;
             this.modbus.ReceiveTimeOut = 2000;
             this.modbus.SleepTime = 200;
-            this.tcpClient=new TcpClient();
+            this.modbus.Station = 2;
         }
         /// <summary>
         /// 获取终端的缓存数据
@@ -84,7 +84,7 @@ namespace ESTHost.Core.Colleaction
                 //var terminalJsonString=this.redisCachingProvider.StringGet(this.Name);
                 //this.Terminals = JsonConvert.DeserializeObject<List<TerminalCacheItem>>(terminalJsonString);
                 this.Terminals = new List<TerminalCacheItem>();
-                this.Terminals.Add(new TerminalCacheItem() { Name = "111", Addr = 1 });
+                this.Terminals.Add(new TerminalCacheItem() { Name = "111", Addr =1 });
                 this.Terminals.Add(new TerminalCacheItem() { Name = "222", Addr = 2 });
             }
             catch (Exception ex)
@@ -130,7 +130,31 @@ namespace ESTHost.Core.Colleaction
                     //等待Api通信完成
                     while (myLink.api_busing)
                     {
-                        Thread.Sleep(100);
+                        Parallel.ForEach(this.Terminals, b =>
+                        {
+                            if (b.Enabled)
+                            {
+                                this.modbus.Station =(byte)b.Addr;
+
+                                this.modbus.Read("00", 8);
+                                Thread.Sleep(2000);
+                               // this.modbus.ReadFromCoreServer(info);
+                              //  this.modbus.ReadFromCoreServer(this.modbus.AlienSession.Socket,info, true, true);
+                               // var result = <CollectionServerCacheItem>();
+                                //if (result.IsSuccess)
+                                //{
+                                //    var operateResult = new OperateResult();
+                                //   // operateResult.Data = result.Content;
+                                //    operateResult.DeviceId = this.Server.Id;
+                                //    operateResult.Terminal = b;
+                                //    this.eventBus.ReceiverMateData(operateResult);
+                                //}
+                                //else
+                                //{
+                                //    Console.WriteLine("服务未连接");
+                                //}
+                            }
+                        });
                     }
                     Thread.Sleep(300);
                     str_error = "";

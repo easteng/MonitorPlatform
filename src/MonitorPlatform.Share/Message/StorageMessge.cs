@@ -1,11 +1,11 @@
 ﻿/**********************************************************************
-*******命名空间： MonitorPlatform.Share
-*******类 名 称： PtotocolType
+*******命名空间： ESTHost.Core.Message
+*******类 名 称： StorageMessge
 *******类 说 明： 
 *******作    者： Easten
 *******机器名称： DESKTOP-EC8U0GP
 *******CLR 版本： 4.0.30319.42000
-*******创建时间： 7/11/2021 11:16:51 AM
+*******创建时间： 7/24/2021 12:58:14 AM
 *******联系方式： 1301485237@qq.com
 ***********************************************************************
 ******* ★ Copyright @easten company 2021-2022. All rights reserved ★ *********
@@ -13,21 +13,17 @@
  */
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace MonitorPlatform.Share
 {
-    public enum PtotocolType
+    /// <summary>
+    /// 用于存储树的消息体
+    /// </summary>
+    public class StorageMessge: IOTMessage
     {
-        [Display(Name = "银澳WTR-31协议")]
-        [Description("银澳WTR-31协议")]
-        WTR_31,
-        [Display(Name = "银澳WTR-20A协议")]
-        [Description("银澳WTR-20A协议")]
-        WTR_20A
+        public override string Topic { get => MessageTopic.Storage; set => base.Topic = value; }
     }
 }

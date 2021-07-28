@@ -1,11 +1,6 @@
 ﻿using ESTCore.Message;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace ESTHost.Core.Message
+namespace MonitorPlatform.Share
 {
     /// <summary>
     /// 通知消息体，用于各种服务上线后通知最终客户端，发现服务是否上线

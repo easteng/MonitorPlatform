@@ -21,7 +21,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ESTHost.Core.Message
+namespace MonitorPlatform.Share
 {
     /// <summary>
     ///  物联网消息

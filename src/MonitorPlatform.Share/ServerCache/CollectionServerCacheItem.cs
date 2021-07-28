@@ -17,13 +17,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MonitorPlatform.Contracts.ServerCache
+namespace MonitorPlatform.Share.ServerCache
 {
     /// <summary>
     ///  采集站点 缓存条目
     /// </summary>
     public class CollectionServerCacheItem
     {
+        public string Key { get; set; }
         public Guid Id { get; set; }
         public string Ip { get; set; }
         public int Port { get; set; }

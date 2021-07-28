@@ -1,29 +1,31 @@
 ﻿/**********************************************************************
 *******命名空间： ESTHost.Core.Message
-*******类 名 称： StorageMessge
-*******类 说 明： 
+*******类 名 称： ControlCommandMessage
+*******类 说 明： 控制命令消息体
 *******作    者： Easten
-*******机器名称： DESKTOP-EC8U0GP
+*******机器名称： EASTEN
 *******CLR 版本： 4.0.30319.42000
-*******创建时间： 7/24/2021 12:58:14 AM
+*******创建时间： 7/27/2021 6:09:00 PM
 *******联系方式： 1301485237@qq.com
 ***********************************************************************
-******* ★ Copyright @easten company 2021-2022. All rights reserved ★ *********
+******* ★ Copyright @Easten 2020-2021. All rights reserved ★ *********
 ***********************************************************************
  */
+using ESTCore.Message;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ESTHost.Core.Message
+namespace MonitorPlatform.Share
 {
     /// <summary>
-    /// 用于存储树的消息体
+    ///  远程控制消息体
     /// </summary>
-    public class StorageMessge: IOTMessage
+    public class RemoteControlMessage:AbstractMessage
     {
-        public override string Topic { get => MessageTopic.Storage; set => base.Topic = value; }
+
     }
 }

@@ -33,7 +33,8 @@ namespace MonitorPlatform.Wpf.Model
         /// </summary>
         private DeviceModel device { get; set; }
         public DeviceModel Device { get => device; set { device = value; this.DoNotify(); } }
-
+        private Guid deviceId { get; set; }
+        public Guid DeviceId { get => deviceId; set { deviceId = value; this.DoNotify(); } }
         private MonitorModel parent { get; set; }
         public MonitorModel Parent { get => parent; set { parent = value; this.DoNotify(); } }
         private Guid? parentId { get; set; }

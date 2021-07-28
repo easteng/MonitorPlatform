@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -6,6 +6,9 @@
 
   <ItemGroup>
     <PackageReference Include="Masuit.Tools.Core" Version="2.4.3.7" />
+    <ProjectReference Include="..\..\..\..\main-project\EST.Components\src\core\ESTCore.ORM.FreeSql\ESTCore.ORM.FreeSql.csproj" />
+    <ProjectReference Include="..\..\..\..\main-project\EST.Components\src\core\ESTCore.Message\ESTCore.Message.csproj" />
+    <ProjectReference Include="..\..\..\..\main-project\EST.Components\src\core\ESTCore.Caching\ESTCore.Caching.csproj" />
   </ItemGroup>
 
 </Project>

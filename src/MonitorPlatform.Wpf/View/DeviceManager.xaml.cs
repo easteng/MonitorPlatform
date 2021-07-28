@@ -127,5 +127,14 @@ namespace MonitorPlatform.Wpf.View
             // 取消选中
             this.deviceManagerViewModel.SetUnChecked(id);
         }
+        // 协议选择
+        private void ptotoco_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (this.ptotoco.SelectedValue != null)
+            {
+                var item = (PtotocolType)this.ptotoco.SelectedValue;
+                this.deviceManagerViewModel.DeviceModel.PtotocolType = item;
+            }
+        }
     }
 }

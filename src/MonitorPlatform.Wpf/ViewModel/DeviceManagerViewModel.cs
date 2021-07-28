@@ -82,6 +82,18 @@ namespace MonitorPlatform.Wpf.ViewModel
             get { return deviceTypes; }
             set { deviceTypes = value; this.DoNotify(); }
         }
+        // 协议类型
+        private List<ComboxItem> ptotocolList;
+        public List<ComboxItem> PtotocolList
+        {
+            get => ptotocolList;
+            set
+            {
+                ptotocolList = value;
+                this.DoNotify();
+            }
+        }
+
         // 需要绑定的数据源
         private List<TerminalModel> bindModels;
 
@@ -131,6 +143,17 @@ namespace MonitorPlatform.Wpf.ViewModel
             foreach (var item in dic2)
             {
                 DeviceTypes.Add(new ComboxItem
+                {
+                    Key = item.Key,
+                    Value = item.Value
+                });
+            }
+
+            PtotocolList = new List<ComboxItem>();
+            var dic1 = typeof(PtotocolType).GetDescriptionAndValue();//协议类型
+            foreach (var item in dic1)
+            {
+                PtotocolList.Add(new ComboxItem
                 {
                     Key = item.Key,
                     Value = item.Value

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ESTHost.Core
+namespace MonitorPlatform.Share
 {
     /// <summary>
     /// 消息体

@@ -37,6 +37,7 @@ namespace MonitorPlatform.Domain.Entities
         /// 串口服务器 一个站点只能有一台服务器   多站点服务器   通过ip 地址进行定位使用
         /// </summary>
         public Device Device { get; set; }
+        public Guid? DeviceId { get; set; }
         /// <summary>
         /// 父级设备
         /// </summary>
