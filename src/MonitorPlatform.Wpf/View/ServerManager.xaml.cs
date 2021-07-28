@@ -49,7 +49,7 @@ namespace MonitorPlatform.Wpf.View
                 serverManagerViewModel.DeleteAction(btn.Tag);
             }
         }
-
+        // 协议选择
         private void ptotoco_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (this.ptotoco.SelectedValue != null)

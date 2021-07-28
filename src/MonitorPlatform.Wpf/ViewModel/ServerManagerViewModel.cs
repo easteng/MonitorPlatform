@@ -99,7 +99,6 @@ namespace MonitorPlatform.Wpf.ViewModel
             terminalRepository = ESTRepository.Builder<Terminal, Guid>();
             terminalRltSensorRepository = ESTRepository.Builder<TerminalRltSensor, Guid>();
             PtotocolList=new  List<ComboxItem>();
-           // TypeList = new  List<ComboxItem>();
             var dic1 = typeof(PtotocolType).GetDescriptionAndValue();//协议类型
             var dic2 = typeof(DeviceCollectionType).GetDescriptionAndValue();//采集类型
             foreach (var item in dic1)
@@ -110,14 +109,6 @@ namespace MonitorPlatform.Wpf.ViewModel
                     Value = item.Value
                 });
             }
-            //foreach (var item in dic2)
-            //{
-            //    TypeList.Add(new ComboxItem
-            //    {
-            //        Key = item.Key,
-            //        Value = item.Value
-            //    });
-            //}
             this.Refresh();
         }
         // 刷新数据
@@ -231,7 +222,7 @@ namespace MonitorPlatform.Wpf.ViewModel
                         TerminalId = this.SelectedTerminalId,
                     };
                     // 判断是否已经存在
-                    if (!terminalRltSensorRepository.Where(b => b.SensorId == a).Any())
+                    if (!terminalRltSensorRepository.Where(b => b.SensorId == a&&b.TerminalId==this.SelectedTerminalId).Any())
                     {
                         terminalRltSensorRepository.Insert(model);
                     }

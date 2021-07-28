@@ -405,7 +405,11 @@ namespace MonitorPlatform.Wpf.View
 
         private void com_device_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-
+            if (this.com_device.SelectedValue != null)
+            {
+                var item = (Guid)this.com_device.SelectedValue;
+                this.monitorViewModel.MonitorModel.DeviceId = item;
+            }
         }
     }
 }

@@ -17,7 +17,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MonitorPlatform.Contracts.ServerCache
+namespace MonitorPlatform.Share.ServerCache
 {
     /// <summary>
     ///  终端采集器缓存内容
@@ -51,14 +51,5 @@ namespace MonitorPlatform.Contracts.ServerCache
         /// 当该终端执行写入时，不应该再读取数据 默认时true
         /// </summary>
         public bool Enabled { get; set; } = true;
-
-        /// <summary>
-        /// 传感器列表
-        /// </summary>
-        public List<SensorCacheItem> Sensors { get; set; }
-
-
-        // 定义方法，用来根据传感器和当前终端的地址生成不同的命令
-        // todo 
     }
 }

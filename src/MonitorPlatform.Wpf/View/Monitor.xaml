@@ -374,12 +374,13 @@
                             </hc:ComboBox>
                             <!--串口服务器-->
                             <hc:ComboBox ItemsSource="{Binding DeviceList}"
+                                         Visibility="{Binding AddChild,Converter={StaticResource Boolean2VisibilityReConverter}}"
                                          Name="com_device"
                                       hc:ItemContainerStyle="{StaticResource hc-comboBoxStyle}"
                                       hc:InfoElement.TitleWidth="80"
                                          DisplayMemberPath="Key"
                                          SelectedValuePath="Value"
-                                      SelectedItem="{Binding MonitorModel.Device.Id}"
+                                      SelectedValue="{Binding MonitorModel.DeviceId}"
                                       Style="{StaticResource ComboBoxExtend}"
                                       Background="{StaticResource FormBackground}" 
                                       BorderBrush="{StaticResource FormBorderBrush}"
@@ -387,7 +388,7 @@
                                       hc:BackgroundSwitchElement.MouseDownBackground="red"
                                       hc:InfoElement.Placeholder="请选择" 
                                       hc:InfoElement.TitlePlacement="Left" 
-                                      hc:InfoElement.Title="串口服务器" 
+                                      hc:InfoElement.Title="串口服务设备" 
                                       hc:InfoElement.Necessary="True"
                                          SelectionChanged="com_device_SelectionChanged"
                                       Margin="0,16,0,0">

@@ -78,7 +78,7 @@
                                 <GridViewColumn Width="150" Header="IP地址" DisplayMemberBinding="{Binding IpAddress}"/>
                                 <GridViewColumn Width="100" Header="端口号" DisplayMemberBinding="{Binding Port}"/>
                                 <GridViewColumn Width="100" Header="设备模式" DisplayMemberBinding="{Binding Type}"/>
-                                <GridViewColumn Width="100" Header="生产厂家" DisplayMemberBinding="{Binding Factory}"/>
+                                <GridViewColumn Width="100" Header="协议类型" DisplayMemberBinding="{Binding PtotocolType}"/>
                                 <GridViewColumn Width="200" Header="远控" HeaderContainerStyle="{StaticResource CenterGridViewColumnHeader}">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
@@ -212,9 +212,28 @@
                                       hc:BackgroundSwitchElement.MouseDownBackground="red"
                                       hc:InfoElement.Placeholder="请选择" 
                                       hc:InfoElement.TitlePlacement="Left" 
-                                      hc:InfoElement.Title="协议类型" 
+                                      hc:InfoElement.Title="采集模式" 
                                       hc:InfoElement.Necessary="True"
                                          SelectionChanged="devivetype_SelectionChanged"
+                                      Margin="0,16,0,0">
+                            </hc:ComboBox>
+                            <hc:ComboBox ItemsSource="{Binding PtotocolList}"
+                                         Name="ptotoco"
+                                      hc:ItemContainerStyle="{StaticResource hc-comboBoxStyle}"
+                                      hc:InfoElement.TitleWidth="80"
+                                         DisplayMemberPath="Key"
+                                         SelectedValuePath="Value"
+                                      SelectedItem="{Binding TerminalModel.Ptotocol}"
+                                      Style="{StaticResource ComboBoxExtend}"
+                                      Background="{StaticResource FormBackground}" 
+                                      BorderBrush="{StaticResource FormBorderBrush}"
+                                      Foreground="{StaticResource FormForeground}"
+                                      hc:BackgroundSwitchElement.MouseDownBackground="red"
+                                      hc:InfoElement.Placeholder="请选择" 
+                                      hc:InfoElement.TitlePlacement="Left" 
+                                      hc:InfoElement.Title="协议类型" 
+                                      hc:InfoElement.Necessary="True"
+                                         SelectionChanged="ptotoco_SelectionChanged"
                                       Margin="0,16,0,0">
                             </hc:ComboBox>
                             <hc:TextBox

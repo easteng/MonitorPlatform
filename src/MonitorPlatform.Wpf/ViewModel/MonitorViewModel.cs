@@ -236,7 +236,8 @@ namespace MonitorPlatform.Wpf.ViewModel
             });
         }
         // 是否添加子节点
-        private bool AddChild { get; set; }
+        private bool addChild { get; set; }
+        public bool AddChild { get => addChild; set { addChild = value; this.DoNotify(); } }
         private bool IsEdit { get; set; } // 是否为编辑
         // 选中被操作的监测点id
         public Guid ActiveMonitorId { get; set; }
@@ -342,6 +343,11 @@ namespace MonitorPlatform.Wpf.ViewModel
             }
             else
             {
+                if (this.MonitorModel.DeviceId == Guid.Empty)
+                {
+                    Growl.Error("请给站点绑定服务设备");
+                    return;
+                }
                 // 添加顶级
                 var monitor = ObjectMapper.Map<Monitor>(this.MonitorModel);
                 monitorRepositiry.Insert(monitor);

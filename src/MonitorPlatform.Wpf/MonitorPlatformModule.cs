@@ -12,19 +12,13 @@
 ***********************************************************************
  */
 using Autofac;
-using Autofac.Extensions.DependencyInjection;
 using ESTCore.Caching;
 using ESTCore.Message;
 using ESTCore.Message.Services;
 using ESTCore.ORM.FreeSql;
-
-using ESTHost.Core;
-
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-
+using MonitorPlatform.Share;
 using MonitorPlatform.Wpf.Receiver;
-
 using Silky.Lms.Core.Modularity;
 
 

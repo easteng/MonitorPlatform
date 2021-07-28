@@ -10,6 +10,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 using MonitorPlatform.Contracts.ServerCache;
+using MonitorPlatform.Share;
 
 using Newtonsoft.Json;
 
@@ -43,7 +44,7 @@ namespace ESTHost.WTR20AService
 
             // 获取当前协议的所有的站点服务
             //var collectionString = await this.redisCachingProvider.StringGetAsync("");
-            //var collectionServers = JsonConvert.DeserializeObject<List<CollectionServerCacheItem>>(collectionString);
+           // var collectionServers = JsonConvert.DeserializeObject<List<CollectionServerCacheItem>>(collectionString);
             var list = new List<CollectionServerCacheItem>();
             list.Add(new CollectionServerCacheItem()
             {

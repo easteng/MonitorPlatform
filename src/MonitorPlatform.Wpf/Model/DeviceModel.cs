@@ -34,6 +34,8 @@ namespace MonitorPlatform.Wpf.Model
         public string Description { get => description; set { description = value; this.DoNotify(); } }
         private DeviceCollectionType type { get; set; }
         public DeviceCollectionType Type { get => type; set { type = value; this.DoNotify(); } }
+        private PtotocolType ptotocolType { get; set; }
+        public PtotocolType PtotocolType { get => ptotocolType; set { ptotocolType = value; this.DoNotify(); } }
         private string ipAddress { get; set; }
         [IsIPAddress]
         public string IpAddress { get => ipAddress; set { ipAddress = value; this.DoNotify(); } }

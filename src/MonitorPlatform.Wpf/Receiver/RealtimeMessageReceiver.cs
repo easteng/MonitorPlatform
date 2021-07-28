@@ -13,15 +13,7 @@
  */
 using ESTCore.Message.Handler;
 using ESTCore.Message.Message;
-
-using ESTHost.Core.Message;
-
 using MonitorPlatform.Share;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace MonitorPlatform.Wpf.Receiver
