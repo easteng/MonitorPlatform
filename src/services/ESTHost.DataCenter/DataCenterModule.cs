@@ -28,10 +28,6 @@ using MonitorPlatform.Share;
 using Silky.Lms.Core;
 using Silky.Lms.Core.Modularity;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ESTHost.DataCenter
@@ -56,7 +52,7 @@ namespace ESTHost.DataCenter
             {
                 reg.OptionServer(o =>
                 {
-                    o.AddRepeater<IotMessageRepeater>(MessageTopic.Iot); // 添加物联网转换器
+                    o.AddRepeater<IotMessageRepeater>(MessageTopic.DeviceData); // 添加设备采集数据
                     o.AddRepeater<RemoteControlRepeater>(MessageTopic.RemoteControlCommand); // 添加远程控制命转发器
                     o.AddRepeater<NoticeMessageRepeater>(MessageTopic.Notice); // 添加通知消息转换器
                     o.Build(); // 构建服务

@@ -1,8 +1,9 @@
 using ESTCore.Message;
 using ESTCore.Message.Client;
-using ESTHost.Core.Message;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+
+using MonitorPlatform.Share;
 
 using System;
 using System.Collections.Generic;
@@ -35,7 +36,7 @@ namespace ESTHost.StorageService
 
         public override Task StartAsync(CancellationToken cancellationToken)
         {
-            currentMessage.ServiceType = Core.ServerType.StorageService;
+            currentMessage.ServiceType = ServerType.StorageService;
             currentMessage.Online = true;
             messageClient.SendMessage(currentMessage);
             return base.StartAsync(cancellationToken);
@@ -43,7 +44,7 @@ namespace ESTHost.StorageService
 
         public override Task StopAsync(CancellationToken cancellationToken)
         {
-            currentMessage.ServiceType = Core.ServerType.StorageService;
+            currentMessage.ServiceType = ServerType.StorageService;
             currentMessage.Online = false;
             messageClient.SendMessage(currentMessage);
             return base.StopAsync(cancellationToken);

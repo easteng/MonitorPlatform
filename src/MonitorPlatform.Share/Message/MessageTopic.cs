@@ -18,5 +18,6 @@ namespace MonitorPlatform.Share
         public static readonly string StorageCommand = "STORAGECOMMAND";
         public static readonly string Notice = "NOTICE";
         public static readonly string RemoteControlCommand = "REMOTECONTROL";
+        public static readonly string DeviceData = "DEVICEDARA";
     }
 }

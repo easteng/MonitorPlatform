@@ -26,6 +26,25 @@ namespace MonitorPlatform.Share
     /// </summary>
     public class RemoteControlMessage:AbstractMessage
     {
-
+        /// <summary>
+        /// 主题
+        /// </summary>
+        public override string Topic { get => MessageTopic.RemoteControlCommand; set => base.Topic = value; }
+        /// <summary>
+        /// 控制类型
+        /// </summary>
+        public ControlType ControlType { get; set; }
+        /// <summary>
+        /// 设备id
+        /// </summary>
+        public Guid DeviceId { get; set; }
+        /// <summary>
+        /// 终端id
+        /// </summary>
+        public Guid TerminalId { get; set; }
+        /// <summary>
+        /// 当前要控制的协议类型
+        /// </summary>
+        public PtotocolType PtotocolType { get; set; }
     }
 }

@@ -2,18 +2,10 @@ using EasyCaching.Core;
 
 using ESTCore.Message;
 using ESTCore.Message.Client;
-
-using ESTHost.Core.Colleaction;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-
 using MonitorPlatform.Share;
 using MonitorPlatform.Share.ServerCache;
-
-using Newtonsoft.Json;
-
-using Silky.Lms.Core;
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,7 +32,7 @@ namespace ESTHost.WTR20AService
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
 
-            // »ñÈ¡µ±Ç°Ð­ÒéµÄËùÓÐµÄÕ¾µã·þÎñ
+            // ï¿½ï¿½È¡ï¿½ï¿½Ç°Ð­ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ðµï¿½Õ¾ï¿½ï¿½ï¿½ï¿½ï¿½
             //var collectionString = await this.redisCachingProvider.StringGetAsync("");
            // var collectionServers = JsonConvert.DeserializeObject<List<CollectionServerCacheItem>>(collectionString);
             var list = new List<CollectionServerCacheItem>();
@@ -52,39 +44,17 @@ namespace ESTHost.WTR20AService
             });
             try
             {
-                CollectionServerFactory.StartAllServer(list);
+                //CollectionServerFactory.StartAllServer(list);
             }
             catch (Exception ex)
             {
-                Console.WriteLine("·þÎñÆô¶¯Òì³£");
+                Console.WriteLine("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ì³£");
             }
-
-            //while (!stoppingToken.IsCancellationRequested)
-            //{
-            //    var message = new IOTMessage()
-            //    {
-            //        Code = "202001",
-            //        Time = DateTime.Now,
-            //        Value = new Random().Next(0,100),
-            //    };
-            //    var message1 = new IOTMessage()
-            //    {
-            //        Code = "202002",
-            //        Time = DateTime.Now,
-            //        Value = new Random().Next(10, 100),
-            //    };
-            //    await messageClient.SendMessage(message);
-
-            //    await messageClient.SendMessage(message1);
-            //    Console.WriteLine($"·¢ËÍÊý¾Ý£º{message.Value}:{DateTime.Now.ToLocalTime()}");
-            //    //_logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-            //    await Task.Delay(1000, stoppingToken);
-            //}
         }
 
         public override Task StartAsync(CancellationToken cancellationToken)
         {
-            // ·þÎñÆô¶¯ ·¢ËÍÏûÏ¢
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
             currentMessage.ServiceType = ServerType.WTR20AService;
             currentMessage.Online = true;
             messageClient.SendMessage(currentMessage); 

@@ -64,8 +64,8 @@ namespace MonitorPlatform.Wpf.ViewModel
                 device_wtr31?.ForEach(a =>
                 {
                     var cache = ObjectMapper.Map<DeviceCacheItem>(a);
-                    var termianl=terminalRepository.Select()
-                    cache.Terminal=
+                    //var termianl=terminalRepository.Select()
+                    //cache.Terminal=
                 });
 
 

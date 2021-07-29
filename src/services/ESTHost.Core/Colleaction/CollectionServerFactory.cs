@@ -11,6 +11,8 @@
 ******* ★ Copyright @Easten 2020-2021. All rights reserved ★ *********
 ***********************************************************************
  */
+using ESTCore.Common;
+
 using MonitorPlatform.Share.ServerCache;
 
 using System;
@@ -28,42 +30,93 @@ namespace ESTHost.Core.Colleaction
     /// </summary>
     public class CollectionServerFactory
     {
-        private static Dictionary<string, CollectionServices> serviceTheadDictionary;
+        private static Dictionary<Guid, ModbusBase> servicesDictionary;
         static CollectionServerFactory()
         {
-            serviceTheadDictionary = new Dictionary<string, CollectionServices>();
+            servicesDictionary = new Dictionary<Guid, ModbusBase>();
         }
-        public static void CreateService(CollectionServices collection)
+        /// <summary>
+        /// 根据设备创建
+        /// </summary>
+        /// <param name="devices"></param>
+        public static void CreateService(List<DeviceCacheItem> devices)
         {
             try
             {
-                if(!serviceTheadDictionary.TryGetValue(collection.Name,out var server))
+                devices?.ForEach(device =>
                 {
-                    // 不存在服务，则重新创建
-                    server = new CollectionServices();
-                    server.CreateServer(collection.Name);// 创建服务
-                    serviceTheadDictionary.TryAdd(collection.Name, server);
-                }
+                    if (!servicesDictionary.TryGetValue(device.Id, out var server))
+                    {
+                        // 不存在服务，则重新创建
+                        if (device.Type == MonitorPlatform.Share.DeviceCollectionType.Client)
+                            server = ModbusTcpNet.CreateModbus(device);
+                        else
+                            server = ModbusTcpServer.CreateModbus(device);
+                        servicesDictionary.TryAdd(device.Id, server);
+                    }
+                });
             }
             catch (Exception ex)
             {
                 // 采集服务创建异常
+                Console.WriteLine("服务创建失败");
+            }
+        }
+
+        /// <summary>
+        /// 开始写入操作
+        /// </summary>
+        /// <param name="deviceId"></param>
+        /// <param name="terminalId"></param>
+        public static void StartWrite(Guid deviceId,Guid terminalId)
+        {
+            var server = servicesDictionary.GetValueOrDefault(deviceId);
+            if (server != null)
+            {
+                server.BeginWrite(terminalId);
+            }
+        }
+
+        /// <summary>
+        /// 停止写入操作
+        /// </summary>
+        /// <param name="deviceId"></param>
+        /// <param name="termianlId"></param>
+        public static void EndWrite(Guid deviceId,Guid termianlId)
+        {
+            var server = servicesDictionary.GetValueOrDefault(deviceId);
+            if (server != null)
+            {
+                server.EndWrite(termianlId);
             }
         }
         /// <summary>
-        /// 开启所有的串口服务
+        /// 写入传感器信息
         /// </summary>
-        /// <param name="server"></param>
-        public static void StartAllServer(List<CollectionServerCacheItem> server)
+        /// <param name="deviceId">设备id</param>
+        /// <param name="termianlId">终端采集器id</param>
+        /// <param name="data">写入传感器完整的报文数据</param>
+        /// <returns></returns>
+        public static OperateResult<byte[]> WriteSensor(Guid deviceId,byte[] data)
         {
-            if (server.Any())
+            var server = servicesDictionary.GetValueOrDefault(deviceId);
+            if (server != null)
             {
-                foreach (var item in server)
-                {
-                    var cs = new CollectionServices();
-                    cs.CreateServer(item);
-                    CreateService(cs);
-                }
+               return server.WriteSensors(data);
+            }
+            return OperateResult.CreateFailedResult<byte[]>(null);
+        }
+
+        /// <summary>
+        /// 刷新服务缓存数据
+        /// </summary>
+        /// <param name="deviceId"></param>
+        public static void Refresh(Guid deviceId)
+        {
+            var server = servicesDictionary.GetValueOrDefault(deviceId);
+            if (server != null)
+            {
+                server.RefreshChache();
             }
         }
     }

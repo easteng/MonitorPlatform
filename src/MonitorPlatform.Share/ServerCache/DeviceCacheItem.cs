@@ -37,6 +37,10 @@ namespace MonitorPlatform.Share.ServerCache
         /// </summary>
         public string Name { get; set; }
         /// <summary>
+        /// 设备采集类型
+        /// </summary>
+        public DeviceCollectionType Type { get; set; }
+        /// <summary>
         /// 协议类型，  一台串口服务器只能有一种采集协议
         /// </summary>
         public PtotocolType PtotocolType { get; set; }

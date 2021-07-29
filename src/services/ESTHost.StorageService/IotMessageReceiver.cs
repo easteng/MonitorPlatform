@@ -16,8 +16,6 @@ using ESTCore.Message;
 using ESTCore.Message.Handler;
 using ESTCore.Message.Message;
 
-using ESTHost.Core;
-using ESTHost.Core.Message;
 
 using System;
 using System.Threading.Tasks;

@@ -24,6 +24,8 @@ using ESTHost.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
+using MonitorPlatform.Share;
+
 using Silky.Lms.Core;
 using Silky.Lms.Core.Modularity;
 

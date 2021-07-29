@@ -1,12 +1,8 @@
 using ESTCore.Message;
 using ESTCore.Message.Client;
-using ESTHost.Core.Message;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using MonitorPlatform.Share;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -35,7 +31,7 @@ namespace ESTHost.SMSService
 
         public override Task StartAsync(CancellationToken cancellationToken)
         {
-            currentMessage.ServiceType = Core.ServerType.SmsService;
+            currentMessage.ServiceType = ServerType.SmsService;
             currentMessage.Online = true;
             messageClient.SendMessage(currentMessage);
             return base.StartAsync(cancellationToken);
@@ -43,7 +39,7 @@ namespace ESTHost.SMSService
 
         public override Task StopAsync(CancellationToken cancellationToken)
         {
-            currentMessage.ServiceType = Core.ServerType.SmsService;
+            currentMessage.ServiceType = ServerType.SmsService;
             currentMessage.Online = false;
             messageClient.SendMessage(currentMessage);
             return base.StopAsync(cancellationToken);
