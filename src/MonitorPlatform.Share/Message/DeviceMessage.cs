@@ -1,19 +1,17 @@
 ﻿/**********************************************************************
-*******命名空间： ESTHost.Core.Colleaction
-*******类 名 称： OperateResult
+*******命名空间： MonitorPlatform.Share.Message
+*******类 名 称： DeviceMessage
 *******类 说 明： 
 *******作    者： Easten
 *******机器名称： EASTEN
 *******CLR 版本： 4.0.30319.42000
-*******创建时间： 7/27/2021 4:32:50 PM
+*******创建时间： 7/29/2021 5:04:54 PM
 *******联系方式： 1301485237@qq.com
 ***********************************************************************
 ******* ★ Copyright @Easten 2020-2021. All rights reserved ★ *********
 ***********************************************************************
  */
-using ESTCore.Common;
-
-using MonitorPlatform.Contracts.ServerCache;
+using ESTCore.Message;
 
 using System;
 using System.Collections.Generic;
@@ -21,30 +19,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ESTHost.Core.Colleaction
+namespace MonitorPlatform.Share.Message
 {
     /// <summary>
-    ///  操作结果
+    ///  设备采集的数据消息体
     /// </summary>
-    public class OperateResult
+    public class DeviceMessage: AbstractMessage
     {
         /// <summary>
-        /// 返回的数据
+        /// 主题信息
         /// </summary>
-        public byte[] Data { get; set; }
-
+        public override string Topic { get => MessageTopic.DeviceData; set => base.Topic = value; }
         /// <summary>
-        /// 采集器信息
+        /// 物联网数据
         /// </summary>
-        public TerminalCacheItem Terminal { get; set; }
-        /// <summary>
-        /// 当前采集设备的id
-        /// </summary>
-        public Guid DeviceId { get; set; }
-
-        public override string ToString()
-        {
-            return this.Data.ToHexString();
-        }
+        public List<IOTMessage> IOTData { get; set; }
     }
 }

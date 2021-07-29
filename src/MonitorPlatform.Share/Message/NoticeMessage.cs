@@ -19,5 +19,10 @@ namespace MonitorPlatform.Share
         /// 是否在线
         /// </summary>
         public bool Online { get; set; }
+        /// <summary>
+        /// 消息内容，用来通知一些各服务组件报错的问题
+        /// </summary>
+
+        public string Content { get; set; }
     }
 }

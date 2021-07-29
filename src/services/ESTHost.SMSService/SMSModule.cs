@@ -17,13 +17,8 @@ using Autofac.Extensions.DependencyInjection;
 using ESTCore.Caching;
 using ESTCore.Message;
 using ESTCore.Message.Services;
-
-using ESTHost.Core;
-
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-
-using Silky.Lms.Core;
+using MonitorPlatform.Share;
 using Silky.Lms.Core.Modularity;
 using System.Threading.Tasks;
 

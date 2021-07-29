@@ -17,6 +17,8 @@ using ESTCore.Message.Message;
 
 using ESTHost.Core.Command;
 
+using MonitorPlatform.Share;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,16 +32,34 @@ namespace ESTHost.WTR20AService
     /// </summary>
     public class CommandReceiver : IMessageReceiverHandler
     {
-        readonly CommandReceiver commandReceiver;
-        public CommandReceiver(CommandReceiver commandReceiver = null)
+        /// <summary>
+        /// 当前协议类型
+        /// </summary>
+        private readonly PtotocolType CurrentPtoto = PtotocolType.WTR_20A;
+        public CommandReceiver()
         {
-            this.commandReceiver = commandReceiver;
+            
         }
+
         public Task Receive(BaseMessage message)
         {
             // 接收到命令
             Console.WriteLine("接收到命令消息");
 
+            var controlMessage = message.GetMessage<RemoteControlMessage>();
+            if (controlMessage.PtotocolType != this.CurrentPtoto) return Task.CompletedTask; // 不是当前协议的内容不出处理
+
+            switch (controlMessage.ControlType)
+            {
+                case ControlType.Restart:
+                    break;
+                case ControlType.Write:
+                    break;
+                case ControlType.Update:
+                    break;
+                default:
+                    break;
+            }
             // 重启命令  
             // 写入传感器
             // 写入可控制的传感器数量

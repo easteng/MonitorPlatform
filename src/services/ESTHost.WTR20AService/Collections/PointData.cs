@@ -1,58 +1,75 @@
 ﻿/**********************************************************************
-*******命名空间： ESTHost.Core.Message
-*******类 名 称： IOTMessage
+*******命名空间： ESTHost.WTR20AService.Collections
+*******类 名 称： PointData
 *******类 说 明： 
 *******作    者： Easten
 *******机器名称： EASTEN
 *******CLR 版本： 4.0.30319.42000
-*******创建时间： 7/23/2021 11:59:00 AM
+*******创建时间： 7/29/2021 3:20:09 PM
 *******联系方式： 1301485237@qq.com
 ***********************************************************************
 ******* ★ Copyright @Easten 2020-2021. All rights reserved ★ *********
 ***********************************************************************
  */
-using ESTCore.Message;
-
-using Newtonsoft.Json;
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MonitorPlatform.Share
+namespace ESTHost.WTR20AService.Collections
 {
     /// <summary>
-    ///  物联网消息
+    ///  测温点数据
     /// </summary>
-    public class IOTMessage: AbstractMessage
+    public class PointData
     {
-        public override string Topic { get => MessageTopic.Iot; set => base.Topic = value; }
+        /// <summary>
+        /// 传感器的需要，需要从传感器列表中获取对应的传感器编号
+        /// </summary>
+        public byte PointNo { get; set; }
+        /// <summary>
+        /// 温度值
+        /// </summary>
+        public double Temp { get; set; }
 
         /// <summary>
-        /// 数据编号
-        /// </summary>
-        public string SensorCode { get; set; }
-        /// <summary>
-        /// 数据值
-        /// </summary>
-        public double Value { get; set; }
-        /// <summary>
-        /// 采集数值
+        /// 数据采集时间
         /// </summary>
         public DateTime Time { get; set; }
 
         /// <summary>
-        /// 所属终端
+        /// 原始数据
         /// </summary>
-
-        public Guid TerminalId { get; set; }
+        public ushort Byte { get; set; }
 
         /// <summary>
         /// 电池电压
         /// </summary>
-        public decimal Battary { get; set; }
+        public byte Battery { get; set; } = 0xFF;
+
+        /// <summary>
+        /// 电池电压描述
+        /// </summary>
+        public string BatteryStatus
+        {
+            get
+            {
+                switch (Battery)
+                {
+                    case 0:
+                        return "未知";
+                    case 1:
+                        return "低";
+                    case 2:
+                        return "中";
+                    case 3:
+                        return "高";
+                    default:
+                        return "";
+                }
+            }
+        }
 
         /// <summary>
         /// 是否离线
@@ -62,10 +79,5 @@ namespace MonitorPlatform.Share
         /// 传感器状态-- 0正常 1故障
         /// </summary>
         public byte PointState { get; set; } = 0;
-
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this);
-        }
     }
 }

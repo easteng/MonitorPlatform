@@ -25,6 +25,10 @@ namespace MonitorPlatform.Share.ServerCache
     public class SensorCacheItem
     {
         /// <summary>
+        /// 指定采集器中传感器的编号
+        /// </summary>
+        public int SensorNo { get; set; }
+        /// <summary>
         /// 传感器编号
         /// </summary>
         public string SensorCode { get; set; }

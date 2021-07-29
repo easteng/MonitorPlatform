@@ -2,20 +2,10 @@ using EasyCaching.Core;
 
 using ESTCore.Message;
 using ESTCore.Message.Client;
-
-using ESTHost.Core.Colleaction;
-using ESTHost.Core.Message;
-
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-
-using MonitorPlatform.Contracts.ServerCache;
 using MonitorPlatform.Share;
-
-using Newtonsoft.Json;
-
-using Silky.Lms.Core;
-
+using MonitorPlatform.Share.ServerCache;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -54,40 +44,18 @@ namespace ESTHost.WTR20AService
             });
             try
             {
-                CollectionServerFactory.StartAllServer(list);
+                //CollectionServerFactory.StartAllServer(list);
             }
             catch (Exception ex)
             {
                 Console.WriteLine("服务启动异常");
             }
-
-            //while (!stoppingToken.IsCancellationRequested)
-            //{
-            //    var message = new IOTMessage()
-            //    {
-            //        Code = "202001",
-            //        Time = DateTime.Now,
-            //        Value = new Random().Next(0,100),
-            //    };
-            //    var message1 = new IOTMessage()
-            //    {
-            //        Code = "202002",
-            //        Time = DateTime.Now,
-            //        Value = new Random().Next(10, 100),
-            //    };
-            //    await messageClient.SendMessage(message);
-
-            //    await messageClient.SendMessage(message1);
-            //    Console.WriteLine($"发送数据：{message.Value}:{DateTime.Now.ToLocalTime()}");
-            //    //_logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-            //    await Task.Delay(1000, stoppingToken);
-            //}
         }
 
         public override Task StartAsync(CancellationToken cancellationToken)
         {
             // 服务启动 发送消息
-            currentMessage.ServiceType = Core.ServerType.WTR20AService;
+            currentMessage.ServiceType = ServerType.WTR20AService;
             currentMessage.Online = true;
             messageClient.SendMessage(currentMessage); 
             return base.StartAsync(cancellationToken);
@@ -95,7 +63,7 @@ namespace ESTHost.WTR20AService
 
         public override Task StopAsync(CancellationToken cancellationToken)
         {
-            currentMessage.ServiceType = Core.ServerType.WTR20AService;
+            currentMessage.ServiceType = ServerType.WTR20AService;
             currentMessage.Online = false;
             messageClient.SendMessage(currentMessage);
             return base.StopAsync(cancellationToken);

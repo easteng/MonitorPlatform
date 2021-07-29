@@ -16,7 +16,7 @@ using EasyCaching.Core;
 using ESTCore.Common;
 using ESTCore.Common.ModBus;
 
-using MonitorPlatform.Contracts.ServerCache;
+using MonitorPlatform.Share.ServerCache;
 
 using Newtonsoft.Json;
 
@@ -62,11 +62,11 @@ namespace ESTHost.Core.Colleaction
             this.eventBus = EngineContext.Current.Resolve<IEventBus>();
             this.redisCachingProvider = EngineContext.Current.Resolve<IRedisCachingProvider>();
             // 初始化modbus 客户端
-            this.modbus = new ModbusTcpNet();
-            this.modbus.ConnectTimeOut = 2000;
-            this.modbus.ReceiveTimeOut = 2000;
-            this.modbus.SleepTime = 200;
-            this.modbus.Station = 2;
+            //this.modbus = new ModbusTcpNet();
+            //this.modbus.ConnectTimeOut = 2000;
+            //this.modbus.ReceiveTimeOut = 2000;
+            //this.modbus.SleepTime = 200;
+            //this.modbus.Station = 2;
         }
         /// <summary>
         /// 获取终端的缓存数据
@@ -119,7 +119,7 @@ namespace ESTHost.Core.Colleaction
                             {
                                 this.modbus.Station =(byte)b.Addr;
 
-                                this.modbus.Read("00", 8);
+                               // this.modbus.Read("00", 8);
                                 Thread.Sleep(2000);
                                // this.modbus.ReadFromCoreServer(info);
                               //  this.modbus.ReadFromCoreServer(this.modbus.AlienSession.Socket,info, true, true);
@@ -177,10 +177,10 @@ namespace ESTHost.Core.Colleaction
             {
                 if (this.modbus != null)
                 {
-                    this.modbus.IpAddress = this.Server.Ip;
-                    this.modbus.Port = this.Server.Port;
-                    this.modbus.ConnectServer();// 连接服务
-                    this.IsConnected = true;
+                    //this.modbus.IpAddress = this.Server.Ip;
+                    //this.modbus.Port = this.Server.Port;
+                    //this.modbus.ConnectServer();// 连接服务
+                    //this.IsConnected = true;
                     Console.WriteLine($"{this.Name}:服务连接成功");
                 }
             }
@@ -203,7 +203,7 @@ namespace ESTHost.Core.Colleaction
                     {
                         if (this.modbus != null)
                         {
-                            this.modbus.ConnectServer();// 连接服务
+                            //this.modbus.ConnectServer();// 连接服务
                         }
                         Thread.Sleep(1000);
                         Console.WriteLine("Modbus 服务重连中...");

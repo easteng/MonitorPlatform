@@ -24,6 +24,6 @@ namespace ESTHost.Core.Colleaction
     /// </summary>
     public interface IEventBus
     {
-        abstract Task<bool> ReceiverMateData(OperateResult result);
+        abstract Task<bool> ReceiverMateData(ReadCallbackMessage message);
     }
 }
