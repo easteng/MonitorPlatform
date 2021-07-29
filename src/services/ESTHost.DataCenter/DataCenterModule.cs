@@ -18,12 +18,12 @@ using ESTCore.Caching;
 using ESTCore.Message;
 using ESTCore.Message.Services;
 
-using ESTHost.Core;
-using ESTHost.Core.Message;
 using ESTHost.DataCenter.Repeater;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+
+using MonitorPlatform.Share;
 
 using Silky.Lms.Core;
 using Silky.Lms.Core.Modularity;

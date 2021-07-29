@@ -16,7 +16,8 @@ using ESTCore.Message.Handler;
 using ESTCore.Message.Message;
 
 using ESTHost.Core;
-using ESTHost.Core.Message;
+
+using MonitorPlatform.Share;
 
 using System;
 using System.Threading.Tasks;

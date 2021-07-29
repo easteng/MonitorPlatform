@@ -4,13 +4,11 @@ using ESTCore.Message;
 using ESTCore.Message.Client;
 
 using ESTHost.Core.Colleaction;
-using ESTHost.Core.Message;
-
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-using MonitorPlatform.Contracts.ServerCache;
 using MonitorPlatform.Share;
+using MonitorPlatform.Share.ServerCache;
 
 using Newtonsoft.Json;
 
@@ -49,7 +47,7 @@ namespace ESTHost.WTR20AService
             list.Add(new CollectionServerCacheItem()
             {
                 Name = "test",
-                Ip="192.168.1.254",
+                Ip= "192.168.1.254",
                 Port= 30003
             });
             try
@@ -87,7 +85,7 @@ namespace ESTHost.WTR20AService
         public override Task StartAsync(CancellationToken cancellationToken)
         {
             // 服务启动 发送消息
-            currentMessage.ServiceType = Core.ServerType.WTR20AService;
+            currentMessage.ServiceType = ServerType.WTR20AService;
             currentMessage.Online = true;
             messageClient.SendMessage(currentMessage); 
             return base.StartAsync(cancellationToken);
@@ -95,7 +93,7 @@ namespace ESTHost.WTR20AService
 
         public override Task StopAsync(CancellationToken cancellationToken)
         {
-            currentMessage.ServiceType = Core.ServerType.WTR20AService;
+            currentMessage.ServiceType = ServerType.WTR20AService;
             currentMessage.Online = false;
             messageClient.SendMessage(currentMessage);
             return base.StopAsync(cancellationToken);

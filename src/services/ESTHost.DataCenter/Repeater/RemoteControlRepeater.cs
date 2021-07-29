@@ -16,6 +16,8 @@ using ESTCore.Message.Message;
 
 using ESTHost.Core;
 
+using MonitorPlatform.Share;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;

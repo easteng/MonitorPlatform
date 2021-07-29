@@ -13,7 +13,7 @@
  */
 using ESTCore.Common;
 
-using MonitorPlatform.Contracts.ServerCache;
+using MonitorPlatform.Share.ServerCache;
 
 using System;
 using System.Collections.Generic;

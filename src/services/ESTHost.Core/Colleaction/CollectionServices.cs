@@ -18,7 +18,7 @@ using ESTCore.Common.ModBus;
 
 using ESTHost.Core.Server;
 
-using MonitorPlatform.Contracts.ServerCache;
+using MonitorPlatform.Share.ServerCache;
 
 using Newtonsoft.Json;
 
@@ -31,6 +31,8 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
+
+using WatsonTcp;
 
 namespace ESTHost.Core.Colleaction
 {
@@ -51,6 +53,7 @@ namespace ESTHost.Core.Colleaction
         private bool IsConnected { get; set; } = false;
         private TcpClient tcpClient { get; set; }
         private IPEndPoint iPEndPoint {get;set;}
+        private WatsonTcpClient  watsonTcpClient { get; set; }  
         /// <summary>
         /// 转换服务线程
         /// </summary>
@@ -72,7 +75,9 @@ namespace ESTHost.Core.Colleaction
             this.modbus.ConnectTimeOut = 2000;
             this.modbus.ReceiveTimeOut = 2000;
             this.modbus.SleepTime = 200;
-            this.modbus.Station = 2;
+            this.modbus.Station = 1;
+
+
         }
         /// <summary>
         /// 获取终端的缓存数据
@@ -115,8 +120,8 @@ namespace ESTHost.Core.Colleaction
             this.Name = name;
             this.ServerThread = new Thread(() =>
             {
-                WTR31Comm comm = new WTR31Comm();
-                comm.t_no =1;
+                WTR20AComm comm = new WTR20AComm();
+                comm.t_no = 1;
                 comm.com_bandrate = 9600;
                 comm.com_check = 0;
                 comm.Link = myLink;
@@ -127,92 +132,89 @@ namespace ESTHost.Core.Colleaction
 
                 while (this.IsWorking)
                 {
-                    //等待Api通信完成
-                    while (myLink.api_busing)
+                    ////等待Api通信完成
+                  //  while (myLink.api_busing)
+                   // {
+                        //Parallel.ForEach(this.Terminals, b =>
+                        //{
+                        //    if (b.Enabled)
+                        //    {
+                        //        this.modbus.Station = (byte)b.Addr;
+
+                        //        var res = this.modbus.Read("00", 8);
+                        //        //  Thread.Sleep(2000);
+                        //        // this.modbus.ReadFromCoreServer(info);
+                        //        //  this.modbus.ReadFromCoreServer(this.modbus.AlienSession.Socket,info, true, true);
+                        //        // var result = <CollectionServerCacheItem>();
+                        //        //if (result.IsSuccess)
+                        //        //{
+                        //        //    var operateResult = new OperateResult();
+                        //        //   // operateResult.Data = result.Content;
+                        //        //    operateResult.DeviceId = this.Server.Id;
+                        //        //    operateResult.Terminal = b;
+                        //        //    this.eventBus.ReceiverMateData(operateResult);
+                        //        //}
+                        //        //else
+                        //        //{
+                        //        //    Console.WriteLine("服务未连接");
+                        //        //}
+                        //    }
+                        //});
+                   // }
+                    //Thread.Sleep(300);
+                    //str_error = "";
+                    //TData t_data = null;
+                    //lock (myLink.op_lock)
+                    //{
+                    //    t_data = comm.ReadData(t_info.md_addr,1, ref str_error);
+                    //}
+                    //if (t_data == null)
+                    //{
+                    //    last_tdata = null;
+                    //    continue;
+                    //}
+
+                //    轮询读取线圈数据
+                    if (this.Terminals != null && this.Terminals.Any())
                     {
                         Parallel.ForEach(this.Terminals, b =>
                         {
                             if (b.Enabled)
                             {
-                                this.modbus.Station =(byte)b.Addr;
-
-                                this.modbus.Read("00", 8);
-                                Thread.Sleep(2000);
-                               // this.modbus.ReadFromCoreServer(info);
-                              //  this.modbus.ReadFromCoreServer(this.modbus.AlienSession.Socket,info, true, true);
-                               // var result = <CollectionServerCacheItem>();
+                                var aaa = "01 03 00 00 00 02 C4 0B";
+                                var ccc = StringToHexByte(aaa);
+                                watsonTcpClient.Send(aaa);
+                               // var result = this.modbus.Read("00", 2);
                                 //if (result.IsSuccess)
                                 //{
                                 //    var operateResult = new OperateResult();
-                                //   // operateResult.Data = result.Content;
+                                //    operateResult.Data = result.Content;
                                 //    operateResult.DeviceId = this.Server.Id;
                                 //    operateResult.Terminal = b;
                                 //    this.eventBus.ReceiverMateData(operateResult);
                                 //}
                                 //else
                                 //{
-                                //    Console.WriteLine("服务未连接");
+                                //    Console.WriteLine($"{result.Message}");
                                 //}
                             }
                         });
                     }
-                    Thread.Sleep(300);
-                    str_error = "";
-                    TData t_data = null;
-                    lock (myLink.op_lock)
-                    {
-                        t_data = comm.ReadData(t_info.md_addr, 2, ref str_error);
-                    }
-                    if (t_data == null)
-                    {
-                        last_tdata = null;
-                        continue;
-                    }
-
-                    // 轮询读取线圈数据
-                    //if (this.Terminals != null && this.Terminals.Any())
-                    //{
-                    //    Parallel.ForEach(this.Terminals, b =>
-                    //    {
-                    //        if (b.Enabled)
-                    //        {
-                    //            try
-                    //            {
-                    //                if (this.tcpClient.Connected)
-                    //                {
-                    //                    var bb = "01 03 10 02 00 02 61 0B";
-                    //                    this.tcpClient.Client.Send(bb.ToHexBytes());
-                    //                    var da = ReadBuffer();
-                    //                }
-                    //            }
-                    //            catch (Exception ex)
-                    //            {
-
-                    //                throw;
-                    //            }
-                    //            //;
-                    //            //var result = this.modbus.Read("01",10);
-                    //            //if (result.IsSuccess)
-                    //            //{
-                    //            //    var operateResult = new OperateResult();
-                    //            //    operateResult.Data = result.Content;
-                    //            //    operateResult.DeviceId = this.Server.Id;
-                    //            //    operateResult.Terminal = b;
-                    //            //    this.eventBus.ReceiverMateData(operateResult);
-                    //            //}
-                    //            //else
-                    //            //{
-                    //            //    Console.WriteLine("服务未连接");
-                    //            //}
-                    //        }
-                    //    });
-                    //}
                     Thread.Sleep(1000);
                 }
             });
             this.ServerThread.Name = name;
         }
-
+        public static byte[] StringToHexByte(string hexString)
+        {
+            hexString = hexString.Replace(" ", "");
+            if (hexString.Length % 2 != 0)
+                hexString += " ";
+            var returnBytes = new byte[hexString.Length / 2];
+            for (var i = 0; i < returnBytes.Length; i++)
+                returnBytes[i] = Convert.ToByte(hexString.Substring(i * 2, 2), 16);
+            return returnBytes;
+        }
         private byte[] ReadBuffer()
         {
             byte[] bytes = new byte[tcpClient.Available];
@@ -248,7 +250,7 @@ namespace ESTHost.Core.Colleaction
                 this.IsWorking = true;
                 this.ServerThread.Start();
                 Console.WriteLine("采集服务已启动");
-               // this.ReConnectServer(); // 开启重连
+                this.ReConnectServer(); // 开启重连
             }
         }
 
@@ -260,11 +262,19 @@ namespace ESTHost.Core.Colleaction
             {
                 if (this.modbus != null)
                 {
-                    //this.modbus.IpAddress = this.Server.Ip;
-                    //this.modbus.Port = this.Server.Port;
-                    //this.modbus.ConnectServer();// 连接服务
-                    this.iPEndPoint = new IPEndPoint(IPAddress.Parse(this.Server.Ip), this.Server.Port);
-                    tcpClient.Connect(this.iPEndPoint);
+                    this.modbus.IpAddress = this.Server.Ip;
+                    this.modbus.Port = this.Server.Port;
+                    this.modbus.ConnectServer();// 连接服务
+                                                //   this.iPEndPoint = new IPEndPoint(IPAddress.Parse(this.Server.Ip), this.Server.Port);
+                                                //  tcpClient.Connect(this.iPEndPoint);
+                    this.watsonTcpClient = new WatsonTcpClient(this.Server.Ip, this.Server.Port);
+                    this.watsonTcpClient.Events.MessageReceived += Events_MessageReceived;
+                    this.watsonTcpClient.Events.StreamReceived += Events_StreamReceived;
+                    this.watsonTcpClient.Events.ServerConnected += Events_ServerConnected;
+                    this.watsonTcpClient.Keepalive.EnableTcpKeepAlives = true;
+                    this.watsonTcpClient.Keepalive.TcpKeepAliveInterval = 5;
+                    this.watsonTcpClient.Keepalive.TcpKeepAliveRetryCount = 5;
+                    this.watsonTcpClient.Connect(); 
                     this.IsConnected = true;
                     Console.WriteLine($"{this.Name}:服务连接成功");
                 }
@@ -276,6 +286,22 @@ namespace ESTHost.Core.Colleaction
                 Console.WriteLine(ex);
             }
         }
+
+        private void Events_ServerConnected(object sender, ConnectionEventArgs e)
+        {
+            //throw new NotImplementedException();
+        }
+
+        private void Events_StreamReceived(object sender, StreamReceivedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void Events_MessageReceived(object sender, MessageReceivedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// 重新连接modbus 服务器
         /// </summary>
@@ -289,15 +315,23 @@ namespace ESTHost.Core.Colleaction
                     {
                         if (!this.IsConnected)
                         {
-                            tcpClient.Connect(this.iPEndPoint);
+                            //if (this.modbus != null)
+                            //{
+                            //    this.modbus.ConnectServer();// 连接服务
+                            //}
+
+
+                            if (watsonTcpClient != null && !watsonTcpClient.Connected)
+                            {
+                                watsonTcpClient.Connect();
+                            }
+
+                            //tcpClient.Connect(this.iPEndPoint);
                             Thread.Sleep(1000);
                             Console.WriteLine("Modbus 服务重连中...");
                         }
-                        //if (this.modbus != null)
-                        //{
-                        //    this.modbus.ConnectServer();// 连接服务
-                        //}
                        
+
 
                     }
                     catch (Exception ex)

@@ -44,7 +44,7 @@ namespace ESTHost.WTR20AService
         /// <returns></returns>
         public override Task<bool> ReceiverMateData(OperateResult result)
         {
-
+            Console.WriteLine(result.ToString());
             return Task.FromResult(true);
         }
     }

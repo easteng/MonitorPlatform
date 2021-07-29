@@ -38,7 +38,7 @@ namespace ESTHost.Core.Server
         /// <summary>
         /// 通信方式 1：串口 2：tcpserver串口服务器 3：gprs/3g/4g dtu 4：Modbus tcp网关
         /// </summary>
-        public int comm_type = 4;
+        public int comm_type = 2;
 
         /// <summary>
         /// 串口号
@@ -58,7 +58,7 @@ namespace ESTHost.Core.Server
         /// <summary>
         /// 串口服务器-tcpserver模式ip
         /// </summary>
-        public string comserver_ip = "";
+        public string comserver_ip { get; set; } = "192.168.1.254";
 
         /// <summary>
         /// 串口服务器-tcpserver模式端口
@@ -155,7 +155,7 @@ namespace ESTHost.Core.Server
         {
             Close();
 
-            IPEndPoint localEP = new IPEndPoint(IPAddress.Parse("192.168.1.254"), 30002);
+            IPEndPoint localEP = new IPEndPoint(IPAddress.Parse("192.168.1.254"), 30003);
             myTcp = new TcpClient();
             try
             {
@@ -194,20 +194,44 @@ namespace ESTHost.Core.Server
         /// <param name="bytes"></param>
         public void Send(byte[] bytes)
         {
-            byte[] s_buf = new byte[6 + bytes.Length - 2];
-            s_buf[0] = 0x00;
-            s_buf[1] = 0x12;
-            s_buf[2] = 0x00;
-            s_buf[3] = 0x00;
+            switch (comm_type)
+            {
+                case 1://串口方式
+                    {
+                        //myPort.Write(bytes, 0, bytes.Length);
+                    }
+                    break;
+                case 2://tcp串口服务器
+                    {
+                        myTcp.Client.Send(bytes);
+                    }
+                    break;
+                case 3://gprs网路服务器
+                    {
+                      //  myNet.Send_dtu(bytes);
+                    }
+                    break;
+                case 4://Modbus Tcp
+                    {
+                        byte[] s_buf = new byte[6 + bytes.Length - 2];
+                        s_buf[0] = 0x00;
+                        s_buf[1] = 0x12;
+                        s_buf[2] = 0x00;
+                        s_buf[3] = 0x00;
 
-            //数据域长度
-            ushort nLen = (ushort)(bytes.Length - 2);
-            s_buf[4] = (byte)(nLen >> 8);
-            s_buf[5] = (byte)nLen;
-            for (int i = 0; i < nLen; i++)
-                s_buf[6 + i] = bytes[i];
+                        //数据域长度
+                        ushort nLen = (ushort)(bytes.Length - 2);
+                        s_buf[4] = (byte)(nLen >> 8);
+                        s_buf[5] = (byte)nLen;
+                        for (int i = 0; i < nLen; i++)
+                            s_buf[6 + i] = bytes[i];
 
-            myTcp.Client.Send(s_buf);
+                        myTcp.Client.Send(s_buf);
+                    }
+                    break;
+                default:
+                    break;
+            }
         }
 
         /// <summary>

@@ -11,7 +11,7 @@
 ******* ★ Copyright @Easten 2020-2021. All rights reserved ★ *********
 ***********************************************************************
  */
-using MonitorPlatform.Contracts.ServerCache;
+using MonitorPlatform.Share.ServerCache;
 
 using System;
 using System.Collections.Generic;

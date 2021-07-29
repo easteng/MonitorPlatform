@@ -11,6 +11,8 @@
 ******* ★ Copyright @easten company 2021-2022. All rights reserved ★ *********
 ***********************************************************************
  */
+using ESTCore.Common;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -281,8 +283,12 @@ namespace ESTHost.Core.Server
                     }
                 }
 
-                Link.ClearRecvBuf();
-                this.Send(send_buf);
+                //  Link.ClearRecvBuf();
+                var aaa = "010300000002C40B";
+                var ccc = StringToHexByte(aaa);
+
+                this.Send(ccc);
+                //this.Send(send_buf);
                 byte[] frame_buf = GetOneFrame(addr, 0x03);
                 if (frame_buf == null)
                 {
@@ -372,7 +378,16 @@ namespace ESTHost.Core.Server
                 return null;
             }
         }
-
+        public static byte[] StringToHexByte(string hexString)
+        {
+            hexString = hexString.Replace(" ", "");
+            if (hexString.Length % 2 != 0)
+                hexString += " ";
+            var returnBytes = new byte[hexString.Length / 2];
+            for (var i = 0; i < returnBytes.Length; i++)
+                returnBytes[i] = Convert.ToByte(hexString.Substring(i * 2, 2), 16);
+            return returnBytes;
+        }
         /// <summary>
         /// 读取报警温度参数
         /// </summary>
@@ -575,11 +590,11 @@ namespace ESTHost.Core.Server
             DateTime tout = DateTime.Now.AddSeconds(PublicParam.comm_timeout);
             while (tout >= DateTime.Now)
             {
-                //if (Link.BytesToRead <= 0)
-                //{
-                //    System.Threading.Thread.Sleep(50);
-                //    continue;
-                //}
+                if (Link.BytesToRead <= 0)
+                {
+                    System.Threading.Thread.Sleep(50);
+                    continue;
+                }
 
                 recv_bytes.AddRange(Link.Recv());
                 while (recv_bytes.Count >= 5)

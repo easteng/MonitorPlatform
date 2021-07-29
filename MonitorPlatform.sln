@@ -41,6 +41,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ESTHost.StorageService", "s
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ESTHost.DataCenter", "src\Services\ESTHost.DataCenter\ESTHost.DataCenter.csproj", "{69EDDA1A-B23D-4E4A-8813-8971B6A64772}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1", "src\Examples\ConsoleApp1\ConsoleApp1.csproj", "{B0708F17-84EC-4FA9-ADE4-0AA1A5B64382}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -103,6 +105,10 @@ Global
 		{69EDDA1A-B23D-4E4A-8813-8971B6A64772}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{69EDDA1A-B23D-4E4A-8813-8971B6A64772}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{69EDDA1A-B23D-4E4A-8813-8971B6A64772}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0708F17-84EC-4FA9-ADE4-0AA1A5B64382}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0708F17-84EC-4FA9-ADE4-0AA1A5B64382}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0708F17-84EC-4FA9-ADE4-0AA1A5B64382}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0708F17-84EC-4FA9-ADE4-0AA1A5B64382}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -125,6 +131,7 @@ Global
 		{2897D538-2231-429C-BF65-FDD2AD24C78A} = {375B0263-5BC0-40F0-A37B-9D43A48BBBDA}
 		{A38731B7-E478-4C09-BFD1-8657A8DF3182} = {375B0263-5BC0-40F0-A37B-9D43A48BBBDA}
 		{69EDDA1A-B23D-4E4A-8813-8971B6A64772} = {375B0263-5BC0-40F0-A37B-9D43A48BBBDA}
+		{B0708F17-84EC-4FA9-ADE4-0AA1A5B64382} = {D0C91141-BC34-4700-80EF-0539D1AA7AFC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {730832CF-56CC-4D95-A38D-A6AB7952AB5F}
