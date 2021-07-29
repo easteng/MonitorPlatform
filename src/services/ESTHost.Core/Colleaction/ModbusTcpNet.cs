@@ -18,6 +18,7 @@ using ESTCore.Common.Core.Address;
 using ESTCore.Common.ModBus;
 using ESTCore.Common.Profinet.Freedom;
 
+using MonitorPlatform.Share;
 using MonitorPlatform.Share.ServerCache;
 
 using Newtonsoft.Json;
@@ -59,6 +60,7 @@ namespace ESTHost.Core.Colleaction
             var tcpNet = new ModbusTcpNet();
             tcpNet.deviceItem = item;
             tcpNet.CreateTcpNet();
+            tcpNet.StartCollection();
             return tcpNet;
         }
 
@@ -77,7 +79,7 @@ namespace ESTHost.Core.Colleaction
         {
             this.freedomTcp.ConnectServer(); // 连接服务
             this.terminals = this.deviceItem.Terminal;
-
+            this.IsWorking = true;
             mainThread = new Thread(() =>
              {
                  while (this.IsWorking)
@@ -91,10 +93,11 @@ namespace ESTHost.Core.Colleaction
                               // 采集器可用是才进行读取
                               if (terminal.Enabled)
                               {
+                                  if (terminal.SensorCount == 0) return;
                                   // 每次循环都要设置地址位，以便计算发送报文
                                   this.Station = (byte)terminal.Addr;
                                   // 创建，进行读取  有几个传感器，就读取多长的数据
-                                  var command = CreateReadRegisterCommand("00", (ushort)terminal.Sensors.Count());
+                                  var command = CreateReadRegisterCommand("00", (ushort)(terminal.SensorCount * 2));
                                   if (command.IsSuccess)
                                   {
                                       var message = this.freedomTcp.Read(command.Content.ToHexString(), 0);

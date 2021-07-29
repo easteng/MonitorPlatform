@@ -31,9 +31,4 @@ namespace MonitorPlatform.Share.ServerCache
         public string Name { get; set; }
         public List<SensorCacheItem> Sensors { get; set; }
     }
-
-    public class SensorCacheItem
-    {
-
-    }
 }

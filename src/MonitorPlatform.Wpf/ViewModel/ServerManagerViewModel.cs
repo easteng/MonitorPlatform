@@ -11,6 +11,7 @@
 ******* ★ Copyright @easten company 2021-2022. All rights reserved ★ *********
 ***********************************************************************
  */
+using ESTCore.Message.Client;
 using ESTCore.ORM.FreeSql;
 
 using FreeSql;
@@ -23,6 +24,8 @@ using MonitorPlatform.Domain.Entities;
 using MonitorPlatform.Share;
 using MonitorPlatform.Wpf.Common;
 using MonitorPlatform.Wpf.Model;
+
+using Silky.Lms.Core;
 
 using System;
 using System.Collections.Generic;
@@ -91,14 +94,18 @@ namespace MonitorPlatform.Wpf.ViewModel
         public ICommand CreateCommand { get { return new CommandBase(OpenDrawAction); } }
         public ICommand DeleteCommand { get { return new CommandBase(DeleteAction); } }
         readonly IBaseRepository<Terminal, Guid> terminalRepository;
+        readonly IBaseRepository<DeviceRltTerminal, Guid> deviceRltRepository;
         readonly IBaseRepository<TerminalRltSensor, Guid> terminalRltSensorRepository;
-
+        readonly IMessageClientProvider messageClientProvider;
+           
         private Guid SelectedTerminalId { get; set; }
         public ServerManagerViewModel()
         {
+            deviceRltRepository = ESTRepository.Builder<DeviceRltTerminal, Guid>();
             terminalRepository = ESTRepository.Builder<Terminal, Guid>();
             terminalRltSensorRepository = ESTRepository.Builder<TerminalRltSensor, Guid>();
             PtotocolList=new  List<ComboxItem>();
+            this.messageClientProvider = EngineContext.Current.Resolve<IMessageClientProvider>();
             var dic1 = typeof(PtotocolType).GetDescriptionAndValue();//协议类型
             var dic2 = typeof(DeviceCollectionType).GetDescriptionAndValue();//采集类型
             foreach (var item in dic1)
@@ -283,6 +290,44 @@ namespace MonitorPlatform.Wpf.ViewModel
         public void PuceServerAction(object obj)
         {
             // todo 
+        }
+        /// <summary>
+        /// 远程写入传感器
+        /// </summary>
+        public void WriteSensor(Guid id)
+        {
+            // 查询当前采集器是否有传感器
+            if(terminalRltSensorRepository.Where(a => a.TerminalId == id).Any())
+            {
+                var terminal=terminalRepository.Get(id);
+                // 可以写入,调用消息发送接口
+                var message = new RemoteControlMessage();
+                message.ControlType = ControlType.Write;
+                message.PtotocolType = terminal.Ptotocol;
+                // 查找采集器关联的设备
+                var device = deviceRltRepository.Orm.Select<DeviceRltTerminal, Device>()
+                    .Where((a, b) => a.TerminalId == id && a.DeviceId == b.Id)
+                    .ToList((c, d) =>new
+                    {
+                        DeviceId = d.Id
+                    });
+                if(device == null)
+                {
+                    Growl.Warning("当前采集器没有关联设备，不能执行数据写入");
+                    return;
+                }
+                message.DeviceId = device[0].DeviceId;
+                message.TerminalId = id;
+                messageClientProvider.SendMessage(message);
+                Growl.Info("写入命令已下发");
+            }
+            else
+            {
+                Growl.Warning("当前采集器没有关联任何传感器，不能执行数据写入");
+
+                return;
+            }
+
         }
     }
 }

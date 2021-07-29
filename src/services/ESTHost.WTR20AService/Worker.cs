@@ -2,10 +2,16 @@ using EasyCaching.Core;
 
 using ESTCore.Message;
 using ESTCore.Message.Client;
+
+using ESTHost.Core.Colleaction;
+
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using MonitorPlatform.Share;
 using MonitorPlatform.Share.ServerCache;
+
+using Newtonsoft.Json;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,23 +39,11 @@ namespace ESTHost.WTR20AService
         {
 
             // ��ȡ��ǰЭ������е�վ�����
-            //var collectionString = await this.redisCachingProvider.StringGetAsync("");
-           // var collectionServers = JsonConvert.DeserializeObject<List<CollectionServerCacheItem>>(collectionString);
-            var list = new List<CollectionServerCacheItem>();
-            list.Add(new CollectionServerCacheItem()
-            {
-                Name = "test",
-                Ip= "192.168.1.254",
-                Port= 30003
-            });
-            try
-            {
-                //CollectionServerFactory.StartAllServer(list);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("���������쳣");
-            }
+            var devicesString = await this.redisCachingProvider.StringGetAsync("Device:WTR_20A");
+            var collectionServers = JsonConvert.DeserializeObject<List<DeviceCacheItem>>(devicesString);
+            if(collectionServers.Any())
+              CollectionServerFactory.CreateService(collectionServers);
+
         }
 
         public override Task StartAsync(CancellationToken cancellationToken)

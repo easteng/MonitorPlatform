@@ -28,19 +28,13 @@ namespace MonitorPlatform.Wpf.View
             // 订阅实时数据委托,更新数据
             GlableDelegateHandler.UpdateRealtimeData = (data) =>
             {
-                var names = operationMonitorViewModel.GetPointPropNameBySensorCode(data.Code);
+                var iotdata = data.StandardMessage;
+                var names = operationMonitorViewModel.GetPointPropNameBySensorCode(iotdata.SensorCode);
 
                 PointStatus state = PointStatus.Normal;
-                if (data.Value < 30)
-                {
-                    state = PointStatus.Normal;
-                }else if(data.Value > 50&&data.Value < 70)
-                {
-                    state = PointStatus.Warning;
-                }else if (data.Value > 70 ){
-                    state = PointStatus.Alerting;
-                }
-                this.SvgContainer.UpdateValueAsync(names, data.Code, data.Value, (int)state);
+                state = iotdata.Status;
+                this.SvgContainer.UpdateValueAsync(names, iotdata.SensorCode, iotdata.Value, (int)state);
+                this.operationMonitorViewModel.SetStatus(names, state);
             };
         }
 

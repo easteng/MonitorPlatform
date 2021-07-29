@@ -6,6 +6,11 @@ using MonitorPlatform.Domain.Entities;
 using MonitorPlatform.Share;
 using MonitorPlatform.Share.ServerCache;
 using MonitorPlatform.Wpf.Common;
+
+using Newtonsoft.Json;
+
+using Silky.Lms.Core;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,14 +30,17 @@ namespace MonitorPlatform.Wpf.ViewModel
         readonly IBaseRepository<Device, Guid> deviceRepository;
         readonly IBaseRepository<DeviceRltTerminal, Guid> deviceRltRepository;
         readonly IBaseRepository<TerminalRltSensor, Guid> terminalRltSensorRepository;
-        public RemoteControlViewModel(IRedisCachingProvider redisCachingProvider = null)
+        readonly IFreeSql fsql;
+        public RemoteControlViewModel()
         {
             this.monitorRepository = ESTRepository.Builder<Monitor, Guid>();
             this.deviceRepository = ESTRepository.Builder<Device, Guid>();
             this.deviceRltRepository = ESTRepository.Builder<DeviceRltTerminal, Guid>();
             this.terminalRepository = ESTRepository.Builder<Terminal, Guid>();
             this.terminalRltSensorRepository = ESTRepository.Builder<TerminalRltSensor, Guid>(); ;
-            this.redisCachingProvider = redisCachingProvider;
+            this.redisCachingProvider = EngineContext.Current.Resolve<IRedisCachingProvider>();
+            this.fsql = EngineContext.Current.Resolve<IFreeSql>();
+
         }
 
         /// <summary>
@@ -55,55 +63,110 @@ namespace MonitorPlatform.Wpf.ViewModel
                 //DeviceCacheItem
 
                 // 查找wtr31协议的设备以及站点
+
+                var monitors = monitorRepository.Where(a => a.DeviceId != null).ToList<Monitor>()
+              .Select(a => a.DeviceId).ToList();
+                var devices = deviceRepository.Where(a => monitors.Contains(a.Id)).ToList();
+
+
                 var wtr31Cache = new List<DeviceCacheItem>();
                 var device_wtr31 =
-                monitorRepository.Orm.
-                Select<Monitor, Device>()
-                .Where((m, d) => d.PtotocolType == PtotocolType.WTR_31)
+                 devices
+                .Where(a=> a.PtotocolType == PtotocolType.WTR_31)
                 .ToList<Device>();
                 device_wtr31?.ForEach(a =>
                 {
                     var cache = ObjectMapper.Map<DeviceCacheItem>(a);
-                    //var termianl=terminalRepository.Select()
-                    //cache.Terminal=
+                    var terminal = deviceRltRepository.Orm.Select<DeviceRltTerminal, Terminal>()
+                   .Where((d, t) => d.DeviceId == a.Id && d.TerminalId == t.Id).ToList((d, t) => new TerminalCacheItem
+                   {
+                       Addr = int.Parse(t.Addr),
+                       Name = t.Name,
+                       AlertValue = t.AlertValue,
+                       TolerantValue = t.TolerantValue,
+                       WarinValue = t.WarinValue,
+                       Id = t.Id
+                   });
+                    terminal?.ForEach(d =>
+                    {
+                        var sensor = terminalRltSensorRepository.Orm.Select<TerminalRltSensor, Sensor>()
+                        .Where((t, s) => t.TerminalId == d.Id && t.SensorId == s.Id).ToList<Sensor>();
+                        d.SensorCount = sensor.Count();
+                    });
+                    cache.Terminal = terminal;
+                    wtr31Cache.Add(cache);
                 });
 
+                var wtr20ACache = new List<DeviceCacheItem>();
+                var device_20A = devices
+                .Where(a => a.PtotocolType == PtotocolType.WTR_20A)
+                .ToList();
+
+                device_20A?.ForEach(a =>
+                {
+                    var cache = ObjectMapper.Map<DeviceCacheItem>(a);
+                    var terminal = deviceRltRepository.Orm.Select<DeviceRltTerminal, Terminal>()
+                    .Where((d, t) => d.DeviceId == a.Id && d.TerminalId == t.Id).ToList((d,t) =>new TerminalCacheItem { 
+                        Addr=int.Parse(t.Addr),
+                        Name=t.Name,
+                        AlertValue=t.AlertValue,  
+                        TolerantValue=t.TolerantValue,
+                        WarinValue=t.WarinValue ,
+                        Id= t.Id
+                    });
+                    terminal?.ForEach(d =>
+                    {
+                        var sensor = terminalRltSensorRepository.Orm.Select<TerminalRltSensor, Sensor>()
+                        .Where((t, s) => t.TerminalId == d.Id && t.SensorId == s.Id).ToList<Sensor>();
+                        d.SensorCount = sensor.Count();
+                    });
+                    cache.Terminal = terminal;
+                    wtr20ACache.Add(cache);
+                });
+
+                // 设备以及协议缓存
+                if(wtr20ACache.Any())
+                    redisCachingProvider.StringSet("Device:WTR_20A", JsonConvert.SerializeObject(wtr20ACache));
+                if (wtr31Cache.Any())
+                    redisCachingProvider.StringSet("Device:WTR_31", JsonConvert.SerializeObject(wtr31Cache));
+
+                // 采集器终端
+                
 
 
-                var wtr31 = new CacheDto();
-                wtr31.Key = nameof(PtotocolType.WTR_31);
-                wtr31.Terminals = new List<TerminalDto>();
+                // 终端及传感器缓存
+                var terminals = terminalRepository.Where(a => true).ToList();
 
-                // 根据设备绑定的终端信息进行查询，对没有绑定设备的终端不进行处理。
-               // var devices = deviceRepository.Where(a => true)
-               // .ToList();
+                terminals?.ForEach(a =>
+                {
+                    // 查找关联的传感器
+                    var sensor=terminalRltSensorRepository.Orm.Select<TerminalRltSensor, Sensor>()
+                    .Where((t,s)=>t.TerminalId==a.Id&&t.SensorId==s.Id).ToList<Sensor>();
 
-               // var wtr31Terminals = this.terminalRepository
-               //.Where(a => a.Ptotocol == Share.PtotocolType.WTR_31).ToList();
-               // wtr31Terminals?.ForEach(a =>
-               // {
-               //     var tdto = new TerminalDto();
-               //     tdto.Sensors=terminalRltSensorRepository
-               //     .Orm.Select<Terminal,TerminalRltSensor>()
-               //     .Where((t,s)=>t.Id==a.Id&&s.TerminalId==t.Id)
-               //     .ToList<Sensor>();
-               //     tdto.Terminal = a;
-               //     wtr31.Terminals.Add(tdto);
-               // });
-               // wtr31.Device=
+                    var sensorCaches = new List<SensorCacheItem>();
+                    // 需要对每一个采集的传感器进行编号
+                    var srlt = terminalRltSensorRepository.Orm.Select<TerminalRltSensor, Sensor>()
+                    .Where((t, s) => t.TerminalId == a.Id && t.SensorId == s.Id).ToList<TerminalRltSensor>();
+                    if (srlt.Any())
+                    {
+                        var index = 0;
+                        foreach (var item in srlt)
+                        {
+                            var s = new SensorCacheItem();
+                            item.SensorNo = ++index;
+                            terminalRltSensorRepository.Update(item);
+                            s.SensorNo = index;
+                            s.SensorCode = sensor?.FirstOrDefault(a=>a.Id==item.Id).SensorCode;
+                            s.Position = sensor?.FirstOrDefault(a => a.Id == item.Id).Position;
+                            sensorCaches.Add(s);
+                        }
+                    }
 
-
-
-
-
-
-
-
-
-               
-
-
-
+                    // 添加缓存
+                    redisCachingProvider.StringSet($"Terminal:Sensor:{a.Id}", JsonConvert.SerializeObject(sensorCaches));
+                    // 把所有的采集器都添加到缓存
+                    redisCachingProvider.StringSet($"Terminal:{a.Id}", JsonConvert.SerializeObject(a));
+                });
             });
         }
 

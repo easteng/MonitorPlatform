@@ -12,6 +12,10 @@ namespace MonitorPlatform.Domain.Entities
     /// </summary>
     public class TerminalRltSensor:BaseEntity<Guid>
     {
+        /// <summary>
+        /// 传感器序号
+        /// </summary>
+        public int SensorNo { get; set;  }
         public Terminal Terminal {  get; set; }
         public Guid TerminalId { get; set; }    
 

@@ -104,9 +104,9 @@ namespace ESTHost.Core.Colleaction
             this.CreateServer(item.Name);
             this.StartServer();
         }
-        public CommLink myLink = new CommLink();
-        public TerminalInfo t_info = new TerminalInfo();
-        TData last_tdata = null;
+        //public CommLink myLink = new CommLink();
+        //public TerminalInfo t_info = new TerminalInfo();
+        //TData last_tdata = null;
         /// <summary>
         /// 创建串口服务器服务
         /// </summary>
@@ -116,11 +116,11 @@ namespace ESTHost.Core.Colleaction
             this.Name = name;
             this.ServerThread = new Thread(() =>
             {
-                WTR20AComm comm = new WTR20AComm();
-                comm.t_no = 1;
-                comm.com_bandrate = 9600;
-                comm.com_check = 0;
-                comm.Link = myLink;
+                //WTR20AComm comm = new WTR20AComm();
+                //comm.t_no = 1;
+                //comm.com_bandrate = 9600;
+                //comm.com_check = 0;
+                //comm.Link = myLink;
 
 
                 // 设置传感器id

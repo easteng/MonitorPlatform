@@ -30,6 +30,9 @@ namespace MonitorPlatform.Share.Message
         /// 主题信息
         /// </summary>
         public override string Topic { get => MessageTopic.DeviceData; set => base.Topic = value; }
+
+        public Guid TerminalId { get; set; }
+
         /// <summary>
         /// 物联网数据
         /// </summary>

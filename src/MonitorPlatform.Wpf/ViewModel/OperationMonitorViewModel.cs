@@ -71,6 +71,25 @@ namespace MonitorPlatform.Wpf.ViewModel
             set { templateModel = value; this.DoNotify(); }
         }
 
+        // 预警列表存储
+        private List<string> waring;
+
+        public List<string> Waring
+        {
+            get { return waring; }
+            set { waring = value; }
+        }
+        //报警列表
+
+        private List<string> alert;
+
+        public List<string> Alert
+        {
+            get { return alert; }
+            set { alert = value; }
+        }
+
+
         readonly IBaseRepository<Monitor, Guid> monitorRepositiry;
         readonly IBaseRepository<Diagram, Guid> diagramrRepositiry;
         readonly IBaseRepository<TemplateStyle, Guid> styleRepository;
@@ -87,6 +106,9 @@ namespace MonitorPlatform.Wpf.ViewModel
             styleRepository = ESTRepository.Builder<TemplateStyle, Guid>();
             diagramConfigRepository = ESTRepository.Builder<DiagramConfig, Guid>();
             sensorRepository = ESTRepository.Builder<Sensor, Guid>();
+
+            this.Alert = new List<string>();
+            this.Waring=new List<string>();
 
             Refresh();
         }
@@ -190,6 +212,35 @@ namespace MonitorPlatform.Wpf.ViewModel
                 .ToList()
                 .Select(a => a.PropName);
             return names?.ToArray();
+        }
+        /// <summary>
+        /// 设置实时状态
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="status"></param>
+        public void SetStatus(string[] names,PointStatus status)
+        {
+            foreach (var name in names)
+            {
+                this.Waring.Remove(name);
+                this.Alert.Remove(name);
+                if (status == PointStatus.Normal)
+                {
+                    // 移除所有的报警
+                    this.Waring.Remove(name);
+                    this.Alert.Remove(name);
+                }
+                else if (status == PointStatus.Warning)
+                {
+                    this.Waring.Add(name);
+                    this.Alert.Remove(name);
+
+                }
+                else
+                {
+                    this.Alert.Add(name);
+                }
+            }
         }
     }
 }

@@ -11,6 +11,9 @@
 ******* ★ Copyright @easten company 2021-2022. All rights reserved ★ *********
 ***********************************************************************
  */
+
+using MonitorPlatform.Share.Message;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,5 +28,10 @@ namespace MonitorPlatform.Share
     public class AlertMessage: IOTMessage
     {
         public override string Topic { get => MessageTopic.Alert; set => base.Topic = value; }
+        public AlertMessage(StandardMessage message)
+        {
+            StandardMessage = message;
+        }
+        public StandardMessage StandardMessage { get; set;  }
     }
 }

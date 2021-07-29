@@ -107,9 +107,7 @@ namespace MonitorPlatform.Wpf
             var exit = new ExitConfirm();
             exit.FormExit += (a, b) =>
              {
-                 Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
                  Application.Current.Shutdown();
-                 Environment.Exit(0);
              };
             exit.FormMini += (a, b) =>
             {

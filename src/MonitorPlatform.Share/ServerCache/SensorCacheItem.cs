@@ -17,7 +17,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MonitorPlatform.Share.ServerCache
+namespace MonitorPlatform.Share
 {
     /// <summary>
     ///  传感器缓存实体

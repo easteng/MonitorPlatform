@@ -11,6 +11,8 @@
 ******* ★ Copyright @easten company 2021-2022. All rights reserved ★ *********
 ***********************************************************************
  */
+using MonitorPlatform.Share.Message;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,5 +27,10 @@ namespace MonitorPlatform.Share
     public class StorageMessge: IOTMessage
     {
         public override string Topic { get => MessageTopic.Storage; set => base.Topic = value; }
+        public StandardMessage StandardMessage { get; set;  }
+        public StorageMessge(StandardMessage message)
+        {
+            StandardMessage = message;
+        }
     }
 }

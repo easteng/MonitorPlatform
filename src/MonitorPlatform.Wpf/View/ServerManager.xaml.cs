@@ -1,6 +1,10 @@
-﻿using HandyControl.Controls;
+﻿using ESTCore.Message.Client;
+
+using HandyControl.Controls;
 using MonitorPlatform.Share;
 using MonitorPlatform.Wpf.ViewModel;
+
+using Silky.Lms.Core;
 
 using System;
 using System.Collections.Generic;
@@ -25,6 +29,7 @@ namespace MonitorPlatform.Wpf.View
     public partial class ServerManager : UserControl
     {
         ServerManagerViewModel serverManagerViewModel;
+       
         public ServerManager()
         {
             serverManagerViewModel = new ServerManagerViewModel();
@@ -92,6 +97,14 @@ namespace MonitorPlatform.Wpf.View
                 }
             };
             sensor.ShowDialog();
+        }
+
+        // 远程写入传感器
+        private void btn_write_Click(object sender, RoutedEventArgs e)
+        {
+             Button btn = (Button)sender;
+             var id=Guid.Parse(btn.Tag.ToString()); 
+            this.serverManagerViewModel.WriteSensor(id);
         }
     }
 }

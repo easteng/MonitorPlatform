@@ -51,7 +51,9 @@ namespace MonitorPlatform.Share.ServerCache
         /// 当该终端执行写入时，不应该再读取数据 默认时true
         /// </summary>
         public bool Enabled { get; set; } = true;
-
-        public List<SensorCacheItem> Sensors { get; set; }
+        /// <summary>
+        /// 传感器的个数
+        /// </summary>
+        public int SensorCount{ get; set; }
     }
 }

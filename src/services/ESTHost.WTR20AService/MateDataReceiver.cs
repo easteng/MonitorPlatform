@@ -69,13 +69,15 @@ namespace ESTHost.WTR20AService
             var terminal = result.Terminal;
             if (result.Data != null)
             {
+                var pointData = this.ResolveBuffer(result.Data);
+                Console.WriteLine(JsonConvert.SerializeObject(pointData));
                 // 获取采集器的传感器缓存 缓存的key 值为采集器的id
-                var sensorCacheString = redisCachingProvider.StringGet($"TerminalSensor:{terminal.Id}");
+                var sensorCacheString = redisCachingProvider.StringGet($"Terminal:Sensor:{terminal.Id}");
                 var sensors = JsonConvert.DeserializeObject<List<SensorCacheItem>>(sensorCacheString);
                 // 解析数据成标准格式
-                var pointData=this.ResolveBuffer(result.Data);
                 var iotMessage = this.GetIotMessage(terminal, pointData, sensors);
                 var deviceMessage = new DeviceMessage();
+                deviceMessage.TerminalId = terminal.Id;
                 deviceMessage.IOTData = iotMessage;
                 await this.messageClient.SendMessage(deviceMessage); // 给数据中心发送数据
                 return true;
@@ -162,7 +164,6 @@ namespace ESTHost.WTR20AService
                     byte state = buffer[3 + i + 1];
                     pdata.Battery = (byte)((state >> 2) & 0x03);
                     pdata.PointState= (byte)((state >> 1) & 0x01);
-
                     if (buffer[3 + i] == 0xc4)
                         pdata.OffLine = true;  // 传感器离线
                     list.Add(pdata);

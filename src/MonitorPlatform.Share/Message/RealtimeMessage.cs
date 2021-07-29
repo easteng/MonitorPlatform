@@ -11,6 +11,10 @@
 ******* ★ Copyright @easten company 2021-2022. All rights reserved ★ *********
 ***********************************************************************
  */
+using ESTCore.Message;
+
+using MonitorPlatform.Share.Message;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,8 +26,13 @@ namespace MonitorPlatform.Share
     /// <summary>
     /// 实时数据消息体
     /// </summary>
-    public class RealtimeMessage: IOTMessage
+    public class RealtimeMessage: AbstractMessage
     {
         public override string Topic { get => MessageTopic.Realtime; set => base.Topic = value; }
+        public RealtimeMessage(StandardMessage message)
+        {
+            this.StandardMessage = message;
+        }
+        public StandardMessage StandardMessage { get; set; }
     }
 }

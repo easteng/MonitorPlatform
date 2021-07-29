@@ -50,6 +50,8 @@ namespace MonitorPlatform.Wpf
                 cfg.CreateMap<TemplateStyle, TemplateModel>();
                 cfg.CreateMap<TerminalModel, Terminal>();
                 cfg.CreateMap<Terminal, TerminalModel>();
+                cfg.CreateMap<Terminal, TerminalCacheItem>();
+                cfg.CreateMap<TerminalCacheItem, Terminal>();
                 cfg.CreateMap<SMSConfigModel, SmsConfig>();
                 cfg.CreateMap<SmsConfig, SMSConfigModel>();
             });

@@ -71,7 +71,7 @@
                             <GridViewColumn Width="100" Header="数据协议" DisplayMemberBinding="{Binding Ptotocol}"/>
                             <GridViewColumn Width="100" Header="Modbus地址位" DisplayMemberBinding="{Binding Addr}"/>
                             <GridViewColumn Width="100" Header="采集频率" DisplayMemberBinding="{Binding Frequency}"/>
-                            <GridViewColumn Width="100" Header="预警温度" DisplayMemberBinding="{Binding Waring}"/>
+                            <GridViewColumn Width="100" Header="预警温度" DisplayMemberBinding="{Binding WarinValue}"/>
                             <GridViewColumn Width="100" Header="报警温度" DisplayMemberBinding="{Binding AlertValue}"/>
                             <!--<GridViewColumn Width="100" Header="服务状态" DisplayMemberBinding="{Binding AlertStart}"/>-->
                             <!--<GridViewColumn Width="200" Header="远控" HeaderContainerStyle="{StaticResource CenterGridViewColumnHeader}">
@@ -110,7 +110,7 @@
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>-->
-                            <GridViewColumn HeaderContainerStyle="{StaticResource CenterGridViewColumnHeader}" Width="200" Header="操作">
+                            <GridViewColumn HeaderContainerStyle="{StaticResource CenterGridViewColumnHeader}" Width="300" Header="操作">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
@@ -132,6 +132,13 @@
                                           Content="查看传感器"
                                                 Name="btn_sensor"
                                                 Click="btn_sensor_Click"
+                                          Cursor="Hand"
+                                          Tag="{Binding Id}"
+                                          Margin="2,0" Style="{StaticResource ButtonDashedWarning}" Width="80" Height="20" Padding="2,0"/>
+                                            <Button
+                                          Content="写入数据"
+                                                Name="btn_write"
+                                                Click="btn_write_Click"
                                           Cursor="Hand"
                                           Tag="{Binding Id}"
                                           Margin="2,0" Style="{StaticResource ButtonDashedWarning}" Width="80" Height="20" Padding="2,0"/>

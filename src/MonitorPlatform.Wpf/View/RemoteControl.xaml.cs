@@ -31,6 +31,7 @@ namespace MonitorPlatform.Wpf.View
         private void btn_update_data_Click(object sender, RoutedEventArgs e)
         {
             // 更新远程数据
+            this.remoteControlViewModel.UpdateMonitorData();
         }
 
         private void btn_remote_write_Click(object sender, RoutedEventArgs e)
