@@ -13,7 +13,7 @@
         AllowsTransparency="True"
         Background="{x:Null}"
         Name="mainWindow"
-        Title="测温监控台平台" Height="800" Width="1400">
+        Title="BIM施工管理系统" Height="800" Width="1400">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -27,6 +27,40 @@
                         <Setter Property="VerticalAlignment" Value="Center"/>
                         <Setter Property="FontFamily" Value="../Assets/Fonts/#iconfont"/>
                         <Setter Property="Foreground" Value="#fff"/>
+                    </Style>
+                    <Style x:Key="defaultRadioStyle" TargetType="RadioButton">
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                        <Setter Property="VerticalContentAlignment" Value="Center"/>
+                        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                        <Setter Property="Foreground" Value="White"/>
+                        <Setter Property="Cursor" Value="Hand"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="RadioButton">
+                                    <Grid>
+                                        <Border x:Name="border" CornerRadius="7" Margin="-5"/>
+                                        <ContentPresenter x:Name="contentPresenter"  Focusable="False" 
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" 
+                                              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" 
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+
+                                    </Grid>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsChecked" Value="True">
+                                            <Setter Property="Background" Value="{StaticResource LogoBackgound}" TargetName="border"/>
+                                        </Trigger>
+
+                                        <Trigger Property="IsChecked" Value="False">
+                                            <Setter Property="Background" Value="Transparent"/>
+                                        </Trigger>
+
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
                     </Style>
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
@@ -48,7 +82,7 @@
                     <StackPanel Orientation="Horizontal">
                         <Border Background="{StaticResource LogoBackgound}" MinWidth="240" HorizontalAlignment="Left" Margin="0" CornerRadius="5,0,0,0">
                             <TextBlock 
-                            Text="&#xe631; 测温在线监控平台" 
+                            Text="&#xe631; BIM施工管理系统" 
                                 FontFamily="../Assets/Fonts/#iconfont"
                             Style="{StaticResource MainTitle}">
                                 <TextBlock.Effect>
@@ -57,7 +91,7 @@
                             </TextBlock>
                         </Border>
                         <!--菜单收缩展开按钮-->
-                        <Button x:Name="btn_menut_switch" Click="btn_menut_switch_Click">
+                        <!--<Button x:Name="btn_menut_switch" Click="btn_menut_switch_Click">
                             <Button.Template>
                                 <ControlTemplate>
                                     <TextBlock Style="{StaticResource BaseIcon}" 
@@ -68,9 +102,9 @@
                                             Text="&#xe65d;" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                                 </ControlTemplate>
                             </Button.Template>
-                        </Button>
+                        </Button>-->
                         <!--通知滚动条-->
-                        <TextBlock Style="{StaticResource BaseIcon}" 
+                        <!--<TextBlock Style="{StaticResource BaseIcon}" 
                             Foreground="#D9C91F"
                             FontSize="20"
                             Margin="20,0"
@@ -82,7 +116,17 @@
                             FontSize="15" FontWeight="ExtraLight" 
                             Foreground="{StaticResource AccentBrush}"
                             VerticalAlignment="Center"
-                            Duration="0:0:10" Margin="0,0"/>
+                            Duration="0:0:10" Margin="0,0"/>-->
+                        
+                        <!--顶部菜单-->
+                        <StackPanel Grid.Row="1" Name="menu_bar" Orientation="Horizontal"  VerticalAlignment="Center" Margin="20,0" >
+                            <RadioButton Tag="Dashboard" Style="{StaticResource defaultRadioStyle}" Content="系统首页" IsChecked="True" Margin="15 0 0 0"/>
+                            <RadioButton Tag="OperationMonitor" Style="{StaticResource defaultRadioStyle}" Content="运行监测" Margin="30 0 0 0"/>
+                            <RadioButton Tag="DataQuery" Style="{StaticResource defaultRadioStyle}" Content="数据查询" Margin="30 0 0 0"/>
+                            <RadioButton Tag="Monitor" Style="{StaticResource defaultRadioStyle}" Content="站点管理" Margin="30 0 0 0"/>
+                            <RadioButton Tag="DeviceManager" Style="{StaticResource defaultRadioStyle}" Content="设备管理" Margin="30 0 0 0"/>
+                            <RadioButton Tag="System" Style="{StaticResource defaultRadioStyle}" Content="系统管理" Margin="30 0 0 0"/>
+                        </StackPanel>
                     </StackPanel>
                     <Grid HorizontalAlignment="Right" Margin="30,0">
                         <!--用户名及控制按钮-->
@@ -174,14 +218,14 @@
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto" x:Name="leftmenusider"/>
-                    <ColumnDefinition Width="*" />
+                    <!--<ColumnDefinition Width="*" />-->
                 </Grid.ColumnDefinitions>
                 <!--左侧菜单-->
-                <Grid Grid.Column="0" Name="LeftGrid" Width="200">
+                <!--<Grid Grid.Column="0" Name="LeftGrid" Width="200">
                     <Border Width="200" Style="{StaticResource GlobalBackgroundColor}" HorizontalAlignment="Left" Name="SideMenu" CornerRadius="0" Margin="0">
                         <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden">
                             <StackPanel Margin="0,15,0,0">
-                                <!--菜单绑定-->
+                                --><!--菜单绑定--><!--
                                 <ItemsControl ItemsSource="{Binding MenuModels}"
                                           Name="MenuContainer"
                                           >
@@ -193,7 +237,7 @@
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
                                             <Grid>
-                                                <!--如果菜单没有子项则显示-->
+                                                --><!--如果菜单没有子项则显示--><!--
                                                 <Border Visibility="{Binding Show,Converter={StaticResource Bool2VisibleConverter}, ConverterParameter=1}" >
                                                     <Grid>
 
@@ -225,7 +269,7 @@
                                                             <TextBlock Text="{Binding Name}" Margin="14,0,0,0"  Style="{StaticResource  MenuColor}" ></TextBlock>
                                                         </StackPanel>
                                                     </Expander.Header>
-                                                    <!--子菜单项绑定-->
+                                                    --><!--子菜单项绑定--><!--
                                                     <ItemsControl ItemsSource="{Binding MenuItems}">
                                                         <ItemsControl.ItemsPanel>
                                                             <ItemsPanelTemplate>
@@ -250,9 +294,9 @@
                             </StackPanel>
                         </ScrollViewer>
                     </Border>
-                </Grid>
+                </Grid>-->
                 <!--右侧内容-->
-                <Grid Grid.Column="1" Name="RightGrid">
+                <Grid Grid.Column="0" Name="RightGrid">
                     <ContentControl x:Name="mainContainer" Grid.Row="0" Content="{Binding MainContainer}"/>
                 </Grid>
                 <Grid.RenderTransform>

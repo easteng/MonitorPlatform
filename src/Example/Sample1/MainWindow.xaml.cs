@@ -26,8 +26,8 @@ namespace Sample5
         public MainWindow()
         {
             InitializeComponent();
-            s1x.Separator.StrokeThickness = 0;
-            s1y.Separator.StrokeThickness = 0;
+            //s1x.Separator.StrokeThickness = 0;
+            //s1y.Separator.StrokeThickness = 0;
 
             SeriesCollection = new SeriesCollection
             {

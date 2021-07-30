@@ -151,7 +151,7 @@
                                 <TextBlock Text="76.9%" VerticalAlignment="Center" Foreground="#7ADA95" Margin="5 0 0 0"/>
                             </StackPanel>
 
-                            <lvc:CartesianChart Margin="10"  Height="100">
+                            <!--<lvc:CartesianChart Margin="10"  Height="100">
                                 <lvc:CartesianChart.Series>
                                     <lvc:LineSeries Stroke="#FF7261" Fill="#FFE3E0"  PointGeometrySize="0" Values="20,50,3,20,3,70,50"/>
                                 </lvc:CartesianChart.Series>
@@ -161,7 +161,7 @@
                                 <lvc:CartesianChart.AxisY>
                                     <lvc:Axis MinValue="0" Name="s1y" ShowLabels="False"/>
                                 </lvc:CartesianChart.AxisY>
-                            </lvc:CartesianChart>
+                            </lvc:CartesianChart>-->
 
                             <StackPanel Grid.Row="1" VerticalAlignment="Center" Orientation="Horizontal" Margin="15 0 0 15">
                                 <Border Width="50" Height="50" Background="#FFF1F1" CornerRadius="10">

@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace MonitorPlatform.Wpf
 {
@@ -37,6 +38,41 @@ namespace MonitorPlatform.Wpf
                 }
             }
             return list;
+        }
+
+        public static void ExpandAll(this TreeView treeView)
+        {
+            SetNodeExpandedState(treeView, true);
+        }
+      
+        private static void SetNodeExpandedState(ItemsControl control, bool expandNode)
+        {
+            try
+            {
+                if (control != null)
+                {
+                    foreach (object item in control.Items)
+                    {
+                        TreeViewItem treeItem = control.ItemContainerGenerator.ContainerFromItem(item) as TreeViewItem;
+
+                        if (treeItem != null && treeItem.HasItems)
+                        {
+
+                            treeItem.IsExpanded = expandNode;
+                            if (treeItem.ItemContainerGenerator.Status != System.Windows.Controls.Primitives.GeneratorStatus.ContainersGenerated)
+                            {
+                                treeItem.UpdateLayout();
+                            }
+
+                            SetNodeExpandedState(treeItem as ItemsControl, expandNode);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                
+            }
         }
     }
 }

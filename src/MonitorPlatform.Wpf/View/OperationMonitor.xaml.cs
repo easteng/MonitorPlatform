@@ -56,6 +56,9 @@ namespace MonitorPlatform.Wpf.View
                 template.Name = item.PropName;
                 this.SvgContainer.AddUIElement(template, point);
             }
+
+            // 展开所有节点
+            this.treeview_station.ExpandAll();
         }
 
         /// <summary>
@@ -69,6 +72,9 @@ namespace MonitorPlatform.Wpf.View
             {
                 this.SvgContainer.LoadDocument(sender.ToString());
             }
+
+            // 展开所有节点
+            this.treeview_station.ExpandAll();
         }
 
         private void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
@@ -81,6 +87,9 @@ namespace MonitorPlatform.Wpf.View
                 operationMonitorViewModel.ActiveMonitorId = treeView.Id;
                 operationMonitorViewModel.TreeSelected(treeView);
             }
+
+            // 展开所有节点
+            this.treeview_station.ExpandAll();
         }
         private bool IsMax = false;
         private void btn_max_show_Click(object sender, RoutedEventArgs e)
@@ -91,15 +100,17 @@ namespace MonitorPlatform.Wpf.View
                 // 图纸缩小，恢复原位
                 this.border_station_info.Width = 200;
                 IsMax = false;
+                this.bread.Height = 30;
             }
             else
             {
                 // 图纸放大
                 this.border_station_info.Width = 0;
-
-
+                this.bread.Height = 0;
                 IsMax = true;
             }
+            // 展开所有节点
+            this.treeview_station.ExpandAll();
         }
     }
 }

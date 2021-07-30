@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MonitorPlatform.Wpf.View"
+              xmlns:convert="clr-namespace:MonitorPlatform.Wpf.Converter"
              mc:Ignorable="d" 
               Width="800"
               xmlns:viewmodel="clr-namespace:MonitorPlatform.Wpf.ViewModel" 
@@ -19,6 +20,7 @@
                     <Style TargetType="TextBlock" x:Key="BaseIcon">
                         <Setter Property="FontFamily" Value="../Assets/Fonts/#iconfont"/>
                     </Style>
+                    <convert:StationType2VisibleConverter x:Key="StationType2VisibleConverter"/>
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
@@ -27,17 +29,17 @@
     <Border Style="{StaticResource PageStyle}">
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="30"/>
+                <RowDefinition Height="auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <!--面包屑-->
-            <Grid Height="30" Background="#184868">
+            <Grid Height="30" Background="#184868" x:Name="bread">
                 <TextBlock FontFamily="Castellar" Text="监测管理 / 运行监测" VerticalAlignment="Center" Foreground="#fff" Margin="20,0"/>
             </Grid>
             <!--工具栏-->
 
             <!--内容区域-->
-            <Grid Margin="10,0" Grid.Row="1">
+            <Grid Margin="0,0" Grid.Row="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="*"/>
@@ -54,6 +56,7 @@
                         </Grid>
                         <TreeView MinHeight="300" Margin="0,0" 
                                   Padding="5"
+                                  x:Name="treeview_station"
                                   Height="auto"
                                   MaxHeight="500"
                                   BorderBrush="{StaticResource FormBorderBrush}"
@@ -65,9 +68,11 @@
                                 <HierarchicalDataTemplate ItemsSource="{Binding Children}">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="20"/>
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
-                                        <TextBlock Text="{Binding Name}" VerticalAlignment="Center" FontWeight="Bold" Foreground="#0FC6E0"/>
+                                        <TextBlock Text="{Binding Type,Converter={StaticResource StationType2VisibleConverter}}" Foreground="#D38734" FontSize="13"  FontFamily="../Assets/Fonts/#iconfont" />
+                                        <TextBlock Grid.Column="1"  Text="{Binding Name}" FontSize="13" VerticalAlignment="Center" FontWeight="Bold" Foreground="#D38734"/>
                                     </Grid>
                                 </HierarchicalDataTemplate>
                             </TreeView.ItemTemplate>
@@ -75,7 +80,7 @@
                     </StackPanel>
                 </Border>
                 <Border Grid.Column="1" 
-                        Margin="20,20,0,20"
+                        Margin="0"
                         BorderBrush="{StaticResource FormBorderBrush}" BorderThickness="1">
                     <Grid>
                         <Grid.RowDefinitions>

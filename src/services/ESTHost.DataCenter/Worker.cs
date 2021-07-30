@@ -1,4 +1,8 @@
 using ESTCore.Message;
+
+using ESTHost.Protocol;
+using ESTHost.ProtocolBase;
+
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
@@ -27,9 +31,11 @@ namespace ESTHost.DataCenter
             }
         }
 
-        public override Task StartAsync(CancellationToken cancellationToken)
+        public override async Task StartAsync(CancellationToken cancellationToken)
         {
-            return base.StartAsync(cancellationToken);
+            // 获取并启动数据协议
+            await ProtocolFactory.StartupProtocolProvider();
+            await base.StartAsync(cancellationToken);
         }
 
         public override Task StopAsync(CancellationToken cancellationToken)

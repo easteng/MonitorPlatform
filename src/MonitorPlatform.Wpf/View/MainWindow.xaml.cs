@@ -32,6 +32,28 @@ namespace MonitorPlatform.Wpf
             this.DataContext = new MainViewModel();
             this.Loaded += MainWindow_Loaded;
             this.SizeChanged += MainWindow_SizeChanged;
+
+
+            // 绑定菜单点击事件
+            var radios= menu_bar.Children;
+            foreach (RadioButton item in radios)
+            {
+                item.Checked += Item_Checked;
+            }
+        }
+
+        // 切换菜单显示
+        private void Item_Checked(object sender, RoutedEventArgs e)
+        {
+            this.Dispatcher.Invoke(new Action(() =>
+            {
+                var pageName = ((RadioButton)sender).Tag;
+                var viewType = Type.GetType($"MonitorPlatform.Wpf.View.{pageName}");
+                if (viewType == null) return;
+                var contructor = viewType.GetConstructor(Type.EmptyTypes);
+                this.mainContainer.Content = (FrameworkElement)contructor.Invoke(null);
+                InitFormSize();
+            }));
         }
 
         /// <summary>
@@ -45,14 +67,16 @@ namespace MonitorPlatform.Wpf
         }
         private void InitFormSize()
         {
-            if (this.menuExpand)
-            {
-                ChangeChildContentWidth(200);
-            }
-            else
-            {
-                ChangeChildContentWidth(0);
-            }
+
+            ChangeChildContentWidth(0);
+            //if (this.menuExpand)
+            //{
+            //    ChangeChildContentWidth(200);
+            //}
+            //else
+            //{
+            //    ChangeChildContentWidth(0);
+            //}
         }
                 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -75,25 +99,25 @@ namespace MonitorPlatform.Wpf
 
         private void menu_item_Click(object sender, RoutedEventArgs e)
         {
-            var clickIndex = 0;
-            var radioButtons = VisualTreeHelp.FindChilds<RadioButton>(MenuContainer, "menu_item");
-            for (var i = 0; i < radioButtons.Count; i++)
-            {
-                if (radioButtons[i] == sender)
-                {
-                    clickIndex = i;
-                    var radioButton= radioButtons[i];
-                    var viewName = radioButton.Tag;
-                    var viewType = Type.GetType($"MonitorPlatform.Wpf.View.{viewName.ToString()}");
-                    if (viewType == null) return;
-                    var contructor = viewType.GetConstructor(Type.EmptyTypes);
-                    var ui = (FrameworkElement)contructor.Invoke(null);
-                    this.mainContainer.Content = ui;
-                    InitFormSize();
-                   // ((MainViewModel)this.DataContext).LeftMenuClick(viewName);
-                    break;
-                }
-            }
+            //var clickIndex = 0;
+            //var radioButtons = VisualTreeHelp.FindChilds<RadioButton>(MenuContainer, "menu_item");
+            //for (var i = 0; i < radioButtons.Count; i++)
+            //{
+            //    if (radioButtons[i] == sender)
+            //    {
+            //        clickIndex = i;
+            //        var radioButton= radioButtons[i];
+            //        var viewName = radioButton.Tag;
+            //        var viewType = Type.GetType($"MonitorPlatform.Wpf.View.{viewName.ToString()}");
+            //        if (viewType == null) return;
+            //        var contructor = viewType.GetConstructor(Type.EmptyTypes);
+            //        var ui = (FrameworkElement)contructor.Invoke(null);
+            //        this.mainContainer.Content = ui;
+            //        InitFormSize();
+            //       // ((MainViewModel)this.DataContext).LeftMenuClick(viewName);
+            //        break;
+            //    }
+            //}
         }
 
         private void btn_user_Click(object sender, RoutedEventArgs e)
@@ -140,26 +164,26 @@ namespace MonitorPlatform.Wpf
         private void btn_menut_switch_Click(object sender, RoutedEventArgs e)
         {
             // 左侧菜单切换时间
-            if (menuExpand)
-            {
-                menuExpand = false;
-                this.LeftGrid.Width = 0;
-                // 收缩菜单
-                 menuAnimation.To =0;
-                 menuAnimation.From=200;
-                ChangeChildContentWidth(0);
-                LeftGrid.BeginAnimation(Grid.WidthProperty, menuAnimation);
-            }
-            else
-            {
-                menuExpand = true;
-                this.LeftGrid.Width = 200;
-                //展开菜单
-                menuAnimation.To = 200;
-                menuAnimation.From = 0;
-                ChangeChildContentWidth(200);
-                LeftGrid.BeginAnimation(Grid.WidthProperty, menuAnimation);
-            }
+            //if (menuExpand)
+            //{
+            //    menuExpand = false;
+            //    this.LeftGrid.Width = 0;
+            //    // 收缩菜单
+            //     menuAnimation.To =0;
+            //     menuAnimation.From=200;
+            //    ChangeChildContentWidth(0);
+            //    LeftGrid.BeginAnimation(Grid.WidthProperty, menuAnimation);
+            //}
+            //else
+            //{
+            //    menuExpand = true;
+            //    this.LeftGrid.Width = 200;
+            //    //展开菜单
+            //    menuAnimation.To = 200;
+            //    menuAnimation.From = 0;
+            //    ChangeChildContentWidth(200);
+            //    LeftGrid.BeginAnimation(Grid.WidthProperty, menuAnimation);
+            //}
         }
 
         private void ChangeChildContentWidth(int width)

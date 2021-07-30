@@ -17,8 +17,10 @@ using Autofac.Extensions.DependencyInjection;
 using ESTCore.Caching;
 using ESTCore.Message;
 using ESTCore.Message.Services;
+using ESTCore.ORM.FreeSql;
 
 using ESTHost.DataCenter.Repeater;
+using ESTHost.ProtocolBase;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -33,9 +35,10 @@ using System.Threading.Tasks;
 namespace ESTHost.DataCenter
 {
     [DependsOn(
-       //  typeof(FreeSqlModule), 
+       typeof(FreeSqlModule), 
        typeof(ESTRedisCacheModule),
-       typeof(ESTMessageModule)
+       typeof(ESTMessageModule),
+       typeof(ProtocolModule)
        )]
     public class DataCenterModule : StartUpModule
     {

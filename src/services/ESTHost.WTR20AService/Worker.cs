@@ -37,13 +37,10 @@ namespace ESTHost.WTR20AService
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-
-            // ��ȡ��ǰЭ������е�վ�����
             var devicesString = await this.redisCachingProvider.StringGetAsync("Device:WTR_20A");
             var collectionServers = JsonConvert.DeserializeObject<List<DeviceCacheItem>>(devicesString);
             if(collectionServers.Any())
               CollectionServerFactory.CreateService(collectionServers);
-
         }
 
         public override Task StartAsync(CancellationToken cancellationToken)

@@ -14,6 +14,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\ESTHost.Protocol.WTR20A\ESTHost.Protocol.WTR20A.csproj" />
     <ProjectReference Include="..\ESTHost.Core\ESTHost.Core.csproj" />
+    <ProjectReference Include="..\ESTHost.Protocol.WTR31\ESTHost.Protocol.WTR31.csproj" />
+    <ProjectReference Include="..\ESTHost.Protocol\ESTHost.ProtocolBase.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="protocol\Class1.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
   </ItemGroup>
 </Project>
