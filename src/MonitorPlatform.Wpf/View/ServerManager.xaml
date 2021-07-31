@@ -73,43 +73,6 @@
                             <GridViewColumn Width="100" Header="采集频率" DisplayMemberBinding="{Binding Frequency}"/>
                             <GridViewColumn Width="100" Header="预警温度" DisplayMemberBinding="{Binding WarinValue}"/>
                             <GridViewColumn Width="100" Header="报警温度" DisplayMemberBinding="{Binding AlertValue}"/>
-                            <!--<GridViewColumn Width="100" Header="服务状态" DisplayMemberBinding="{Binding AlertStart}"/>-->
-                            <!--<GridViewColumn Width="200" Header="远控" HeaderContainerStyle="{StaticResource CenterGridViewColumnHeader}">
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                            <Button
-                                          Content="刷新"
-                                                Click="deleteBtn_Click"
-                                          Cursor="Hand"
-                                          Tag="{Binding Id}"
-                                          Margin="2,0" Style="{StaticResource ButtonDashedBaseStyle}" Width="40" Height="20" Padding="2,0"/>
-                                            <Button
-                                          Content="监控"
-                                                Name="debug"
-                                                Click="debug_Click"
-                                                
-                                          Cursor="Hand"
-                                          Tag="{Binding Id}"
-                                          Margin="2,0" Style="{StaticResource ButtonDashedSuccess}" Width="40" Height="20" Padding="2,0"/>
-
-                                            <Button
-                                          Content="重启"
-                                                Click="deleteBtn_Click"
-                                          Cursor="Hand"
-                                          Tag="{Binding Id}"
-                                          Margin="2,0" Style="{StaticResource ButtonDashedInfo}" Width="40" Height="20" Padding="2,0"/>
-                                            <Button
-                                          Content="停止"
-                                                Click="deleteBtn_Click"
-                                          Cursor="Hand"
-                                          Tag="{Binding Id}"
-                                          Margin="2,0" Style="{StaticResource ButtonDashedDanger}" Width="40" Height="20" Padding="2,0"/>
-                                         
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>-->
                             <GridViewColumn HeaderContainerStyle="{StaticResource CenterGridViewColumnHeader}" Width="300" Header="操作">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
