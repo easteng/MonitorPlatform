@@ -28,7 +28,7 @@ namespace MonitorPlatform.Wpf.Receiver
         private void Notice(NoticeMessage message)
         {
             // 获取服务名称
-            var serverName = message.ServiceType.GetDisplay();
+            var serverName = message.ServiceName;
             var online = message.Online ? "已启动" : "已断开";
             var content = $"{serverName}{online}";
             GlableDelegateHandler.SystemNotice?.Invoke(content);

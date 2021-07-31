@@ -36,10 +36,11 @@ namespace ESTHost.Core.Colleaction
             servicesDictionary = new Dictionary<Guid, ModbusBase>();
         }
         /// <summary>
-        /// 根据设备创建
+        /// 根据协议所对应的设备数量创建数据采集服务服务   
         /// </summary>
-        /// <param name="devices"></param>
-        public static void CreateService(List<DeviceCacheItem> devices)
+        /// <param name="devices">关联当前协议的服务</param>
+        /// <param name="name">一般为协议名称，用来决定数据的接收者</param>
+        public static void CreateService(List<DeviceCacheItem> devices, string name)
         {
             try
             {
@@ -49,7 +50,7 @@ namespace ESTHost.Core.Colleaction
                     {
                         // 不存在服务，则重新创建
                         if (device.Type == MonitorPlatform.Share.DeviceCollectionType.Client)
-                            server = ModbusTcpNet.CreateModbus(device);
+                            server = ModbusTcpNet.CreateModbus(device, name);
                         else
                             server = ModbusTcpServer.CreateModbus(device);
                         servicesDictionary.TryAdd(device.Id, server);
@@ -68,7 +69,7 @@ namespace ESTHost.Core.Colleaction
         /// </summary>
         /// <param name="deviceId"></param>
         /// <param name="terminalId"></param>
-        public static void StartWrite(Guid deviceId,Guid terminalId)
+        public static void StartWrite(Guid deviceId, Guid terminalId)
         {
             var server = servicesDictionary.GetValueOrDefault(deviceId);
             if (server != null)
@@ -82,7 +83,7 @@ namespace ESTHost.Core.Colleaction
         /// </summary>
         /// <param name="deviceId"></param>
         /// <param name="termianlId"></param>
-        public static void EndWrite(Guid deviceId,Guid termianlId)
+        public static void EndWrite(Guid deviceId, Guid termianlId)
         {
             var server = servicesDictionary.GetValueOrDefault(deviceId);
             if (server != null)
@@ -97,12 +98,12 @@ namespace ESTHost.Core.Colleaction
         /// <param name="termianlId">终端采集器id</param>
         /// <param name="data">写入传感器完整的报文数据</param>
         /// <returns></returns>
-        public static OperateResult<byte[]> WriteSensor(Guid deviceId,byte[] data)
+        public static OperateResult<byte[]> WriteSensor(Guid deviceId, byte[] data)
         {
             var server = servicesDictionary.GetValueOrDefault(deviceId);
             if (server != null)
             {
-               return server.WriteSensors(data);
+                return server.WriteSensors(data);
             }
             return OperateResult.CreateFailedResult<byte[]>(null);
         }

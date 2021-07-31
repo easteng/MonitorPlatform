@@ -11,10 +11,23 @@
 ******* ★ Copyright @Easten 2020-2021. All rights reserved ★ *********
 ***********************************************************************
  */
+using EasyCaching.Core;
+
+using ESTCore.Caching;
+using ESTCore.Message.Handler;
+
+using ESTHost.Core.Colleaction;
 using ESTHost.ProtocolBase;
 
-using System;
+using Microsoft.Extensions.Logging;
 
+using MonitorPlatform.Share;
+using MonitorPlatform.Share.ServerCache;
+
+using Silky.Lms.Core;
+
+using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ESTHost.Protocol.WTR31
@@ -25,15 +38,27 @@ namespace ESTHost.Protocol.WTR31
     public class ProtocolProvider : IBaseProtocol
     {
         public string Name { get => "WTR31"; set => throw new NotImplementedException(); }
-
-        public Task ExecuteAsync()
+        private ILogger<ProtocolProvider> _logger;
+        private IMessageServerProvider serverProvider;
+        private NoticeMessage currentMessage;
+        private IRedisCachingProvider redisCachingProvider;
+        public async Task ExecuteAsync()
         {
-            return Task.CompletedTask;
+            // 获取缓存数据，执行采集
+            var devicesString = await this.redisCachingProvider.StringGetAsync("Device:WTR_20A");
+            var devices = ESTCache.GetList<DeviceCacheItem>(devicesString);
+            if (devices.Any())
+                CollectionServerFactory.CreateService(devices, this.Name);
         }
 
         public Task StartAsync()
         {
-            Console.WriteLine($"{this.Name} 协议已启动");
+            var serviceProvider = EngineContext.Current;
+            this._logger = serviceProvider.Resolve<ILogger<ProtocolProvider>>();
+            this.serverProvider = serviceProvider.Resolve<IMessageServerProvider>();
+            this.redisCachingProvider = serviceProvider.Resolve<IRedisCachingProvider>();
+            this.currentMessage = new NoticeMessage();
+            _logger.LogInformation($"{this.Name} 协议已启动");
             return Task.CompletedTask;
         }
 

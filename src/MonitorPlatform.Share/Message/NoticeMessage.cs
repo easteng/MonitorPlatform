@@ -14,7 +14,7 @@ namespace MonitorPlatform.Share
         /// <summary>
         /// 服务类型
         /// </summary>
-        public ServerType ServiceType { get; set; }
+        public string ServiceName { get; set; }
         /// <summary>
         /// 是否在线
         /// </summary>

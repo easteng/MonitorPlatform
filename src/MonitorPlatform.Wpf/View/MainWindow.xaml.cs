@@ -40,14 +40,26 @@ namespace MonitorPlatform.Wpf
             {
                 item.Checked += Item_Checked;
             }
+
+            // 默认跳转到首页
+            this.ToggleViewPage("Dashboard");
         }
 
         // 切换菜单显示
         private void Item_Checked(object sender, RoutedEventArgs e)
         {
+            var pageName = ((RadioButton)sender).Tag.ToString();
+            this.ToggleViewPage(pageName);
+        }
+
+        /// <summary>
+        /// 切换视图
+        /// </summary>
+        /// <param name="pageName"></param>
+        private void ToggleViewPage(string pageName)
+        {
             this.Dispatcher.Invoke(new Action(() =>
             {
-                var pageName = ((RadioButton)sender).Tag;
                 var viewType = Type.GetType($"MonitorPlatform.Wpf.View.{pageName}");
                 if (viewType == null) return;
                 var contructor = viewType.GetConstructor(Type.EmptyTypes);

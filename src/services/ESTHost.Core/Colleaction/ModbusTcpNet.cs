@@ -44,7 +44,6 @@ namespace ESTHost.Core.Colleaction
         private DeviceCacheItem deviceItem;
         private ModbusTcpNet()
         {
-            this.eventBus = EngineContext.Current.Resolve<IEventBus>();
             this.redisCachingProvider = EngineContext.Current.Resolve<IRedisCachingProvider>();
         }
         private Thread mainThread;
@@ -53,12 +52,13 @@ namespace ESTHost.Core.Colleaction
         private List<TerminalCacheItem> terminals; 
         private FreedomTcpNet freedomTcp;
         private readonly IRedisCachingProvider redisCachingProvider;
-        private readonly IEventBus eventBus;
-        public static ModbusTcpNet CreateModbus(DeviceCacheItem item)
+        private IEventBus eventBus;
+        private string protocolName;
+        public static ModbusTcpNet CreateModbus(DeviceCacheItem item,string name)
         {
-        
             var tcpNet = new ModbusTcpNet();
             tcpNet.deviceItem = item;
+            tcpNet.protocolName = name;
             tcpNet.CreateTcpNet();
             tcpNet.StartCollection();
             return tcpNet;
@@ -70,6 +70,8 @@ namespace ESTHost.Core.Colleaction
        
         private void CreateTcpNet()
         {
+            // 根据名称获取指定的消息总线地址,同种协议的数据只能自己接收，不能串行
+            this.eventBus = EngineContext.Current.ResolveNamed<IEventBus>(this.protocolName);
             this.freedomTcp = new FreedomTcpNet(this.deviceItem.IpAddress, this.deviceItem.Port);
         }
         /// <summary>

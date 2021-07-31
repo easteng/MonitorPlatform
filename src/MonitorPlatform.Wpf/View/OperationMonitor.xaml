@@ -71,8 +71,8 @@
                                             <ColumnDefinition Width="20"/>
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
-                                        <TextBlock Text="{Binding Type,Converter={StaticResource StationType2VisibleConverter}}" Foreground="#D38734" FontSize="13"  FontFamily="../Assets/Fonts/#iconfont" />
-                                        <TextBlock Grid.Column="1"  Text="{Binding Name}" FontSize="13" VerticalAlignment="Center" FontWeight="Bold" Foreground="#D38734"/>
+                                        <TextBlock Text="{Binding Type,Converter={StaticResource StationType2VisibleConverter}}" Foreground="#DAAD44" FontSize="13"  FontFamily="../Assets/Fonts/#iconfont" />
+                                        <TextBlock Grid.Column="1"  Text="{Binding Name}" FontSize="13" VerticalAlignment="Center" FontWeight="Bold" Foreground="#DAAD44"/>
                                     </Grid>
                                 </HierarchicalDataTemplate>
                             </TreeView.ItemTemplate>

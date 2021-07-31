@@ -32,6 +32,8 @@ namespace ESTHost.WTR20AService
             _logger = logger;
             this.messageClient = messageClient;
             this.currentMessage = new NoticeMessage();
+            this.currentMessage.ServiceName ="WTR20A协议";
+
             this.redisCachingProvider = redisCachingProvider;
         }
 
@@ -40,13 +42,13 @@ namespace ESTHost.WTR20AService
             var devicesString = await this.redisCachingProvider.StringGetAsync("Device:WTR_20A");
             var collectionServers = JsonConvert.DeserializeObject<List<DeviceCacheItem>>(devicesString);
             if(collectionServers.Any())
-              CollectionServerFactory.CreateService(collectionServers);
+              CollectionServerFactory.CreateService(collectionServers,"");
         }
 
         public override Task StartAsync(CancellationToken cancellationToken)
         {
             // �������� ������Ϣ
-            currentMessage.ServiceType = ServerType.WTR20AService;
+          
             currentMessage.Online = true;
             messageClient.SendMessage(currentMessage); 
             return base.StartAsync(cancellationToken);
@@ -54,7 +56,6 @@ namespace ESTHost.WTR20AService
 
         public override Task StopAsync(CancellationToken cancellationToken)
         {
-            currentMessage.ServiceType = ServerType.WTR20AService;
             currentMessage.Online = false;
             messageClient.SendMessage(currentMessage);
             return base.StopAsync(cancellationToken);

@@ -61,6 +61,8 @@ namespace ESTHost.DataCenter
                     o.Build(); // 构建服务
                 });
             });
+            // 添加数据采集实例
+            service.AddSingleton<ICollectionRepeater, CollectionReceiver>();
             service.AddHostedService<Worker>();
             builder.Populate(service);
         }

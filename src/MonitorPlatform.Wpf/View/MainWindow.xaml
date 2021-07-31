@@ -40,7 +40,7 @@
                             <Setter.Value>
                                 <ControlTemplate TargetType="RadioButton">
                                     <Grid>
-                                        <Border x:Name="border" CornerRadius="7" Margin="-5"/>
+                                        <Border x:Name="border" CornerRadius="4" Margin="-5"/>
                                         <ContentPresenter x:Name="contentPresenter"  Focusable="False" 
                                               HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                               Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" 

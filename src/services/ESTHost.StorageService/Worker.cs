@@ -23,6 +23,7 @@ namespace ESTHost.StorageService
             _logger = logger;
             this.messageClient = messageClient;
             this.currentMessage = new NoticeMessage();
+            this.currentMessage.ServiceName="数据存储服务";
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -36,7 +37,6 @@ namespace ESTHost.StorageService
 
         public override Task StartAsync(CancellationToken cancellationToken)
         {
-            currentMessage.ServiceType = ServerType.StorageService;
             currentMessage.Online = true;
             messageClient.SendMessage(currentMessage);
             return base.StartAsync(cancellationToken);
@@ -44,7 +44,6 @@ namespace ESTHost.StorageService
 
         public override Task StopAsync(CancellationToken cancellationToken)
         {
-            currentMessage.ServiceType = ServerType.StorageService;
             currentMessage.Online = false;
             messageClient.SendMessage(currentMessage);
             return base.StopAsync(cancellationToken);

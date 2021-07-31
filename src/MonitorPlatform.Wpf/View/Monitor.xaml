@@ -41,6 +41,7 @@
                     <ColumnDefinition Width="300"/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
+                <!--站点树结构-->
                 <Border BorderBrush="{StaticResource FormBorderBrush}"
                         Margin="0,20"
                         BorderThickness="1">
@@ -74,6 +75,7 @@
                                         <TextBlock Text="{Binding Name}" VerticalAlignment="Center" FontWeight="Bold" Foreground="#0FC6E0"/>
                                         <!--监测点添加-->
                                         <Button Grid.Column="1" Style="{StaticResource ButtonDashedSuccess}" 
+                                                Visibility="{Binding IsStation ,Converter={StaticResource Boolean2VisibilityConverter}}"
                                                 Content="&#xe656;" Height="15" Width="20"
                                                 Name="btn_addchild"
                                                 Click="btn_addchild_Click"
@@ -112,34 +114,304 @@
                         </TreeView>
                     </StackPanel>
                 </Border>
-                <Border Grid.Column="1" 
-                        Margin="20,20,0,20"
+                <!--站点对应数据内容-->
+                <hc:TabControl  
+                    Grid.Column="1" 
+                    IsAnimationEnabled="True"
+                    ShowCloseButton="False" 
+                    Background="{StaticResource FormBackground}"
+                    BorderBrush="{StaticResource FormBorderBrush}"
+                    IsDraggable="True" ShowScrollButton="False" Margin="0,20"  IsScrollable="True">
+                    <hc:TabItem Header="设备管理" IsSelected="True"  BorderThickness="0">
+                        <Grid Background="{StaticResource FormBackground}">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="10"/>
+                                <RowDefinition Height="70"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <!--分割线-->
+                            <hc:Divider Content="串口服务器信息" Margin="10" Padding="10,0" BorderBrush="{StaticResource FormBorderBrush}" Foreground="#fff" HorizontalContentAlignment="Left"/>
+                            <!--当前站点的设备信息-->
+                            <Border Height="60" CornerRadius="5" Grid.Row="1" Background="{StaticResource FormBorderBrush}" Margin="10,0">
+                                <StackPanel Orientation="Horizontal" Height="30" VerticalAlignment="Center">
+                                    <hc:TextBox
+                                        IsEnabled="{Binding ConfigModel.CanUpload,Converter={StaticResource Boolean2BooleanReConverter}}"
+                                        ShowClearButton="True"
+                                        Background="{StaticResource FormBackground}" 
+                                        BorderBrush="{StaticResource FormBorderBrush}"
+                                        Foreground="{StaticResource FormForeground}"
+                                        hc:InfoElement.TitleWidth="60" 
+                                        hc:InfoElement.Placeholder="请输入设备名称" 
+                                        hc:InfoElement.Title="设备名称:" 
+                                        hc:InfoElement.TitlePlacement="Left"
+                                        Width="200"
+                                        Text="{Binding DiagramConfigModel.PointName}"
+                                        Margin="10,0,0,0"/>
+                                    <hc:TextBox
+                                        IsEnabled="{Binding ConfigModel.CanUpload,Converter={StaticResource Boolean2BooleanReConverter}}"
+                                         ShowClearButton="True"
+                                        Background="{StaticResource FormBackground}" 
+                                        BorderBrush="{StaticResource FormBorderBrush}"
+                                        Foreground="{StaticResource FormForeground}"
+                                        hc:InfoElement.TitleWidth="60" 
+                                        hc:InfoElement.Placeholder="请输入服务器IP" 
+                                        hc:InfoElement.Title="服务IP:" 
+                                        hc:InfoElement.TitlePlacement="Left"
+                                        Width="200"
+                                        Text="{Binding DiagramConfigModel.PointName}"
+                                        Margin="10,0,0,0"/>
+                                    <hc:TextBox
+                                        IsEnabled="{Binding ConfigModel.CanUpload,Converter={StaticResource Boolean2BooleanReConverter}}"
+                                          ShowClearButton="True"
+                                        Background="{StaticResource FormBackground}" 
+                                        BorderBrush="{StaticResource FormBorderBrush}"
+                                        Foreground="{StaticResource FormForeground}"
+                                        hc:InfoElement.TitleWidth="60" 
+                                        hc:InfoElement.Placeholder="端口" 
+                                        hc:InfoElement.Title="服务端口:" 
+                                        hc:InfoElement.TitlePlacement="Left"
+                                        Width="150"
+                                        Text="{Binding DiagramConfigModel.PointName}"
+                                        Margin="10,0,0,0"/>
+                                    <hc:ComboBox ItemsSource="{Binding PtotocolList}"
+                                         IsEnabled="{Binding ConfigModel.CanUpload,Converter={StaticResource Boolean2BooleanReConverter}}"
+                                         Name="ptotoco"
+                                         ShowClearButton="True"
+                                         hc:ItemContainerStyle="{StaticResource hc-comboBoxStyle}"
+                                         hc:InfoElement.TitleWidth="60"
+                                         DisplayMemberPath="Key"
+                                         SelectedValuePath="Value"
+                                         SelectedItem="{Binding TerminalModel.Ptotocol}"
+                                         Style="{StaticResource ComboBoxExtend}"
+                                         Background="{StaticResource FormBackground}" 
+                                         BorderBrush="{StaticResource FormBorderBrush}"
+                                         Foreground="{StaticResource FormForeground}"
+                                         hc:InfoElement.Placeholder="请选择" 
+                                         hc:InfoElement.TitlePlacement="Left" 
+                                         hc:InfoElement.Title="协议类型:" 
+                                         Width="160"
+                                         Margin="10,0">
+                                    </hc:ComboBox>
+                                    <Button FontSize="18" Content="&#xe612;"
+                                            IsEnabled="{Binding ConfigModel.CanUpload,Converter={StaticResource Boolean2BooleanReConverter}}"
+                                            FontFamily="../Assets/Fonts/#iconfont"
+                                            Click="brnConfigTemp_Click" Margin="0" 
+                                            Style="{StaticResource ButtonPrimary}"
+                                            Cursor="Hand"
+                                            Padding="10,0" Height="26" VerticalAlignment="Center">
+                                        <hc:Poptip.Instance>
+                                            <hc:Poptip Content="保存数据" hc:Foreground="#326CF3" PlacementType="Top"/>
+                                        </hc:Poptip.Instance>
+                                    </Button>
+                                </StackPanel>
+                            </Border>
+                            <!--传感器及采集器信息-->
+                            <TabControl Grid.Row="2" TabStripPlacement="Left" Height="auto" Margin="10,10" BorderThickness="1" BorderBrush="{StaticResource FormBorderBrush}"  Background="{StaticResource FormBackground}">
+                                <TabItem Header="传感器管理">
+                                    <Border Background="{DynamicResource FormBackground}">
+                                        <!--传感器列表-->
+                                        <Grid Margin="0,0" Grid.Row="2">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="40"/>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="60"/>
+                                            </Grid.RowDefinitions>
+                                            <!--工具栏-->
+                                            <StackPanel Margin="5,0" Orientation="Horizontal" Height="40" Grid.Row="0">
+                                                <hc:SearchBar Command="{Binding SearchCommand}" 
+                                                    Width="200"
+                                                    Background="{StaticResource FormBackground}" 
+                                                    BorderBrush="{StaticResource FormBorderBrush}"
+                                                    Foreground="{StaticResource FormForeground}"
+                                                    ShowClearButton="True"
+                                                    Height="30" 
+                                                    hc:InfoElement.Placeholder="请输入查询关键字..." 
+                                                    hc:InfoElement.TitlePlacement="Left"
+                                                    hc:InfoElement.Necessary="False"
+                                                    Style="{StaticResource SearchBarPlus}" 
+                                                    CommandParameter="{Binding Text,RelativeSource={RelativeSource Self}}"/>
+                                                <Button
+                                                    x:Name="btnAdd"
+                                                    Content="添加"
+                                                    Command="{Binding CreateCommand}"
+                                                    CommandParameter="true"
+                                                    Margin="5" Style="{StaticResource ButtonPrimary}" Width="60" Height="30" Padding="10,0"/>
+                                                <!--<Button
+                                                    x:Name="btnImport"
+                                                    Content="导入"
+                                                    Command="{Binding OpenDrawCommand}"
+                                                    CommandParameter="true"
+                                                    Margin="5" Style="{StaticResource ButtonSuccess}" Width="60" Height="30" Padding="10,0"/>
+                                                <Button
+                                                    x:Name="btnExport"
+                                                    Content="导出"
+                                                    Command="{Binding OpenDrawCommand}"
+                                                    CommandParameter="true"
+                                                    Margin="5" Style="{StaticResource ButtonSuccess}" Width="60" Height="30" Padding="10,0"/>-->
+                                            </StackPanel>
+                                            <!--传感器列表-->
+                                            <ListView 
+                                                Grid.Row="1"
+                                                ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                                                ItemsSource="{Binding SensorList}" 
+                                                Style="{StaticResource DefaultListView}">
+                                                <ListView.View>
+                                                    <GridView ColumnHeaderContainerStyle="{StaticResource DefaultGridViewColumnHeader}">
+                                                        <GridViewColumn HeaderContainerStyle="{StaticResource CenterGridViewColumnHeader}"  Width="80"  Header="序号" DisplayMemberBinding="{Binding Index}"/>
+                                                        <GridViewColumn Width="100" Header="传感器编号" DisplayMemberBinding="{Binding SensorCode}"/>
+                                                        <GridViewColumn Width="200" Header="安装位置" DisplayMemberBinding="{Binding Position}"/>
+                                                        <GridViewColumn HeaderContainerStyle="{StaticResource CenterGridViewColumnHeader}" Width="150" Header="操作">
+                                                            <GridViewColumn.CellTemplate>
+                                                                <DataTemplate>
+                                                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                                                        <Button
+                                                                           Content="编辑"
+                                                                           Name="btnEdit"
+                                                                           Cursor="Hand"
+                                                                           Tag="{Binding Id}"
+                                                                           Margin="5,0" Style="{StaticResource ButtonSuccess}" Width="40" Height="20" Padding="5,0"/>
+                                                                        <Button
+                                                                           Content="删除"
+                                                                           Name="deleteBtn"
+                                                                           Cursor="Hand"
+                                                                           Tag="{Binding Id}"
+                                                                           Margin="5,0" Style="{StaticResource ButtonDanger}" Width="40" Height="20" Padding="5,0"/>
+                                                                    </StackPanel>
+                                                                </DataTemplate>
+                                                            </GridViewColumn.CellTemplate>
+                                                        </GridViewColumn>
+                                                    </GridView>
+                                                </ListView.View>
+                                            </ListView>
+                                            <!--总数据条数-->
+                                            <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,10">
+                                                <TextBlock Foreground="#fff">当前数据：</TextBlock>
+                                                <TextBlock Foreground="#fff" Text="{Binding SensorList.Count}"/>
+                                                <TextBlock Foreground="#fff">条</TextBlock>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                </TabItem>
+                                <TabItem Header="采集器管理">
+                                    <Border Background="{DynamicResource FormBackground}">
+                                        <!--采集器-->
+                                        <Grid Margin="0,0">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="40"/>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="60"/>
+                                            </Grid.RowDefinitions>
+                                            <!--工具条-->
+                                            <StackPanel Margin="5,0" Orientation="Horizontal" Height="40" Grid.Row="0">
+                                                <hc:SearchBar Command="{Binding SearchCommand}" 
+                                                    Width="200"
+                                                    Background="{StaticResource FormBackground}" 
+                                                    BorderBrush="{StaticResource FormBorderBrush}"
+                                                    Foreground="{StaticResource FormForeground}"
+                                                    ShowClearButton="True"
+                                                    Height="30" 
+                                                    hc:InfoElement.Placeholder="请输入查询关键字..." 
+                                                    hc:InfoElement.TitlePlacement="Left"
+                                                    hc:InfoElement.Necessary="False"
+                                                    Style="{StaticResource SearchBarPlus}" 
+                                                    CommandParameter="{Binding Text,RelativeSource={RelativeSource Self}}"/>
+                                                <Button
+                                                    Content="添加"
+                                                    Command="{Binding CreateCommand}"
+                                                    CommandParameter="true"
+                                                    Margin="5" Style="{StaticResource ButtonPrimary}" Width="60" Height="30" Padding="10,0"/>
+                                            </StackPanel>
+                                            <!--采集器列表-->
+                                            <ListView 
+                                                Grid.Row="1"
+                                                ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                                                ItemsSource="{Binding TerminalList}"  Style="{StaticResource DefaultListView}">
+                                                <ListView.View>
+                                                    <GridView ColumnHeaderContainerStyle="{StaticResource DefaultGridViewColumnHeader}">
+                                                        <GridViewColumn HeaderContainerStyle="{StaticResource CenterGridViewColumnHeader}"  Width="80"  Header="序号" DisplayMemberBinding="{Binding Index}"/>
+                                                        <GridViewColumn Width="150" Header="采集器名称" DisplayMemberBinding="{Binding Name}"/>
+                                                        <GridViewColumn Width="100" Header="数据协议" DisplayMemberBinding="{Binding Ptotocol}"/>
+                                                        <GridViewColumn Width="150" Header="Modbus地址位" DisplayMemberBinding="{Binding Addr}"/>
+                                                        <!--<GridViewColumn Width="100" Header="采集频率" DisplayMemberBinding="{Binding Frequency}"/>
+                                                        <GridViewColumn Width="100" Header="预警温度" DisplayMemberBinding="{Binding WarinValue}"/>
+                                                        <GridViewColumn Width="100" Header="报警温度" DisplayMemberBinding="{Binding AlertValue}"/>-->
+                                                        <GridViewColumn HeaderContainerStyle="{StaticResource CenterGridViewColumnHeader}" Width="200" Header="操作">
+                                                            <GridViewColumn.CellTemplate>
+                                                                <DataTemplate>
+                                                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                                                        <Button
+                                                                           Content="编辑"
+                                                                           Name="btnEdit"
+                                                                           Cursor="Hand"
+                                                                           Tag="{Binding Id}"
+                                                                           Margin="2,0,2,0" Style="{StaticResource ButtonSuccess}" Width="40" Height="20" Padding="2,0"/>
+                                                                        <Button
+                                                                           Content="删除"
+                                                                           Name="deleteBtn"
+                                                                           Cursor="Hand"
+                                                                           Tag="{Binding Id}"
+                                                                           Margin="2,0" Style="{StaticResource ButtonDanger}" Width="40" Height="20" Padding="2,0"/>
+                                                                        <Button
+                                                                           Content="查看传感器"
+                                                                           Name="btn_sensor"
+                                                                           Cursor="Hand"
+                                                                           Tag="{Binding Id}"
+                                                                           Margin="2,0" Style="{StaticResource ButtonDashedWarning}" Width="80" Height="20" Padding="2,0"/>
+                                                                        <Button
+                                                                           Content="写入数据"
+                                                                           Name="btn_write"
+                                                                           Cursor="Hand"
+                                                                           Tag="{Binding Id}"
+                                                                           Margin="2,0" Style="{StaticResource ButtonDashedWarning}" Width="80" Height="20" Padding="2,0"/>
+                                                                    </StackPanel>
+                                                                </DataTemplate>
+                                                            </GridViewColumn.CellTemplate>
+                                                        </GridViewColumn>
+                                                    </GridView>
+                                                </ListView.View>
+                                            </ListView>
+                                            <!--总数据条数-->
+                                            <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,10">
+                                                <TextBlock Foreground="#fff">当前数据：</TextBlock>
+                                                <TextBlock Foreground="#fff" Text="{Binding TerminalList.Count}"/>
+                                                <TextBlock Foreground="#fff">条</TextBlock>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                </TabItem>
+                            </TabControl>
+                        </Grid>
+                    </hc:TabItem>
+                    <hc:TabItem Header="一次行图配置" BorderThickness="0">
+                        <hc:SimplePanel Background="{StaticResource FormBackground}">
+                            <Border Grid.Column="1" 
+                        Margin="0"
                         BorderBrush="{StaticResource FormBorderBrush}" BorderThickness="1">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="40"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <StackPanel Orientation="Horizontal">
-                            <Button IsEnabled="{Binding ConfigModel.CanUpload}" FontSize="15" Content="&#xe61f;" FontFamily="../Assets/Fonts/#iconfont" Name="brnConfigTemp" Click="brnConfigTemp_Click" Margin="5,0" Style="{StaticResource ButtonPrimary}" Padding="10,0" Height="25">
-                                <hc:Poptip.Instance>
-                                    <hc:Poptip Content="配置温度模板" hc:Foreground="Red" PlacementType="Top"/>
-                                </hc:Poptip.Instance>
-                            </Button>
-                            <Button IsEnabled="{Binding ConfigModel.CanUpload}"  FontSize="15"  Command="{Binding GetConfigCommand}" Content="&#xe6b4;" FontFamily="../Assets/Fonts/#iconfont" Margin="1,0" Style="{StaticResource ButtonSuccess}" Padding="10,0" Height="25">
-                                <hc:Poptip.Instance>
-                                    <hc:Poptip Content="查看配置" hc:Foreground="Red" PlacementType="Top"/>
-                                </hc:Poptip.Instance>
-                            </Button>
-                            <Button IsEnabled="{Binding ConfigModel.CanUpload}" FontSize="15" Content="&#xe603;" FontFamily="../Assets/Fonts/#iconfont" Name="uploadImg" Click="uploadImg_Click" Margin="5,0" Style="{StaticResource ButtonDanger}" Padding="10,0" Height="25">
-                                <hc:Poptip.Instance>
-                                    <hc:Poptip Content="上传图纸" hc:Foreground="Red" PlacementType="Top"/>
-                                </hc:Poptip.Instance>
-                            </Button>
-                            <TextBlock  Text="是否编辑:" Margin="10,0" VerticalAlignment="Center" Foreground="#fff"/>
-                            <ToggleButton IsEnabled="{Binding ConfigModel.CanUpload}" Unchecked="ToggleButton_Unchecked" Checked="ToggleButton_Checked" IsChecked="{Binding ConfigModel.IsEdit}" Height="20" Margin="5,5" HorizontalAlignment="Center" Style="{StaticResource ToggleButtonSwitch}"/>
-                            <TextBlock  Text="图形名称:" Margin="10,0" VerticalAlignment="Center" Foreground="#fff"/>
-                             <hc:TextBox 
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="40"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Button IsEnabled="{Binding ConfigModel.CanUpload}" FontSize="15" Content="&#xe61f;" FontFamily="../Assets/Fonts/#iconfont" Name="brnConfigTemp" Click="brnConfigTemp_Click" Margin="5,0" Style="{StaticResource ButtonPrimary}" Padding="10,0" Height="25">
+                                            <hc:Poptip.Instance>
+                                                <hc:Poptip Content="配置温度模板" hc:Foreground="Red" PlacementType="Top"/>
+                                            </hc:Poptip.Instance>
+                                        </Button>
+                                        <Button IsEnabled="{Binding ConfigModel.CanUpload}"  FontSize="15"  Command="{Binding GetConfigCommand}" Content="&#xe6b4;" FontFamily="../Assets/Fonts/#iconfont" Margin="1,0" Style="{StaticResource ButtonSuccess}" Padding="10,0" Height="25">
+                                            <hc:Poptip.Instance>
+                                                <hc:Poptip Content="查看配置" hc:Foreground="Red" PlacementType="Top"/>
+                                            </hc:Poptip.Instance>
+                                        </Button>
+                                        <Button IsEnabled="{Binding ConfigModel.CanUpload}" FontSize="15" Content="&#xe603;" FontFamily="../Assets/Fonts/#iconfont" Name="uploadImg" Click="uploadImg_Click" Margin="5,0" Style="{StaticResource ButtonDanger}" Padding="10,0" Height="25">
+                                            <hc:Poptip.Instance>
+                                                <hc:Poptip Content="上传图纸" hc:Foreground="Red" PlacementType="Top"/>
+                                            </hc:Poptip.Instance>
+                                        </Button>
+                                        <TextBlock  Text="是否编辑:" Margin="10,0" VerticalAlignment="Center" Foreground="#fff"/>
+                                        <ToggleButton IsEnabled="{Binding ConfigModel.CanUpload}" Unchecked="ToggleButton_Unchecked" Checked="ToggleButton_Checked" IsChecked="{Binding ConfigModel.IsEdit}" Height="20" Margin="5,5" HorizontalAlignment="Center" Style="{StaticResource ToggleButtonSwitch}"/>
+                                        <TextBlock  Text="图形名称:" Margin="10,0" VerticalAlignment="Center" Foreground="#fff"/>
+                                        <hc:TextBox 
                                  Background="{StaticResource FormBackground}"
                                  BorderBrush="{StaticResource FormBorderBrush}"
                                  hc:Foreground="#fff"
@@ -148,18 +420,22 @@
                                  Width="150"
                                  Height="25"
                                  ShowClearButton="True" Text="{Binding ConfigModel.PicName}"/>
-                            <Button IsEnabled="{Binding ConfigModel.CanUpload}" FontSize="18" Content="&#xe60b;" FontFamily="../Assets/Fonts/#iconfont" Name="btnSavePic" Click="btnSavePic_Click" Margin="5,0" Style="{StaticResource ButtonPrimary}" Padding="10,0" Height="25">
-                                <hc:Poptip.Instance>
-                                    <hc:Poptip Content="保存数据" hc:Foreground="Red" PlacementType="Top"/>
-                                </hc:Poptip.Instance>
-                            </Button>                          
-                        </StackPanel>
-                        <!--svg 图片显示区域-->
-                        <Grid Grid.Row="1">
-                            <svg:DrawingPage Name="SvgContainer" ViewerModel="View"  Grid.Row="1" CustomColor="#1E1E1E"/>
-                        </Grid>
-                    </Grid>
-                </Border>
+                                        <Button IsEnabled="{Binding ConfigModel.CanUpload}" FontSize="18" Content="&#xe60b;" FontFamily="../Assets/Fonts/#iconfont" Name="btnSavePic" Click="btnSavePic_Click" Margin="5,0" Style="{StaticResource ButtonPrimary}" Padding="10,0" Height="25">
+                                            <hc:Poptip.Instance>
+                                                <hc:Poptip Content="保存数据" hc:Foreground="Red" PlacementType="Top"/>
+                                            </hc:Poptip.Instance>
+                                        </Button>
+                                    </StackPanel>
+                                    <!--svg 图片显示区域-->
+                                    <Grid Grid.Row="1">
+                                        <svg:DrawingPage x:Name="SvgContainer" ViewerModel="View"  Grid.Row="1" CustomColor="#1E1E1E"/>
+                                    </Grid>
+                                </Grid>
+                            </Border>
+                        </hc:SimplePanel>
+                    </hc:TabItem>
+                </hc:TabControl>
+             
             </Grid>
 
             <!--右侧抽屉-->

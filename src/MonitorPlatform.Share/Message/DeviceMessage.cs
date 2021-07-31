@@ -32,10 +32,21 @@ namespace MonitorPlatform.Share.Message
         public override string Topic { get => MessageTopic.DeviceData; set => base.Topic = value; }
 
         public Guid TerminalId { get; set; }
-
+        /// <summary>
+        /// 数据协议名称  用来指定是哪种协议
+        /// </summary>
+        public string Protocol { get; set;  }
         /// <summary>
         /// 物联网数据
         /// </summary>
         public List<IOTMessage> IOTData { get; set; }
+        public DeviceMessage() { }
+        
+        public DeviceMessage(Guid terminalId,List<IOTMessage> iotData,string protocol)
+        {
+            this.TerminalId = terminalId;   
+            this.IOTData = iotData; 
+            this.Protocol= protocol;
+        }
     }
 }

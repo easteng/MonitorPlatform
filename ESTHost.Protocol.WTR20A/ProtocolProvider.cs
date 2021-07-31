@@ -13,16 +13,19 @@
  */
 using EasyCaching.Core;
 
+using ESTCore.Caching;
 using ESTCore.Message;
 using ESTCore.Message.Client;
 using ESTCore.Message.Handler;
 using ESTCore.Message.Message;
 
+using ESTHost.Core.Colleaction;
 using ESTHost.ProtocolBase;
 
 using Microsoft.Extensions.Logging;
 
 using MonitorPlatform.Share;
+using MonitorPlatform.Share.ServerCache;
 
 using Silky.Lms.Core;
 
@@ -46,12 +49,16 @@ namespace ESTHost.Protocol.WTR20A
         public string Name { get => "WTR20A"; set => throw new NotImplementedException(); }
 
         /// <summary>
-        /// 执行操作
+        /// 执行操作操作
         /// </summary>
         /// <returns></returns>
-        public Task ExecuteAsync()
+        public async Task ExecuteAsync()
         {
-            return Task.CompletedTask;
+            // 获取缓存数据，执行采集
+            var devicesString = await this.redisCachingProvider.StringGetAsync("Device:WTR_20A");
+            var devices= ESTCache.GetList<DeviceCacheItem>(devicesString);
+            if (devices.Any())
+                CollectionServerFactory.CreateService(devices,this.Name);
         }
 
         public Task StartAsync()
@@ -62,15 +69,7 @@ namespace ESTHost.Protocol.WTR20A
             this.redisCachingProvider = serviceProvider.Resolve<IRedisCachingProvider>();
             this.currentMessage = new NoticeMessage();
             _logger.LogInformation($"{this.Name} 协议已启动");
-           // Console.WriteLine();
-            //while (true)
-            //{
-            //    this.currentMessage.Content = $"{this.Name} 协议采集中....";
-            //    await this.serverProvider.Publish(MessageTopic.Notice, BaseMessage.CreateMessage(currentMessage)); ;
-            //    await Task.Delay(2000);
-            //}
-
-           return Task.CompletedTask;
+            return Task.CompletedTask;
         }
 
         public Task StopAsync()

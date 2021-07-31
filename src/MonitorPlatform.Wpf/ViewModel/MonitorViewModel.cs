@@ -401,7 +401,7 @@ namespace MonitorPlatform.Wpf.ViewModel
                     // 不存在就创建
                     Directory.CreateDirectory(filePath);
                 }
-                filePath = Path.Combine(filePath, $"\\{diagram.Id}.svg");
+                filePath = Path.Combine(filePath, $"{diagram.Id}.svg");
                 if (File.Exists(filePath))
                 {
                     // 图片存在

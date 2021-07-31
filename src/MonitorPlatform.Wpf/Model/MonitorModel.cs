@@ -42,5 +42,11 @@ namespace MonitorPlatform.Wpf.Model
         private List<MonitorModel> children { get; set; }
         public List<MonitorModel> Children { get => children; set { children = value; this.DoNotify(); } }
         public bool IsExpanded { get; set; } = true;
+
+        private bool isStation;
+        public bool IsStation
+        {
+            get => this.Type == StationType.Station;
+        }
     }
 }
