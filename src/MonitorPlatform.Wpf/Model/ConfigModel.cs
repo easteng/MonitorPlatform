@@ -36,13 +36,13 @@ namespace MonitorPlatform.Wpf.Model
             set { currentMonitor = value; this.DoNotify(); }
         }
 
-        private StationType stationType;
+        //private StationType stationType;
 
-        public StationType StationType
-        {
-            get { return stationType; }
-            set { stationType = value; this.DoNotify(); }
-        }
+        //public StationType StationType
+        //{
+        //    get { return stationType; }
+        //    set { stationType = value; this.DoNotify(); }
+        //}
 
         /// <summary>
         /// 是否可以上传

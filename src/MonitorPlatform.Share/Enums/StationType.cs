@@ -16,7 +16,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MonitorPlatform.Share
 {
-    public enum StationType
+    public enum TreeNodeType
     {
         [Display(Name = "站点/厂区")]
         [Description("站点/厂区")]
@@ -29,6 +29,13 @@ namespace MonitorPlatform.Share
         /// <summary>
         /// 配电室
         /// </summary>
-        Region
+        Room,
+
+        [Display(Name = "终端")]
+        [Description("终端")]
+        /// <summary>
+        /// 配电室
+        /// </summary>
+        Termianl
     }
 }

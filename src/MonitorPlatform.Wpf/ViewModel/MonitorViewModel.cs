@@ -262,6 +262,14 @@ namespace MonitorPlatform.Wpf.ViewModel
             set { terminals = value; this.DoNotify(); }
         }
 
+        // 树结构定义
+        private List<TreeViewModel> treeViewModels;
+
+        public List<TreeViewModel> TreeViewModels
+        {
+            get { return treeViewModels; }
+            set { treeViewModels = value; }
+        }
 
 
         #endregion
@@ -277,6 +285,12 @@ namespace MonitorPlatform.Wpf.ViewModel
         readonly IBaseRepository<Protocol,Guid> protocolRepository; // 设备协议
         readonly IBaseRepository<Terminal,Guid> termianlRepository; // 设备协议
         readonly IBaseRepository<TerminalRltSensor,Guid> termianlRltRepository; // 关联的传感器
+
+
+        readonly IBaseRepository<Station,Guid> stationRepository; // 站点仓储
+        readonly IBaseRepository<PowerRoom,Guid> powerRepository; // 站点仓储
+
+
         #endregion
 
         #region 命令定义
@@ -293,6 +307,10 @@ namespace MonitorPlatform.Wpf.ViewModel
 
         public MonitorViewModel()
         {
+            // 树结构
+            this.TreeViewModels = new List<TreeViewModel>();
+
+
             this.ConfigModel = new ConfigModel();
             this.MonitorModels = new List<MonitorModel>();
             this.Terminals = new List<TerminalModel>();
@@ -312,18 +330,13 @@ namespace MonitorPlatform.Wpf.ViewModel
             protocolRepository = ESTRepository.Builder<Protocol, Guid>();
             termianlRepository = ESTRepository.Builder<Terminal, Guid>();
             termianlRltRepository = ESTRepository.Builder<TerminalRltSensor, Guid>();
+            stationRepository = ESTRepository.Builder<Station, Guid>();
+            powerRepository = ESTRepository.Builder<PowerRoom, Guid>();
+            
             MonitorTypes = new List<ComboxItem>();
-            this.Refresh();
+            this.BuildTree();
             // 监测点类型
-            var dic2 = typeof(StationType).GetDescriptionAndValue();
-            foreach (var item in dic2)
-            {
-                MonitorTypes.Add(new ComboxItem
-                {
-                    Key = item.Key,
-                    Value = item.Value
-                });
-            }
+            //GetStationType(0);
 
             // 绑定设备类型  客户端还是服务端
             DeviceTypes.Add("server");
@@ -337,25 +350,175 @@ namespace MonitorPlatform.Wpf.ViewModel
         }
 
         #region 监测点配置相关
-        private void Refresh()
-        {
-            Task.Run(() =>
-            {
-                var monitors =
-                monitorRepositiry.Where(a => true)
-                .ToTreeList();
-                if (monitors.Any())
-                {
-                    this.MonitorModels = ObjectMapper.Map<List<MonitorModel>>(monitors).ToList();
-                }
-            });
-        }
+
+        // 当前选中的树节点
+        private TreeViewModel SelectedTreeNode { get; set; }
         // 是否添加子节点
         private bool addChild { get; set; }
         public bool AddChild { get => addChild; set { addChild = value; this.DoNotify(); } }
         private bool IsEdit { get; set; } // 是否为编辑
         // 选中被操作的监测点id
         public Guid ActiveMonitorId { get; set; }
+        // 获取左侧树结构   站点==配电室== 终端
+        private void BuildTree()
+        {
+            Task.Run(() =>
+            {
+                var stations = stationRepository.Select.IncludeMany(a => a.Rooms, b => b.IncludeMany(c => c.Terminals)).ToList();
+                if (stations.Any())
+                {
+                    var tree = new TreeViewModel();
+                    stations?.ForEach(a =>
+                    {
+                        tree.NodeName = a.Name;
+                        tree.NodeType = TreeNodeType.Station;
+                        tree.NodeId = a.Id;
+                        tree.Children = new List<TreeViewModel>();
+                        if (a.Rooms.Any())
+                        {
+                            var tre = new TreeViewModel();
+                            a.Rooms.ForEach(b =>
+                            {
+                                tre.NodeName = a.Name;
+                                tre.NodeType = TreeNodeType.Room;
+                                tre.NodeId = a.Id;
+                                tre.Children = new List<TreeViewModel>();
+                                tree.Children.Add(tre);
+                                if (b.Terminals.Any())
+                                {
+                                    var tr = new TreeViewModel();
+                                    b.Terminals?.ForEach(c =>
+                                    {
+                                        tr.NodeName = a.Name;
+                                        tr.NodeType = TreeNodeType.Termianl;
+                                        tr.NodeId = a.Id;
+                                        tre.Children.Add(tre);
+                                    });
+                                }
+                            });
+                        }
+
+                        this.TreeViewModels.Add(tree);
+                    });
+                }
+            });
+        }
+
+        // 树节点选中事件
+        public void TreeSelected(TreeViewModel model)
+        {
+            this.SelectedTreeNode = model;
+            this.BottomShow = false;
+            this.RightShow = false;
+            // 根据节点类型展示不同的内容
+            switch (SelectedTreeNode.NodeType)
+            {
+                case TreeNodeType.Station:
+                    // 选中了站点或者厂区  此时展示设备配置界面，查询该厂区下的设备信息
+                    // TODO 
+                    this.SensorModels?.Clear();
+                    this.Terminals?.Clear();
+                    break;
+                case TreeNodeType.Room:
+                    // 选中了配电室，展示一次图配置相关内容，同时展示采集器，可远程写入数据
+                    // TODO
+                    // 查询并读取上传的图片资源,绑定图片的名称
+                    ReadImgdata();
+                    // 读取当前监测点的温度模板
+                    GetTemplateStyle();
+                    // 读取当前监测点的温度点数据
+                    RefreshDiagramConfigs();
+                    // 读取采集终端
+                    GetTerminalByMonitor(model.Id);
+                    break;
+                case TreeNodeType.Termianl:
+                    // 选中了终端，显示传感器配置界面
+                    // 读取传感器
+                    GetSensorByMonitor(model.Id);
+                    break;
+                default:
+                    break;
+
+            }
+        }
+
+        // 新增树节点
+        public void CreateTreeNode(TreeViewModel node=null)
+        {
+            if (node == null)
+            {
+                // 新增厂区或者站点信息
+                this.CreateStation();
+            }
+        }
+        public void EditTreeNode(TreeViewModel node)
+        {
+
+        }
+
+        #region 新增厂区或者站点
+
+        /// <summary>
+        /// 厂区实体
+        /// </summary>
+        private StationModel stationModel;
+
+        public StationModel StationModel
+        {
+            get { return stationModel; }
+            set { stationModel = value; }
+        }
+
+        // 抽屉状态
+        private bool stationDrawShow;
+
+        public bool StationDrawShow
+        {
+            get { return stationDrawShow; }
+            set { stationDrawShow = value; }
+        }
+        private void GetStation(Guid id)
+        {
+            var station = stationRepository.Get(id);
+            this.StationModel = ObjectMapper.Map<StationModel>(station);
+            this.StationDrawShow = true;
+        }
+        //新增厂区
+        private void CreateStation()
+        {
+            this.StationModel = new StationModel();
+            this.StationDrawShow = true;
+        }
+        // 保存厂区
+        private void SaveStation(bool edit=false)
+        {
+            if (edit)
+            {
+                var station = ObjectMapper.Map<Station>(this.StationModel);
+                stationRepository.Update(station);
+            }
+            else
+            {
+                var station = ObjectMapper.Map<Station>(this.StationModel);
+                stationRepository.Insert(station);
+            }
+            Growl.Success("保存成功");
+        }
+        // 删除厂区
+        private void DeleteStation(Guid id)
+        {
+            stationRepository.Delete(id);
+            Growl.Success("删除成功");
+        }
+
+
+        #endregion
+
+
+
+
+
+
         // 打开左侧抽屉
         public void OpenLeftDrawAction(object data)
         {
@@ -371,6 +534,7 @@ namespace MonitorPlatform.Wpf.ViewModel
             {
                 // 添加子点
                 AddChild = true;
+                // 过滤数据，此时只能显示配电室了
                 this.MonitorModel = new MonitorModel();
             }
             else if (data.ToString() == "edit")
@@ -391,23 +555,23 @@ namespace MonitorPlatform.Wpf.ViewModel
         // 获取当前监测点的温度模板
         private void GetTemplateStyle()
         {
-            var monitorId = this.ConfigModel.CurrentId;
-            var temp = styleRepository.Where(a => a.MonitorId == monitorId).First();
-            if (temp != null)
-            {
-                this.TemplateModel = ObjectMapper.Map<TemplateModel>(temp);
-            }
-            else
-            {
-                this.TemplateModel = null;
-            }
+            //var monitorId = this.ConfigModel.CurrentId;
+            //var temp = styleRepository.Where(a => a.MonitorId == monitorId).First();
+            //if (temp != null)
+            //{
+            //    this.TemplateModel = ObjectMapper.Map<TemplateModel>(temp);
+            //}
+            //else
+            //{
+            //    this.TemplateModel = null;
+            //}
         }
         // 保存温度模板的配置
         public void SaveConfigAction(object data)
         {
 
             // 判断配置是否存在
-            var temp = styleRepository.Where(a => a.MonitorId == this.ConfigModel.CurrentId).First();
+            var temp = styleRepository.Where(a => a.PowerRoomId == this.ConfigModel.CurrentId).First();
             if (temp != null)
             {
                 temp = ObjectMapper.Map<TemplateStyle>(this.TemplateModel);
@@ -416,7 +580,7 @@ namespace MonitorPlatform.Wpf.ViewModel
             else
             {
                 temp = ObjectMapper.Map<TemplateStyle>(this.TemplateModel);
-                temp.MonitorId = this.ConfigModel.CurrentId;
+               // temp.MonitorId = this.ConfigModel.CurrentId;
                 styleRepository.Insert(temp);
             }
             this.ConfigShow = false;
@@ -428,7 +592,7 @@ namespace MonitorPlatform.Wpf.ViewModel
             if (AddChild)
             {
                 // 添加 子项
-                if (this.MonitorModel.DeviceId == Guid.Empty)
+                if (this.DeviceModel.Id == Guid.Empty)
                 {
                     Growl.Error("请给站点绑定服务设备");
                     return;
@@ -436,6 +600,7 @@ namespace MonitorPlatform.Wpf.ViewModel
                 var monitor = ObjectMapper.Map<Monitor>(this.MonitorModel);
                 monitor.ParentId = this.ActiveMonitorId;
                 monitorRepositiry.Insert(monitor);
+
             }
             else  // 编辑状态
             if (IsEdit)
@@ -450,7 +615,7 @@ namespace MonitorPlatform.Wpf.ViewModel
                 monitorRepositiry.Insert(monitor);
             }
 
-            this.Refresh();
+           // this.Refresh();
             CloseDrawAction("left");
         }
         // 删除监测点
@@ -465,63 +630,11 @@ namespace MonitorPlatform.Wpf.ViewModel
             monitorRepositiry.Delete(id);
 
 
-            this.Refresh();
+            //this.Refresh();
             Growl.Success("删除成功");
         }
 
-        // 监测点选中事件
-        public void TreeSelected(MonitorModel model)
-        {
-            this.BottomShow = false;
-            this.RightShow = false;
-            var typeName = model.Type.GetDisplay();// 获取枚举值对应的字符串表示
-            this.ConfigModel.CurrentId = model.Id;
-            this.ConfigModel.CurrentMonitor = $"监测点:{model.Name}({typeName})";// 显示的字符串
-            this.ConfigModel.StationType = model.Type;
-            this.ConfigModel.IsEdit = false;
-            this.ConfigModel.CanUpload = model.Type == StationType.Region;// 只有配电室区域才能操作
-
-            if (model.Type == StationType.Region)
-            {
-                this.RegionId = model.Id;
-                // 查询并读取上传的图片资源,绑定图片的名称
-                ReadImgdata();
-                // 读取当前监测点的温度模板
-                GetTemplateStyle();
-                // 读取当前监测点的温度点数据
-                RefreshDiagramConfigs();
-
-                // 读取传感器
-                GetSensorByMonitor(model.Id);
-
-                // 读取采集终端
-                GetTerminalByMonitor(model.Id);
-
-                // 如果这是没有选中站点，直接选中了配电室
-                if(this.MonitorId==Guid.Empty|| this.DeviceModel == null)
-                {
-                    var monitor = monitorRepositiry.Find(this.RegionId);
-                    this.MonitorId = monitor.ParentId.Value;
-                    this.DeviceModel = ObjectMapper.Map<DeviceModel>(deviceRepository.Where(a => a.MonitorId == MonitorId).First());
-                }
-            }
-            else
-            {
-                this.RegionId = Guid.Empty;
-                this.MonitorId = model.Id;
-                this.DeviceModel = new DeviceModel();
-                // 选中设备
-                var device = deviceRepository.Where(a => a.MonitorId == this.MonitorId).First();
-                if (device != null)
-                {
-                    this.DeviceModel = ObjectMapper.Map<DeviceModel>(device);
-                }
-
-                // 选中站点时清空传感器和采集器
-                this.SensorModels?.Clear();
-                this.Terminals?.Clear();
-            }
-        }
+       
         #endregion
 
         #region 设备管理相关
@@ -556,13 +669,13 @@ namespace MonitorPlatform.Wpf.ViewModel
             if (model != null)
             {
                 model = ObjectMapper.Map<Device>(device);
-                model.MonitorId=this.MonitorId;
+                //model.MonitorId=this.MonitorId;
                 deviceRepository.Update(model);
             }
             else
             {
                 model = ObjectMapper.Map<Device>(device);
-                model.MonitorId = this.MonitorId;
+              //  model.MonitorId = this.MonitorId;
                 deviceRepository.Insert(model);
             }
 
@@ -575,34 +688,34 @@ namespace MonitorPlatform.Wpf.ViewModel
         // 读取配电图
         private void ReadImgdata()
         {
-            var id = this.ConfigModel.CurrentId;// 监测点id
-            var diagram = diagramrRepositiry.Where(a => a.MonitorId == id).First();
-            if (diagram != null)
-            {
-                var filePath = Path.Combine(Directory.GetCurrentDirectory(), $"file");
-                if (!Directory.Exists(filePath))
-                {
-                    // 不存在就创建
-                    Directory.CreateDirectory(filePath);
-                }
-                filePath = Path.Combine(filePath, $"{diagram.Id}.svg");
-                if (File.Exists(filePath))
-                {
-                    // 图片存在
-                    this.ReloadImage?.Invoke(filePath, new EventArgs());
-                }
-                else
-                {
-                    // 图片不存在，将数据库中的文件写入到本地
-                    var data = diagram.Data;
-                    File.WriteAllBytes(filePath, data);
-                    this.ReloadImage?.Invoke(this, new EventArgs());
-                }
-                this.ConfigModel.SelectedFilePath = filePath;
-                this.ConfigModel.PicName = diagram.Name;
+            //var id = this.ConfigModel.CurrentId;// 监测点id
+            //var diagram = diagramrRepositiry.Where(a => a.MonitorId == id).First();
+            //if (diagram != null)
+            //{
+            //    var filePath = Path.Combine(Directory.GetCurrentDirectory(), $"file");
+            //    if (!Directory.Exists(filePath))
+            //    {
+            //        // 不存在就创建
+            //        Directory.CreateDirectory(filePath);
+            //    }
+            //    filePath = Path.Combine(filePath, $"{diagram.Id}.svg");
+            //    if (File.Exists(filePath))
+            //    {
+            //        // 图片存在
+            //        this.ReloadImage?.Invoke(filePath, new EventArgs());
+            //    }
+            //    else
+            //    {
+            //        // 图片不存在，将数据库中的文件写入到本地
+            //        var data = diagram.Data;
+            //        File.WriteAllBytes(filePath, data);
+            //        this.ReloadImage?.Invoke(this, new EventArgs());
+            //    }
+            //    this.ConfigModel.SelectedFilePath = filePath;
+            //    this.ConfigModel.PicName = diagram.Name;
 
-                this.DiagramModel = ObjectMapper.Map<DiagramModel>(diagram);
-            }
+            //    this.DiagramModel = ObjectMapper.Map<DiagramModel>(diagram);
+            //}
         }
 
 
@@ -629,35 +742,35 @@ namespace MonitorPlatform.Wpf.ViewModel
             Task.Run(() => {
                 if (File.Exists(path))
                 {
-                    var data = File.ReadAllBytes(path);
-                    // 先查询监测点是否已经绑定图片
-                    var diagram = diagramrRepositiry.Where(a => a.MonitorId == this.ConfigModel.CurrentId).First();
+                    //var data = File.ReadAllBytes(path);
+                    //// 先查询监测点是否已经绑定图片
+                    //var diagram = diagramrRepositiry.Where(a => a.MonitorId == this.ConfigModel.CurrentId).First();
 
-                    if (diagram != null)
-                    {
-                        // 已经存在，只需要更新
-                        diagram.Data = data;
-                        diagram.Name = this.ConfigModel.PicName;
-                        diagramrRepositiry.Update(diagram);
-                    }
-                    else
-                    {
-                        diagram = new Diagram();
-                        diagram.Data = data;
-                        diagram.Name = this.ConfigModel.PicName;
-                        diagram.MonitorId = this.ConfigModel.CurrentId;
-                        diagramrRepositiry.Insert(diagram);
-                        this.DiagramModel = ObjectMapper.Map<DiagramModel>(diagram);
-                    }
-                    // 同时将数据写到当前目录file 文件夹中
-                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "file");
-                    if (!Directory.Exists(filePath))
-                    {
-                        Directory.CreateDirectory(filePath);
-                    }
-                    filePath = Path.Combine(filePath, $"{diagram.Id}.svg");
-                    File.WriteAllBytes(filePath, data);
-                    Growl.Info("操作成功");
+                    //if (diagram != null)
+                    //{
+                    //    // 已经存在，只需要更新
+                    //    diagram.Data = data;
+                    //    diagram.Name = this.ConfigModel.PicName;
+                    //    diagramrRepositiry.Update(diagram);
+                    //}
+                    //else
+                    //{
+                    //    diagram = new Diagram();
+                    //    diagram.Data = data;
+                    //    diagram.Name = this.ConfigModel.PicName;
+                    //  //  diagram.MonitorId = this.ConfigModel.CurrentId;
+                    //    diagramrRepositiry.Insert(diagram);
+                    //    this.DiagramModel = ObjectMapper.Map<DiagramModel>(diagram);
+                    //}
+                    //// 同时将数据写到当前目录file 文件夹中
+                    //var filePath = Path.Combine(Directory.GetCurrentDirectory(), "file");
+                    //if (!Directory.Exists(filePath))
+                    //{
+                    //    Directory.CreateDirectory(filePath);
+                    //}
+                    //filePath = Path.Combine(filePath, $"{diagram.Id}.svg");
+                    //File.WriteAllBytes(filePath, data);
+                    //Growl.Info("操作成功");
                 }
             });
         }
@@ -666,11 +779,11 @@ namespace MonitorPlatform.Wpf.ViewModel
         public void NewPoint(string name, Point point)
         {
             // 查询当前配电监测点有无图纸配置
-            if (!diagramrRepositiry.Where(a => a.MonitorId == this.ConfigModel.CurrentId).Any())
-            {
-                HandyControl.Controls.MessageBox.Show("请先添加图纸", "温馨提示");
-                return;
-            }
+            //if (!diagramrRepositiry.Where(a => a.MonitorId == this.ConfigModel.CurrentId).Any())
+            //{
+            //    HandyControl.Controls.MessageBox.Show("请先添加图纸", "温馨提示");
+            //    return;
+            //}
             if (!this.RightShow)
                 this.RightShow = true;
             this.DiagramConfigModel = new DiagramConfigModel(name, point);
@@ -753,16 +866,16 @@ namespace MonitorPlatform.Wpf.ViewModel
         /// </summary>
         public void RefreshDiagramConfigs()
         {
-            var list = diagramrRepositiry
-                .Orm
-                .Select<Diagram, DiagramConfig>()
-                .Where((d, c) => d.MonitorId == this.ConfigModel.CurrentId && c.DiagramId == d.Id)
-                .ToList<DiagramConfig>();
-            this.DiagramConfigModels = ObjectMapper.Map<List<DiagramConfigModel>>(list).CreateIndex();
-            if (!this.RightShow)
-            {
-                this.InitPoint?.Invoke(this, DiagramConfigModels);
-            }
+            //var list = diagramrRepositiry
+            //    .Orm
+            //    .Select<Diagram, DiagramConfig>()
+            //    .Where((d, c) => d.MonitorId == this.ConfigModel.CurrentId && c.DiagramId == d.Id)
+            //    .ToList<DiagramConfig>();
+            //this.DiagramConfigModels = ObjectMapper.Map<List<DiagramConfigModel>>(list).CreateIndex();
+            //if (!this.RightShow)
+            //{
+            //    this.InitPoint?.Invoke(this, DiagramConfigModels);
+            //}
         }
 
         // 选中传感器，设定传感器信息
@@ -780,7 +893,7 @@ namespace MonitorPlatform.Wpf.ViewModel
         // 根据配电室查询关联的传感器
         public void GetSensorByMonitor(Guid id)
         {
-            var sensors=sensorRepository.Where(a=>a.MonitorId==id).ToList();
+            var sensors=sensorRepository.Where(a=>a.TerminalId == id).ToList();
             this.SensorModels=ObjectMapper.Map<List<SensorModel>>(sensors).CreateIndex();
         }
 
@@ -827,7 +940,7 @@ namespace MonitorPlatform.Wpf.ViewModel
             else
             {
                 sensor = ObjectMapper.Map<Sensor>(this.SensorModel);
-                sensor.MonitorId = this.RegionId;
+                sensor.TerminalId = this.RegionId;
                 sensorRepository.Insert(sensor);
             }
 
@@ -851,8 +964,8 @@ namespace MonitorPlatform.Wpf.ViewModel
         // 获取配电室绑定的采集器信息
         public void GetTerminalByMonitor(Guid id)
         {
-            var terminal = termianlRepository.Where(a => a.MonitorId == id).ToList();
-            this.Terminals=ObjectMapper.Map<List<TerminalModel>>(terminal).CreateIndex();
+            //var terminal = termianlRepository.Where(a => a.MonitorId == id).ToList();
+            //this.Terminals=ObjectMapper.Map<List<TerminalModel>>(terminal).CreateIndex();
         }
         // 添加采集器
         public void CreateTerminal(bool edit = false, Guid id = default)
@@ -894,7 +1007,7 @@ namespace MonitorPlatform.Wpf.ViewModel
 
             // 查询当前配电室的采集器地址有无重复
 
-            var terminal = termianlRepository.Where(a => a.Addr == this.TerminalModel.Addr && a.MonitorId == this.RegionId).First();
+            var terminal = termianlRepository.Where(a => a.Addr == this.TerminalModel.Addr && a.PowerRoomId == this.RegionId).First();
 
             if(terminal!= null)
             {
@@ -907,13 +1020,13 @@ namespace MonitorPlatform.Wpf.ViewModel
             {
                 // 更新
                 terminal = ObjectMapper.Map<Terminal>(this.TerminalModel);
-                terminal.MonitorId = this.RegionId;
+              //  terminal.MonitorId = this.RegionId;
                 this.termianlRepository.Update(terminal);
             }
             else
             {
                 terminal = ObjectMapper.Map<Terminal>(this.TerminalModel);
-                terminal.MonitorId = this.RegionId;
+              //  terminal.MonitorId = this.RegionId;
                 termianlRepository.Insert(terminal);
             }
 
@@ -1049,7 +1162,7 @@ namespace MonitorPlatform.Wpf.ViewModel
                     {
                         Protocol = a.Protocol,
                         DeviceId = b.Id,
-                        MonitorId = b.MonitorId,
+                      //  MonitorId = b.MonitorId,
                         IpAddress = b.IpAddress,
                         Port = b.Port,
                         Type=b.Type
@@ -1073,7 +1186,7 @@ namespace MonitorPlatform.Wpf.ViewModel
                     // 获取站点下的所有配电室
                     var regions = monitorRepositiry.Where(a => a.ParentId == monitorId).ToList(a => a.Id);
                     if (regions == null) return;
-                    var terminals = termianlRepository.Where(a => regions.Contains(a.MonitorId)).ToList();
+                    var terminals = termianlRepository.Where(a => regions.Contains(a.PowerRoomId)).ToList();
 
                     var deviceTerminalCache = new List<CacheItemTerminal>();
 
@@ -1141,13 +1254,13 @@ namespace MonitorPlatform.Wpf.ViewModel
                         var diagram = diagramrRepositiry.Find(a.DiagramId);
                         // 获取配电室
                         if (diagram == null) return;
-                        var region = monitorRepositiry.Find(diagram.MonitorId);
-                        // 获取站点
-                        if (region == null) return;
-                        var station = monitorRepositiry.Find(region.ParentId.Value);
-                        if (station == null) return;
-                        s.StationName = station?.Name;
-                        s.RegionName = region?.Name;
+                        //var region = monitorRepositiry.Find(diagram.MonitorId);
+                        //// 获取站点
+                        //if (region == null) return;
+                        //var station = monitorRepositiry.Find(region.ParentId.Value);
+                        //if (station == null) return;
+                        //s.StationName = station?.Name;
+                        //s.RegionName = region?.Name;
                         CacheFactory.AddOrUpdateSensorInfoCache(a.SensorCode, s);
                     });
                 });

@@ -92,8 +92,8 @@
                         <StackPanel Orientation="Horizontal">
                             <TextBlock  Text="一次行图" Margin="10,0" VerticalAlignment="Center" Foreground="#fff"/>
                             <hc:Shield Margin="5,0" Subject="测温个数：" Status="{Binding DiagramConfigModels.Count}" Color="#1182c3"/>
-                            <hc:Shield Margin="5,0" Subject="预警个数：" Status="{Binding Waring.Count}" Color="#D38734"/>
-                            <hc:Shield Margin="5,0" Subject="报警个数：" Status="{Binding Alert.Count}" Color="#DA4447"/>
+                            <hc:Shield Margin="5,0" Subject="预警个数：" Status="{Binding WarnCount}" Color="#D38734"/>
+                            <hc:Shield Margin="5,0" Subject="报警个数：" Status="{Binding AlertCount}" Color="#DA4447"/>
                              <!--组件缩放按钮-->
                             <Button x:Name="btn_max_show" Click="btn_max_show_Click" HorizontalAlignment="Right">
                                 <Button.Template>

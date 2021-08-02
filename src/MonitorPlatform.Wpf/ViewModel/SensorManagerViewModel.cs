@@ -80,8 +80,6 @@ namespace MonitorPlatform.Wpf.ViewModel
             set { columnWidth = value; this.DoNotify(); }
         }
 
-
-
         public ICommand SaveCommand { get { return new CommandBase(SaveAction); } }
         public ICommand EditCommand { get { return new CommandBase(EditAction); } }
         public ICommand SearchCommand { get { return new CommandBase(SearchAction); } }
@@ -195,7 +193,7 @@ namespace MonitorPlatform.Wpf.ViewModel
         public void GetSensorByMonitor(Guid id)
         {
             var list =
-               sensorRepository.Where(a=>a.MonitorId==id).ToList(); 
+               sensorRepository.Where(a=>a.TerminalId == id).ToList(); 
             this.SensorList = ObjectMapper.Map<List<SensorModel>>(list).CreateIndex();
         }
     }

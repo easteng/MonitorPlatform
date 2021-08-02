@@ -28,22 +28,23 @@ namespace MonitorPlatform.Domain.Entities
     /// </summary>
     public class Device:BaseEntity<Guid>
     {
+        /// <summary>
+        /// 服务器名称
+        /// </summary>
         public string Name { get; set; }
-        public string Factory { get; set; }
-        public string Description { get; set; }
 
         /// <summary>
         /// 监测点id
         /// </summary>
-        public Guid MonitorId { get; set;  }
+        public Guid StationId { get; set;  }
 
         /// <summary>
         /// 监测点
         /// </summary>
-        public Monitor Monitor { get; set;  }
+        public Station Station { get; set;  }
 
         /// <summary>
-        /// 服务采集模式  客户端模式  服务端模式
+        /// 服务采集模式  客户端模式  服务端模式  串口模式 4g模式
         /// </summary>
         public string Type { get; set; }
 
@@ -63,6 +64,17 @@ namespace MonitorPlatform.Domain.Entities
         public int Port { get; set; }
 
         /// <summary>
+        /// com 端口
+        /// </summary>
+        public string Com { get; set; }
+
+        /// <summary>
+        /// 校验位
+        /// </summary>
+        public int Check { get; set; }
+
+
+        /// <summary>
         /// 预警温度
         /// </summary>
         public double WarnValue { get; set; }
@@ -76,11 +88,6 @@ namespace MonitorPlatform.Domain.Entities
         /// 容错温度
         /// </summary>
         public double TolerantValue { get; set; }
-
-        /// <summary>
-        ///绑定的传感器
-        /// </summary>
-        public IEnumerable<DeviceRltTerminal> Clients { get; set; }
 
     }
 }

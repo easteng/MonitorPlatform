@@ -1,5 +1,7 @@
 ﻿using ESTCore.Domain.Entity;
+
 using MonitorPlatform.Share;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,14 +16,19 @@ namespace MonitorPlatform.Domain.Entities
     public class Terminal : BaseEntity<Guid>
     {
         /// <summary>
-        /// 监测点id
+        /// 配电室id
         /// </summary>
-        public Guid MonitorId { get; set; }
+        public Guid PowerRoomId { get; set; }
+        /// <summary>
+        /// 配电室id
+        /// </summary>
+        public PowerRoom PowerRoom { get; set; }
 
         /// <summary>
-        /// 监测点
+        /// 设备终端
         /// </summary>
-        public Monitor Monitor { get; set; }
+        public Guid DeviceId { get; set; }
+        public Device Device { get; set; }
         /// <summary>
         /// 采集器名称
         /// </summary>
@@ -39,7 +46,7 @@ namespace MonitorPlatform.Domain.Entities
         /// <summary>
         /// 传感器列表
         /// </summary>
-        public List<TerminalRltSensor> Sensors { get; set; }
+        public List<Sensor> Sensors { get; set; }
 
     }
 }

@@ -32,7 +32,7 @@ namespace MonitorPlatform.Domain.Entities
         /// <summary>
         /// 节点类型
         /// </summary>
-        public StationType Type { get; set; }
+      //  public StationType Type { get; set; }
         /// <summary>
         /// 串口服务器 一个站点只能有一台服务器   多站点服务器   通过ip 地址进行定位使用
         /// </summary>

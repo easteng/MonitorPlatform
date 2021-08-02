@@ -50,8 +50,8 @@
                     <StackPanel>
                         <Grid Height="40">
                             <Button Content="添加厂区/站点"
-                                    Command="{Binding OpenLeftDrawCommand}"
-                                    CommandParameter="top"
+                                    x:Name="btn_add_treenode"
+                                    Click="btn_add_treenode_Click"
                                     Margin="10,0"
                                     Height="25"
                                     Padding="10,0"
@@ -88,7 +88,7 @@
                                                 Tag="{Binding Id}"
                                                 Padding="0" FontFamily="../Assets/Fonts/#iconfont">
                                             <hc:Poptip.Instance>
-                                                <hc:Poptip Content="添加子节点" PlacementType="TopLeft"/>
+                                                <hc:Poptip Content="添加子项" PlacementType="TopLeft"/>
                                             </hc:Poptip.Instance>
                                         </Button>
                                         <!--监测点编辑-->
@@ -122,13 +122,19 @@
                 </Border>
                 <!--站点对应数据内容-->
                 <hc:TabControl  
+                    Name="monitor_tabcontrol"
                     Grid.Column="1" 
                     IsAnimationEnabled="True"
                     ShowCloseButton="False" 
                     Background="{StaticResource FormBackground}"
                     BorderBrush="{StaticResource FormBorderBrush}"
                     IsDraggable="True" ShowScrollButton="False" Margin="0,0,0,0"  IsScrollable="True">
-                    <hc:TabItem Header="设备管理" Background="#B9BCBF" Cursor="Hand"  Foreground="#007ACC" MinWidth="200" IsSelected="True"  BorderThickness="0">
+                    <hc:TabItem Header="设备管理" Background="#B9BCBF" x:Name="device_tabitem" Cursor="Hand"  Foreground="#007ACC" MinWidth="200" IsSelected="True"  BorderThickness="0">
+                        <Grid Background="{StaticResource FormBackground}">
+                            
+                        </Grid>
+                    </hc:TabItem>
+                    <hc:TabItem Header="终端传感器" Background="#B9BCBF" Cursor="Hand"  Foreground="#007ACC" MinWidth="200" IsSelected="True"  BorderThickness="0">
                         <Grid Background="{StaticResource FormBackground}">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="5"/>
@@ -517,54 +523,7 @@
                                 hc:InfoElement.TitlePlacement="Left" 
                                 Text="{Binding DiagramConfigModel.PointName}"
                                 Margin="0,16,0,0"/>
-                            <!--<hc:TextBox
-                                Background="{StaticResource FormBackground}" 
-                                BorderBrush="{StaticResource FormBorderBrush}"
-                                Foreground="{StaticResource FormForeground}"
-                                hc:InfoElement.TitleWidth="80" 
-                                hc:InfoElement.Placeholder="测温度属性" 
-                                hc:InfoElement.Title="温度属性" 
-                                hc:InfoElement.Necessary="True" 
-                                hc:InfoElement.TitlePlacement="Left" 
-                                hc:IsReadOnly="True"
-                                Text="{Binding DiagramConfigModel.PropName}"
-                                Margin="0,16,0,0"/>
-                            <hc:TextBox
-                                Background="{StaticResource FormBackground}" 
-                                BorderBrush="{StaticResource FormBorderBrush}"
-                                Foreground="{StaticResource FormForeground}"
-                                hc:InfoElement.TitleWidth="80" 
-                                hc:InfoElement.Placeholder="测温度属性" 
-                                hc:InfoElement.Title="温度属性" 
-                                hc:InfoElement.Necessary="True" 
-                                hc:InfoElement.TitlePlacement="Left" 
-                                hc:IsReadOnly="True"
-                                Text="{Binding DiagramConfigModel.PropName}"
-                                Margin="0,16,0,0"/>
-                            <hc:TextBox
-                                Background="{StaticResource FormBackground}" 
-                                BorderBrush="{StaticResource FormBorderBrush}"
-                                Foreground="{StaticResource FormForeground}"
-                                hc:InfoElement.TitleWidth="80" 
-                                hc:InfoElement.Placeholder="X坐标值" 
-                                hc:InfoElement.Title="X坐标值" 
-                                hc:InfoElement.Necessary="True" 
-                                hc:InfoElement.TitlePlacement="Left" 
-                                hc:IsReadOnly="True"
-                                Text="{Binding DiagramConfigModel.PointX}"
-                                Margin="0,16,0,0"/>
-                            <hc:TextBox
-                                Background="{StaticResource FormBackground}" 
-                                BorderBrush="{StaticResource FormBorderBrush}"
-                                Foreground="{StaticResource FormForeground}"
-                                hc:InfoElement.TitleWidth="80" 
-                                hc:InfoElement.Placeholder="X坐标值" 
-                                hc:InfoElement.Title="X坐标值" 
-                                hc:InfoElement.Necessary="True" 
-                                hc:InfoElement.TitlePlacement="Left" 
-                                hc:IsReadOnly="True"
-                                Text="{Binding DiagramConfigModel.PointY}"
-                                Margin="0,16,0,0"/>-->
+                          
                             <StackPanel Orientation="Horizontal" Margin="0,20,0,0" VerticalAlignment="Center">
                                 <hc:TextBox
                                 Background="{StaticResource FormBackground}" 
@@ -688,13 +647,13 @@
                                 Text="{Binding MonitorModel.Name}"
                                 Margin="0,16,0,0"/>
                             <!--j监测点类型-->
-                            <hc:ComboBox ItemsSource="{Binding MonitorTypes}"
+                            <!--<hc:ComboBox ItemsSource="{Binding MonitorTypes}"
                                          Name="monitorType"
                                       hc:ItemContainerStyle="{StaticResource hc-comboBoxStyle}"
                                       hc:InfoElement.TitleWidth="80"
                                          DisplayMemberPath="Key"
                                          SelectedValuePath="Value"
-                                      SelectedItem="{Binding MonitorModel.Type}"
+                                      SelectedItem="{Binding StationModel.}"
                                       Style="{StaticResource ComboBoxExtend}"
                                       Background="{StaticResource FormBackground}" 
                                       BorderBrush="{StaticResource FormBorderBrush}"
@@ -706,7 +665,7 @@
                                       hc:InfoElement.Necessary="True"
                                          SelectionChanged="monitorType_SelectionChanged"
                                       Margin="0,16,0,0">
-                            </hc:ComboBox>
+                            </hc:ComboBox>-->
 
                             <StackPanel Orientation="Horizontal" Margin="0,10" HorizontalAlignment="Right">
                                 <Button
@@ -1024,6 +983,50 @@
                                 <TextBlock Foreground="#fff">当前数据：</TextBlock>
                                 <TextBlock Foreground="#fff" Text="{Binding Sensors.Count}"/>
                                 <TextBlock Foreground="#fff">条</TextBlock>
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </hc:Drawer>
+            
+            
+            <!--===================新修改内容=====================-->
+            <!--1.厂区或者站点-->
+            <hc:Drawer Name="StationDraw" Dock="Top" MaskCanClose="False" IsOpen="{Binding StationDrawShow}">
+                <Border Margin="255,70,5,30" HorizontalAlignment="Left" Background="{DynamicResource FormBackground}" Width="400" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource BorderBrush}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Border Background="#005B99">
+                            <TextBlock Margin="0,0,0,0" Text="厂区站点信息配置" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#fff" FontSize="16"/>
+                        </Border>
+                        <StackPanel Grid.Row="1" Margin="20,0">
+                            <hc:TextBox
+                                Background="{StaticResource FormBackground}" 
+                                BorderBrush="{StaticResource FormBorderBrush}"
+                                Foreground="{StaticResource FormForeground}"
+                                hc:InfoElement.TitleWidth="80" 
+                                hc:InfoElement.Placeholder="请输入监测点名称" 
+                                hc:InfoElement.Title="监测点名称" 
+                                hc:InfoElement.Necessary="True" 
+                                hc:InfoElement.TitlePlacement="Left" 
+                                Text="{Binding StationModel.Name}"
+                                Margin="0,16,0,0"/>
+                            <StackPanel Orientation="Horizontal" Margin="0,10" HorizontalAlignment="Right">
+                                <Button
+                                     Content="取消"
+                                     Command="{Binding CloseDrawCommand}"
+                                     CommandParameter="StationDraw"
+                                     Margin="5" Style="{StaticResource ButtonPrimary}" 
+                                     Width="60" Height="25" Padding="10,0"/>
+                                <Button
+                                     x:Name="btn_save_station"
+                                     Content="保存"
+                                     Click="btn_save_station_Click"
+                                     Margin="5" Style="{StaticResource ButtonSuccess}" 
+                                     Width="60" Height="25" Padding="10,0"/>
                             </StackPanel>
                         </StackPanel>
                     </Grid>

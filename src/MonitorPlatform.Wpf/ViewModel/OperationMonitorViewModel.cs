@@ -72,21 +72,24 @@ namespace MonitorPlatform.Wpf.ViewModel
         }
 
         // 预警列表存储
-        private List<string> waring;
-
-        public List<string> Waring
-        {
-            get { return waring; }
-            set { waring = value; }
-        }
+        private List<string> Waring { get; set; }
         //报警列表
+        private List<string> Alert { get; set; }
 
-        private List<string> alert;
+        private int alertCount;
 
-        public List<string> Alert
+        public int AlertCount
         {
-            get { return alert; }
-            set { alert = value; }
+            get { return alertCount; }
+            set { alertCount = value; this.DoNotify(); }
+        }
+
+        private int warnCount;
+
+        public int WarnCount
+        {
+            get { return warnCount; }
+            set { warnCount = value; this.DoNotify(); }
         }
 
 
@@ -129,15 +132,15 @@ namespace MonitorPlatform.Wpf.ViewModel
 
         public void TreeSelected(MonitorModel model)
         {
-            if (model.Type == StationType.Region)
-            {
-                // 查询并读取上传的图片资源,绑定图片的名称
-                ReadImgdata();
-                // 读取当前监测点的温度模板
-                GetTemplateStyle();
-                // 读取当前监测点的温度点数据
-                RefreshDiagramConfigs();
-            }
+            //if (model.Type == StationType.Region)
+            //{
+            //    // 查询并读取上传的图片资源,绑定图片的名称
+            //    ReadImgdata();
+            //    // 读取当前监测点的温度模板
+            //    GetTemplateStyle();
+            //    // 读取当前监测点的温度点数据
+            //    RefreshDiagramConfigs();
+            //}
         }
 
         /// <summary>
@@ -145,30 +148,30 @@ namespace MonitorPlatform.Wpf.ViewModel
         /// </summary>
         private void ReadImgdata()
         {
-            var id = this.ActiveMonitorId;// 监测点id
-            var diagram = diagramrRepositiry.Where(a => a.MonitorId == id).First();
-            if (diagram != null)
-            {
-                var filePath = Path.Combine(Directory.GetCurrentDirectory(), $"file");
-                if (!Directory.Exists(filePath))
-                {
-                    // 不存在就创建
-                    Directory.CreateDirectory(filePath);
-                }
-                filePath = Path.Combine(filePath, $"\\{diagram.Id}.svg");
-                if (File.Exists(filePath))
-                {
-                    // 图片存在
-                    this.ReloadImage?.Invoke(filePath, new EventArgs());
-                }
-                else
-                {
-                    // 图片不存在，将数据库中的文件写入到本地
-                    var data = diagram.Data;
-                    File.WriteAllBytes(filePath, data);
-                    this.ReloadImage?.Invoke(this, new EventArgs());
-                }
-            }
+            //var id = this.ActiveMonitorId;// 监测点id
+            //var diagram = diagramrRepositiry.Where(a => a.MonitorId == id).First();
+            //if (diagram != null)
+            //{
+            //    var filePath = Path.Combine(Directory.GetCurrentDirectory(), $"file");
+            //    if (!Directory.Exists(filePath))
+            //    {
+            //        // 不存在就创建
+            //        Directory.CreateDirectory(filePath);
+            //    }
+            //    filePath = Path.Combine(filePath, $"\\{diagram.Id}.svg");
+            //    if (File.Exists(filePath))
+            //    {
+            //        // 图片存在
+            //        this.ReloadImage?.Invoke(filePath, new EventArgs());
+            //    }
+            //    else
+            //    {
+            //        // 图片不存在，将数据库中的文件写入到本地
+            //        var data = diagram.Data;
+            //        File.WriteAllBytes(filePath, data);
+            //        this.ReloadImage?.Invoke(this, new EventArgs());
+            //    }
+            //}
         }
 
         /// <summary>
@@ -176,28 +179,28 @@ namespace MonitorPlatform.Wpf.ViewModel
         /// </summary>
         public void RefreshDiagramConfigs()
         {
-            var list = diagramrRepositiry
-                .Orm
-                .Select<Diagram, DiagramConfig>()
-                .Where((d, c) => d.MonitorId == this.ActiveMonitorId && c.DiagramId == d.Id)
-                .ToList<DiagramConfig>();
-            this.DiagramConfigModels = ObjectMapper.Map<List<DiagramConfigModel>>(list).CreateIndex();
-            this.InitPoint?.Invoke(this, DiagramConfigModels);
+            //var list = diagramrRepositiry
+            //    .Orm
+            //    .Select<Diagram, DiagramConfig>()
+            //    .Where((d, c) => d.MonitorId == this.ActiveMonitorId && c.DiagramId == d.Id)
+            //    .ToList<DiagramConfig>();
+            //this.DiagramConfigModels = ObjectMapper.Map<List<DiagramConfigModel>>(list).CreateIndex();
+            //this.InitPoint?.Invoke(this, DiagramConfigModels);
         }
 
         // 获取当前监测点的温度模板
         private void GetTemplateStyle()
         {
-            var monitorId = this.ActiveMonitorId;
-            var temp = styleRepository.Where(a => a.MonitorId == monitorId).First();
-            if (temp != null)
-            {
-                this.TemplateModel = ObjectMapper.Map<TemplateModel>(temp);
-            }
-            else
-            {
-                this.TemplateModel = null;
-            }
+            //var monitorId = this.ActiveMonitorId;
+            //var temp = styleRepository.Where(a => a.MonitorId == monitorId).First();
+            //if (temp != null)
+            //{
+            //    this.TemplateModel = ObjectMapper.Map<TemplateModel>(temp);
+            //}
+            //else
+            //{
+            //    this.TemplateModel = null;
+            //}
         }
 
         /// <summary>
@@ -220,6 +223,7 @@ namespace MonitorPlatform.Wpf.ViewModel
         /// <param name="status"></param>
         public void SetStatus(string[] names,PointStatus status)
         {
+         
             foreach (var name in names)
             {
                 this.Waring.Remove(name);
@@ -241,6 +245,9 @@ namespace MonitorPlatform.Wpf.ViewModel
                     this.Alert.Add(name);
                 }
             }
+
+            this.AlertCount = Alert.Count();
+            this.WarnCount = Waring.Count();
         }
     }
 }

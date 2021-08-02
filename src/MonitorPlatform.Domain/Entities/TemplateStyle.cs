@@ -26,9 +26,9 @@ namespace MonitorPlatform.Domain.Entities
     /// </summary>
     public class TemplateStyle:BaseEntity<Guid>
     {
-        // 外边框的样式
-        public Guid MonitorId { get; set; }
-        public Monitor Monitor { get; set; }    
+        // 配电室
+        public Guid PowerRoomId { get; set; }
+        public PowerRoom PowerRoom { get; set; }    
 
         public string BorderBrush { get; set; }
         public int BorderThickness { get; set; }

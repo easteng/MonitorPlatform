@@ -31,8 +31,8 @@ namespace MonitorPlatform.Wpf.Converter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var type = (StationType)value;
-            if (type == StationType.Station)
+            var type = (TreeNodeType)value;
+            if (type == TreeNodeType.Station)
             {
                 return Regex.Unescape(StringToUnicode("&#xe864;"));
             }

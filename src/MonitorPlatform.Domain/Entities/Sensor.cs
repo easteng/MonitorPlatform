@@ -21,17 +21,20 @@ using System.Threading.Tasks;
 
 namespace MonitorPlatform.Domain.Entities
 {
+    /// <summary>
+    /// 传感器表
+    /// </summary>
     public class Sensor : BaseEntity<Guid>
     {
         /// <summary>
-        /// 监测点id
+        /// 采集器id
         /// </summary>
-        public Guid MonitorId { get; set; }
+        public Guid TerminalId { get; set; }
 
         /// <summary>
-        /// 监测点
+        /// 采集器
         /// </summary>
-        public Monitor Monitor { get; set; }
+        public Terminal Terminal { get; set; }
         /// <summary>
         /// 传感器编号
         /// </summary>

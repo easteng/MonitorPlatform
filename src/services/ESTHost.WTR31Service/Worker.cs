@@ -1,8 +1,9 @@
 using ESTCore.Message;
 using ESTCore.Message.Client;
-using ESTHost.Core.Message;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+
+using MonitorPlatform.Share;
 
 using System;
 using System.Collections.Generic;
@@ -35,7 +36,7 @@ namespace ESTHost.WTR31Service
 
         public override Task StartAsync(CancellationToken cancellationToken)
         {
-            CurrentMessage.ServiceType = Core.ServerType.WTR31Service;
+            //CurrentMessage.ServiceType = Core.ServerType.WTR31Service;
             CurrentMessage.Online = true;
             this.messageClientProvider.SendMessage(CurrentMessage);
             return base.StartAsync(cancellationToken);
@@ -43,7 +44,7 @@ namespace ESTHost.WTR31Service
 
         public override Task StopAsync(CancellationToken cancellationToken)
         {
-            CurrentMessage.ServiceType = Core.ServerType.WTR31Service;
+            //CurrentMessage.ServiceType = Core.ServerType.WTR31Service;
             CurrentMessage.Online = false;
             this.messageClientProvider.SendMessage(CurrentMessage);
             return base.StopAsync(cancellationToken);

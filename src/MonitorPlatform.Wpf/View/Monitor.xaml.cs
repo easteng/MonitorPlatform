@@ -31,6 +31,7 @@ namespace MonitorPlatform.Wpf.View
     public partial class Monitor : UserControl
     {
         MonitorViewModel monitorViewModel;
+        private object DevicePage;
         public Monitor()
         {
             InitializeComponent();
@@ -41,6 +42,8 @@ namespace MonitorPlatform.Wpf.View
 
             // 如果配置数据不为空，则渲染标记点
             monitorViewModel.InitPoint += MonitorViewModel_InitPoint;
+
+            DevicePage = this.device_tabitem;
         }
 
         #region 测温点添加及图纸管理
@@ -209,8 +212,21 @@ namespace MonitorPlatform.Wpf.View
             var treeView = ((TreeView)sender).SelectedItem as MonitorModel;
             if(treeView != null)
             {
-                monitorViewModel.ActiveMonitorId = treeView.Id;
-                monitorViewModel.TreeSelected(treeView);
+                //monitorViewModel.ActiveMonitorId = treeView.Id;
+                //monitorViewModel.TreeSelected(treeView);
+
+                //if (treeView.Type == StationType.Station)
+                //{
+                //    //判断，如果存在在不在添加
+                //    if (!monitor_tabcontrol.Items.Contains(DevicePage))
+                //    {
+                //        monitor_tabcontrol.Items.Insert(0,DevicePage); 
+                //    }
+                //}
+                //else
+                //{
+                //    monitor_tabcontrol.Items.Remove(DevicePage);
+                //}
             }
         }
 
@@ -251,11 +267,11 @@ namespace MonitorPlatform.Wpf.View
         private void monitorType_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             // 站点类型切换
-            var item = ((ComboBox)sender).SelectedItem as ComboxItem;
-            if (item != null)
-            {
-                this.monitorViewModel.MonitorModel.Type = (StationType)item.Value;
-            }
+            //var item = ((ComboBox)sender).SelectedItem as ComboxItem;
+            //if (item != null)
+            //{
+            //    this.monitorViewModel.MonitorModel.Type = (StationType)item.Value;
+            //}
         }
 
         #endregion
@@ -547,8 +563,25 @@ namespace MonitorPlatform.Wpf.View
         }
 
 
+
         #endregion
 
 
+        #region 左侧树结构相关内容
+
+        // 添加顶级树节点
+        private void btn_add_treenode_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        // 保存站点信息
+        private void btn_save_station_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+        #endregion
+
+       
     }
 }

@@ -13,6 +13,8 @@
  */
 using ESTCore.Message;
 
+using Newtonsoft.Json;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,5 +52,9 @@ namespace MonitorPlatform.Share.Message
         /// 采集器id
         /// </summary>
         public Guid TerminalId { get; set; }
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this);
+        }
     }
 }

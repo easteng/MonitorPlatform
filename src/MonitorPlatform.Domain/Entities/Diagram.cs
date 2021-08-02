@@ -23,8 +23,11 @@ namespace MonitorPlatform.Domain.Entities
 {
     public class Diagram:BaseEntity<Guid>
     {
-        public Guid MonitorId { get; set;  }
-        public Monitor Monitor { get; set; }
+        /// <summary>
+        /// 配电室
+        /// </summary>
+        public Guid PowerRoomId { get; set;  }
+        public PowerRoom PowerRoom { get; set; }
         /// <summary>
         /// 图纸名称
         /// </summary>
@@ -41,6 +44,6 @@ namespace MonitorPlatform.Domain.Entities
         /// 图纸的配置项
         /// </summary>
 
-        public IEnumerable<DiagramConfig> Configs { get; set;  }
+        public List<DiagramConfig> Configs { get; set;  }
     }
 }

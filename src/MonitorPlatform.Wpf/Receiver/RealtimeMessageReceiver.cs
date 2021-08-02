@@ -26,6 +26,7 @@ namespace MonitorPlatform.Wpf.Receiver
         public Task Receive(BaseMessage message)
         {
             var real = message.GetMessage<RealtimeMessage>();
+            // 获取到实时数据，根据数据类型进行在线联系的判断
             GlableDelegateHandler.UpdateRealtimeData?.Invoke(real); //
             return Task.FromResult(0);
         }

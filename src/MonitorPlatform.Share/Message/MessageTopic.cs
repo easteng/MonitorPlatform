@@ -19,5 +19,6 @@ namespace MonitorPlatform.Share
         public static readonly string Notice = "NOTICE";
         public static readonly string RemoteControlCommand = "REMOTECONTROL";
         public static readonly string DeviceData = "DEVICEDARA";
+        public static readonly string Status = "STATUS"; //客户端连接的状态
     }
 }

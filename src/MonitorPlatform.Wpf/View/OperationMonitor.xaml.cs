@@ -46,7 +46,7 @@ namespace MonitorPlatform.Wpf.View
         private void OperationMonitorViewModel_InitPoint(object sender, List<DiagramConfigModel> e)
         {
             this.SvgContainer.Initialization();
-            var list = new List<TemplateModel>();
+            var list = new List<Template>();
             if (e == null) return;
 
             foreach (var item in e)
@@ -55,7 +55,7 @@ namespace MonitorPlatform.Wpf.View
                 var template = new Template();
                 var aa=template.UpdateElement(this.operationMonitorViewModel.TemplateModel,item.SensorCode);
                 template.Name = item.PropName;
-                list.Add(aa);
+                list.Add(template);
                 this.SvgContainer.AddUIElement(template, point);
             }
 

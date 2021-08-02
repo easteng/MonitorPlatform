@@ -46,11 +46,16 @@ namespace MonitorPlatform.Wpf.View
         /// <param name="code"></param>
         /// <param name="value"></param>
         /// <param name="status"></param>
-        public void SetValue(string code, double value, int status)
+        public void SetValue(string name, double value, int status)
         {
             // 为了方便通过反射传值，这个地方做了转换
             var enumState = (PointStatus)status;
-            this.templateViewModel.Update(code,value, enumState);
+            if (this.Name== name)
+            {
+                // 当前的组件
+                this.templateViewModel.Update(value, enumState);
+            }
+           
         }
     }
 }

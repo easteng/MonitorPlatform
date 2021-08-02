@@ -26,8 +26,8 @@ namespace MonitorPlatform.Wpf.Model
     {
         private string name { get; set; }
         public string Name { get => name; set { name = value; this.DoNotify(); } }
-        private StationType type { get; set; }
-        public StationType Type { get => type; set { type = value; this.DoNotify(); } }
+        //private StationType type { get; set; }
+        //public StationType Type { get => type; set { type = value; this.DoNotify(); } }
         /// <summary>
         /// 设备信息
         /// </summary>
@@ -44,9 +44,9 @@ namespace MonitorPlatform.Wpf.Model
         public bool IsExpanded { get; set; } = true;
 
         private bool isStation;
-        public bool IsStation
-        {
-            get => this.Type == StationType.Station;
-        }
+        //public bool IsStation
+        //{
+        //   // get => this.Type == StationType.Station;
+        //}
     }
 }
