@@ -28,30 +28,36 @@ namespace MonitorPlatform.Wpf.View
 
         public bool ShowTerminal=false;
         // 串口服务器器  用来过滤采集器
-        public Guid DeviceId { get;set; }
+        public Guid MonitorId { get;set; }
         public SensorSelectModal()
         {
             
 
             InitializeComponent();
-            this.Activated += SensorSelectModal_Activated;
             this.DataContext = sensorManagerViewModel = new SensorManagerViewModel();
            
           
         }
 
-        private void SensorSelectModal_Activated(object sender, EventArgs e)
+        public void OpenDialoge()
         {
             if (ShowTerminal)
             {
-                border_terminal_info.Width = 200;
+                //border_terminal_info.Width = 200;
                 sensorManagerViewModel.ColumnWidth = 0;
             }
             else
             {
-                border_terminal_info.Width = 0;
+                //border_terminal_info.Width = 0;
                 sensorManagerViewModel.ColumnWidth = 80;
             }
+
+            sensorManagerViewModel.GetSensorByMonitor(this.MonitorId);
+            this.ShowDialog();
+        }
+        private void SensorSelectModal_Activated(object sender, EventArgs e)
+        {
+           
         }
 
         private void rowselect_Checked(object sender, RoutedEventArgs e)

@@ -14,7 +14,6 @@
 using AutoMapper;
 
 using MonitorPlatform.Domain.Entities;
-using MonitorPlatform.Share.ServerCache;
 using MonitorPlatform.Wpf.Model;
 
 using System;
@@ -36,8 +35,6 @@ namespace MonitorPlatform.Wpf
                 cfg.CreateMap<UserModel, User>();
                 cfg.CreateMap<Sensor, SensorModel>();
                 cfg.CreateMap<SensorModel, Sensor>();
-                cfg.CreateMap<DeviceCacheItem, Device>();
-                cfg.CreateMap<Device, DeviceCacheItem>();
                 cfg.CreateMap<Device, DeviceModel>();
                 cfg.CreateMap<DeviceModel, Device>();
                 cfg.CreateMap<Monitor, MonitorModel>();
@@ -50,8 +47,6 @@ namespace MonitorPlatform.Wpf
                 cfg.CreateMap<TemplateStyle, TemplateModel>();
                 cfg.CreateMap<TerminalModel, Terminal>();
                 cfg.CreateMap<Terminal, TerminalModel>();
-                cfg.CreateMap<Terminal, TerminalCacheItem>();
-                cfg.CreateMap<TerminalCacheItem, Terminal>();
                 cfg.CreateMap<SMSConfigModel, SmsConfig>();
                 cfg.CreateMap<SmsConfig, SMSConfigModel>();
             });

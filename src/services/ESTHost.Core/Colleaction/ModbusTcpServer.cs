@@ -13,7 +13,7 @@
  */
 using ESTCore.Common;
 
-using MonitorPlatform.Share.ServerCache;
+using MonitorPlatform.Share.CacheItem;
 
 using System;
 using System.Collections.Generic;
@@ -29,7 +29,7 @@ namespace ESTHost.Core.Colleaction
     public class ModbusTcpServer: ModbusBase
     {
         private ModbusTcpServer() { }
-        public static ModbusTcpServer CreateModbus(DeviceCacheItem item)
+        public static ModbusTcpServer CreateModbus(CacheItemDevice item)
         {
             var tcpNet = new ModbusTcpServer();
             return tcpNet;
@@ -51,6 +51,11 @@ namespace ESTHost.Core.Colleaction
         }
 
         public override OperateResult<byte[]> RestartTerminal(byte[] command)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override OperateResult<byte[]> SetSensorCount(byte[] sensor)
         {
             throw new NotImplementedException();
         }

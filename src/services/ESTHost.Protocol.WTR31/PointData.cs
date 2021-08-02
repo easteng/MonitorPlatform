@@ -46,7 +46,7 @@ namespace ESTHost.Protocol.WTR31
         /// <summary>
         /// 电池电压
         /// </summary>
-        public byte Battery { get; set; } = 0xFF;
+        public decimal Battery { get; set; } = 0xFF;
 
         /// <summary>
         /// 电池电压描述
@@ -79,5 +79,11 @@ namespace ESTHost.Protocol.WTR31
         /// 传感器状态-- 0正常 1故障
         /// </summary>
         public byte PointState { get; set; } = 0;
+
+        /// <summary>
+        /// 计数编号
+        /// </summary>
+        public byte FrameNo { get; set; } = 0x00;
+
     }
 }

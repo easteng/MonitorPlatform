@@ -22,9 +22,10 @@ using ESTHost.ProtocolBase;
 
 using Microsoft.Extensions.Logging;
 
+using MonitorPlatform.Contracts;
 using MonitorPlatform.Share;
+using MonitorPlatform.Share.CacheItem;
 using MonitorPlatform.Share.Message;
-using MonitorPlatform.Share.ServerCache;
 
 using Newtonsoft.Json;
 
@@ -47,7 +48,7 @@ namespace ESTHost.Protocol.WTR20A
     {
         private ILogger<WTR20AReceiver> _logger;
         private readonly IRedisCachingProvider redisCachingProvider;
-        private readonly IMessageServerProvider serverProvider;
+        private readonly IMessageServerProvider messageProvider;
         private readonly ICollectionRepeater collectionRepeater;
         private NoticeMessage noticeMessage;
         private Dictionary<Guid, List<PointData>> lastPointData;
@@ -59,7 +60,7 @@ namespace ESTHost.Protocol.WTR20A
             this.noticeMessage.Online = true;
             this.lastPointData = new Dictionary<Guid, List<PointData>>();
             _logger = logger;
-            this.serverProvider = serverProvider;
+            this.messageProvider = serverProvider;
             this.collectionRepeater = collectionRepeater;
         }
 
@@ -77,19 +78,18 @@ namespace ESTHost.Protocol.WTR20A
                 var pointData = this.ResolveBuffer(result.Data);
                 //_logger.LogInformation(JsonConvert.SerializeObject(pointData));
                 // 获取采集器的传感器缓存 缓存的key 值为采集器的id
-                var sensorCacheString = redisCachingProvider.StringGet($"Terminal:Sensor:{terminal.Id}");
-                var sensors = JsonConvert.DeserializeObject<List<SensorCacheItem>>(sensorCacheString);
+                var sensors = redisCachingProvider.GetTerminalSensorCache(terminal.Id);
                 // 解析数据成标准格式
                 var iotMessage = this.GetIotMessage(terminal, pointData, sensors);
                 var ptotocol = nameof(WTR20AReceiver).RemovePostFix(StringComparison.OrdinalIgnoreCase, "Receiver");
-                var deviceMessage = new DeviceMessage(terminal.Id, iotMessage, ptotocol);
+                var deviceMessage = new DeviceMessage(terminal.DeviceId,terminal.Id, iotMessage, ptotocol);
                 await this.collectionRepeater.Receive(deviceMessage);// 向数据中心发送数据
             }
             else
             {
-                var content = $"{device}设备的{terminal.Name} 采集器获取数据异常，请检查";
-                this.noticeMessage.Content = content;
-                await this.serverProvider.Publish(MessageTopic.Notice, BaseMessage.CreateMessage(this.noticeMessage));
+                var content = $"{device}设备的{terminal.Addr} 采集器获取数据异常，请检查";
+                var msg=NoticeMessage.CreateErrorMessage(content);
+                await this.messageProvider.Publish(MessageTopic.Notice, BaseMessage.CreateMessage(msg));
             }
             return true;
         }
@@ -100,7 +100,7 @@ namespace ESTHost.Protocol.WTR20A
         /// <param name="terminal">采集终端信息，记录报警 预警等</param>
         /// <param name="list"></param>
         /// <param name="sensors"></param>
-        private List<IOTMessage> GetIotMessage(TerminalCacheItem terminal, List<PointData> list, List<SensorCacheItem> sensors)
+        private List<IOTMessage> GetIotMessage(CacheItemTerminal terminal, List<PointData> list, List<CacheItemSensor> sensors)
         {
             try
             {
@@ -117,7 +117,6 @@ namespace ESTHost.Protocol.WTR20A
                         iot.Value = item.Temp;
                         iot.Battary = item.Battery;
                         iot.PointState = item.PointState;
-
                         // 获取缓存，看是否温度是否跳变
                         // 判断前后时间是否超过了五分钟
                         if (lastData != null)
@@ -126,7 +125,7 @@ namespace ESTHost.Protocol.WTR20A
                             if (p != null && (item.Time - p.Time).TotalMinutes < 3)
                             {
                                 // 三分钟之内的数据
-                                if (Math.Abs(item.Temp - p.Temp) > terminal.TolerantValue)
+                                if (Math.Abs(item.Temp - p.Temp) >20)
                                 {
                                     continue;
                                 }

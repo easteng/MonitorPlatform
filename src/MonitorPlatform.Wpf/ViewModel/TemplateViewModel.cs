@@ -54,8 +54,8 @@ namespace MonitorPlatform.Wpf.ViewModel
                 WaringValueForegrund= "#FD7E07",
                 AlertValueForegrund= "#FF1900"
             };
-            templateModel.ValueForeground = templateModel.DefaultValueForeground;
-            GetDefaultColor(templateModel);
+            TemplateModel.ValueForeground = templateModel.DefaultValueForeground;
+            GetDefaultColor(TemplateModel);
         }
 
         private void GetDefaultColor(TemplateModel templateModel)

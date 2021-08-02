@@ -13,7 +13,7 @@
  */
 using ESTCore.Common;
 
-using MonitorPlatform.Share.ServerCache;
+using MonitorPlatform.Share.CacheItem;
 
 using System;
 using System.Collections.Generic;
@@ -32,11 +32,15 @@ namespace ESTHost.Core.Colleaction
         /// 返回的数据
         /// </summary>
         public byte[] Data { get; set; }
+        /// <summary>
+        /// 状态数据
+        /// </summary>
+        public byte[] StateData { get; set; }
 
         /// <summary>
         /// 采集器信息
         /// </summary>
-        public TerminalCacheItem Terminal { get; set; }
+        public CacheItemTerminal Terminal { get; set; }
         /// <summary>
         /// 当前采集设备的id
         /// </summary>

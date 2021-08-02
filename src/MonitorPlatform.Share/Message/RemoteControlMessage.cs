@@ -45,6 +45,6 @@ namespace MonitorPlatform.Share
         /// <summary>
         /// 当前要控制的协议类型
         /// </summary>
-        public PtotocolType PtotocolType { get; set; }
+        public string Ptotocol{ get; set; }
     }
 }

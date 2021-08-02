@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MonitorPlatform.Wpf.Model
@@ -49,5 +50,21 @@ namespace MonitorPlatform.Wpf.Model
         public double AlertValue { get => alertValue; set { alertValue = value; this.DoNotify(); } }
         public double TolerantValue { get => tolerantValue; set { tolerantValue = value; this.DoNotify(); } }
 
+        /// <summary>
+        /// 监测点
+        /// </summary>
+        private Guid monitorId { get; set; }
+        /// <summary>
+        /// 监测点id
+        /// </summary>
+        public Guid MonitorId { get => monitorId; set { monitorId = value; this.DoNotify(); } }
+        /// <summary>
+        /// 监测点
+        /// </summary>
+        private MonitorModel monitor { get; set; }
+        /// <summary>
+        /// 监测点
+        /// </summary>
+        public MonitorModel Monitor { get => monitor; set { monitor = value; this.DoNotify(); } }
     }
 }

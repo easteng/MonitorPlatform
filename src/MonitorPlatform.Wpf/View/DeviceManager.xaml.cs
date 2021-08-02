@@ -62,8 +62,8 @@ namespace MonitorPlatform.Wpf.View
             // 设备模式选择
             if (this.devivetype.SelectedValue != null)
             {
-                var item = (DeviceCollectionType)this.devivetype.SelectedValue;
-                this.deviceManagerViewModel.DeviceModel.Type = item;
+                var item =this.devivetype.SelectedValue;
+                this.deviceManagerViewModel.DeviceModel.Type = item.ToString();
             }
         }
 
@@ -133,7 +133,7 @@ namespace MonitorPlatform.Wpf.View
             if (this.ptotoco.SelectedValue != null)
             {
                 var item = (PtotocolType)this.ptotoco.SelectedValue;
-                this.deviceManagerViewModel.DeviceModel.PtotocolType = item;
+             //   this.deviceManagerViewModel.DeviceModel.PtotocolType = item;
             }
         }
     }

@@ -14,6 +14,7 @@
 using EasyCaching.Core;
 
 using ESTCore.Caching;
+using ESTCore.Common;
 using ESTCore.Message;
 using ESTCore.Message.Client;
 using ESTCore.Message.Handler;
@@ -24,8 +25,8 @@ using ESTHost.ProtocolBase;
 
 using Microsoft.Extensions.Logging;
 
+using MonitorPlatform.Contracts;
 using MonitorPlatform.Share;
-using MonitorPlatform.Share.ServerCache;
 
 using Silky.Lms.Core;
 
@@ -33,6 +34,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ESTHost.Protocol.WTR20A
@@ -43,8 +45,7 @@ namespace ESTHost.Protocol.WTR20A
     public class ProtocolProvider : IBaseProtocol
     {
         private ILogger<ProtocolProvider> _logger;
-        private IMessageServerProvider serverProvider;
-        private NoticeMessage currentMessage;
+        private IMessageServerProvider messageProvider;
         private IRedisCachingProvider redisCachingProvider;
         public string Name { get => "WTR20A"; set => throw new NotImplementedException(); }
 
@@ -52,22 +53,26 @@ namespace ESTHost.Protocol.WTR20A
         /// 执行操作操作
         /// </summary>
         /// <returns></returns>
-        public async Task ExecuteAsync()
+        public Task ExecuteAsync()
         {
             // 获取缓存数据，执行采集
-            var devicesString = await this.redisCachingProvider.StringGetAsync("Device:WTR_20A");
-            var devices= ESTCache.GetList<DeviceCacheItem>(devicesString);
-            if (devices.Any())
+            var devices = this.redisCachingProvider.GetDevicesByProtocol(this.Name);
+            if (devices!=null&&devices.Any())
                 CollectionServerFactory.CreateService(devices,this.Name);
+            return Task.CompletedTask;
+        }
+
+        public Task Restart(Guid deviceId, Guid terminalId)
+        {
+            throw new NotImplementedException();
         }
 
         public Task StartAsync()
         {
             var serviceProvider = EngineContext.Current;
             this._logger = serviceProvider.Resolve<ILogger<ProtocolProvider>>();
-            this.serverProvider = serviceProvider.Resolve<IMessageServerProvider>();
+            this.messageProvider = serviceProvider.Resolve<IMessageServerProvider>();
             this.redisCachingProvider = serviceProvider.Resolve<IRedisCachingProvider>();
-            this.currentMessage = new NoticeMessage();
             _logger.LogInformation($"{this.Name} 协议已启动");
             return Task.CompletedTask;
         }
@@ -76,6 +81,107 @@ namespace ESTHost.Protocol.WTR20A
         {
             Console.WriteLine($"{this.Name} 协议已关闭");
             return Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// 写入传感器
+        /// </summary>
+        /// <param name="deviceId"></param>
+        /// <param name="terminalId"></param>
+        /// <returns></returns>
+        public async Task WriteSensor(Guid deviceId, Guid terminalId)
+        {
+            // 传感器写入，先停止已有的采集，->写入->重启
+            CollectionServerFactory.StartWrite(deviceId, terminalId);
+
+            // 执行操作
+            // 获取要写入采集器的传感器信息
+            var device = this.redisCachingProvider.GetDeviceInfoCache(deviceId);
+            var sensors = this.redisCachingProvider.GetTerminalSensorCache(terminalId);
+            var terminal = this.redisCachingProvider.GetTerminalInfo(terminalId);
+            // 先设置探头的个数
+            if (sensors != null && sensors.Any())
+            {
+                var command = GetSensorCountCommand((byte)terminal.Addr, (byte)sensors.Count());
+                this._logger.LogInformation(command.ToHexString());
+                // 先设置传感器个数
+                var res = CollectionServerFactory.SetSensorCount(deviceId, command);
+                if (res.IsSuccess)
+                {
+                    this._logger.LogInformation(res.Content.ToHexString());
+                    sensors?.ForEach(a =>
+                    {
+                        var command = GetSensorCommand((byte)terminal.Addr, (byte)a.SensorNo, UInt32.Parse(a.SensorCode));
+                        this._logger.LogInformation(command.ToHexString());
+                        var call = CollectionServerFactory.WriteSensor(deviceId, command);
+                        if (call.IsSuccess)
+                        {
+                            _logger.LogInformation("写入成功");
+                        }
+                        else
+                        {
+                            _logger.LogError("写入失败");
+                        }
+                        Thread.Sleep(100);
+                    });
+
+                    // 发送提示消息
+                    var content= $"{device.Name}设备中{terminal.Addr}终端传感器写入成功";
+                    var msg=NoticeMessage.CreateSuccessMessage(content);
+                    await this.messageProvider.Publish(MessageTopic.Notice, BaseMessage.CreateMessage(msg));
+                }
+            }
+            // 结束写入
+            CollectionServerFactory.EndWrite(deviceId, terminalId);
+            //刷新数据
+            CollectionServerFactory.Refresh(deviceId);
+        }
+
+        /// <summary>
+        /// 获取发送命令
+        /// </summary>
+        /// <param name="addr"></param>
+        /// <param name="pno"></param>
+        /// <param name="pId"></param>
+        /// <returns></returns>
+        private byte[] GetSensorCommand(byte addr, byte pno, UInt32 pId)
+        {
+            byte[] send_buf = new byte[13];
+            send_buf[0] = addr;
+            send_buf[1] = 0x10;
+
+            ushort jcq_no = (ushort)(0x1000 + pno * 2);
+            send_buf[2] = (byte)(jcq_no >> 8);
+            send_buf[3] = (byte)jcq_no;
+
+            send_buf[4] = 0x00;
+            send_buf[5] = 0x02;
+            send_buf[6] = 0x04;
+
+            send_buf[7] = (byte)pId;
+            send_buf[8] = (byte)(pId >> 8);
+            send_buf[9] = (byte)(pId >> 16);
+            send_buf[10] = (byte)(pId >> 24);
+
+            return send_buf;
+        }
+        /// <summary>
+        /// 获取写入的传感器条目
+        /// </summary>
+        /// <param name="addr"></param>
+        /// <param name="point_count"></param>
+        /// <returns></returns>
+        private byte[] GetSensorCountCommand(byte addr, byte point_count)
+        {
+            byte[] send_buf = new byte[8];
+
+            send_buf[0] = addr;
+            send_buf[1] = 0x06;
+            send_buf[2] = 0x10;
+            send_buf[3] = 0x01;
+            send_buf[4] = 0x00;
+            send_buf[5] = point_count;
+            return send_buf;
         }
     }
 }

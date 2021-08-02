@@ -1,48 +1,44 @@
 ﻿/**********************************************************************
-*******命名空间： MonitorPlatform.Domain.Entities
-*******类 名 称： Sensor
-*******类 说 明： 传感器表
+*******命名空间： MonitorPlatform.Share.CacheItem
+*******类 名 称： CacheItemDeviceInfo
+*******类 说 明： 设备基础信息
 *******作    者： Easten
 *******机器名称： DESKTOP-EC8U0GP
 *******CLR 版本： 4.0.30319.42000
-*******创建时间： 7/11/2021 11:00:38 AM
+*******创建时间： 8/1/2021 12:56:40 PM
 *******联系方式： 1301485237@qq.com
 ***********************************************************************
 ******* ★ Copyright @easten company 2021-2022. All rights reserved ★ *********
 ***********************************************************************
  */
-using ESTCore.Domain.Entity;
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MonitorPlatform.Domain.Entities
+namespace MonitorPlatform.Share.CacheItem
 {
-    public class Sensor : BaseEntity<Guid>
+    [Serializable]
+    /// <summary>
+    /// 设备基础信息吗，用来存储设备的基础信息，报警温度等。
+    /// </summary>
+    public class CacheItemDeviceInfo
     {
+        public string Name { get; set; }
         /// <summary>
-        /// 监测点id
+        /// 预警温度
         /// </summary>
-        public Guid MonitorId { get; set; }
+        public double WarnValue { get; set; }
 
         /// <summary>
-        /// 监测点
+        /// 报警温度
         /// </summary>
-        public Monitor Monitor { get; set; }
+        public double AlertValue { get; set; }
+
         /// <summary>
-        /// 传感器编号
+        /// 容错温度
         /// </summary>
-        public string SensorCode { get; set; }
-        /// <summary>
-        /// 安装位置
-        /// </summary>
-        public string Position { get; set; }
-        /// <summary>
-        /// 备注
-        /// </summary>
-        public string Remark { get; set; }
+        public double TolerantValue { get; set; }
     }
 }

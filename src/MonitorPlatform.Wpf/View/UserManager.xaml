@@ -64,7 +64,7 @@
             <Grid Margin="20,0" Grid.Row="2">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
-                    <RowDefinition Height="60"/>
+                    <RowDefinition Height="40"/>
                 </Grid.RowDefinitions>
                 <ListView 
                     ScrollViewer.VerticalScrollBarVisibility="Hidden"

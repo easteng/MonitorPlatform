@@ -43,6 +43,10 @@ namespace MonitorPlatform.Wpf.View
             monitorViewModel.InitPoint += MonitorViewModel_InitPoint;
         }
 
+        #region 测温点添加及图纸管理
+
+      
+
         private void MonitorViewModel_InitPoint(object sender, List<DiagramConfigModel> e)
         {
             this.SvgContainer.Initialization();
@@ -99,6 +103,105 @@ namespace MonitorPlatform.Wpf.View
                 this.SvgContainer.LoadDocument(sender.ToString());
             }
         }
+        private void ToggleButton_Checked(object sender, RoutedEventArgs e)
+        {
+            // 是否编辑的按钮切换
+            this.SvgContainer.ViewerModel = ESTControl.SvgViewer.SvgViewModel.Edit;
+        }
+
+        private void ToggleButton_Unchecked(object sender, RoutedEventArgs e)
+        {
+            this.SvgContainer.ViewerModel = ESTControl.SvgViewer.SvgViewModel.View;
+            this.monitorViewModel.OpenRightDrawAction("false");
+        }
+
+        private void btnSavePic_Click(object sender, RoutedEventArgs e)
+        {
+            // 点击保存当前的数据
+            // 调用进度条
+            // 提示保存成功
+            this.monitorViewModel.SavePicData(this.monitorViewModel.ConfigModel.SelectedFilePath);
+        }
+
+        private void brnConfigTemp_Click(object sender, RoutedEventArgs e)
+        {
+            // 配置温度
+            this.monitorViewModel.OpenConfigDrawAction(true);
+            this.monitorViewModel.TemplateModel = this.ValueTemplate.UpdateElement(this.monitorViewModel.TemplateModel, "");
+            // 初始化按钮的颜色
+            btn_background.Background = GetBrush(this.monitorViewModel.TemplateModel.BorderBackground);
+            btn_bordercolor.Background = GetBrush(this.monitorViewModel.TemplateModel.BorderBrush);
+            btn_normal.Background = GetBrush(this.monitorViewModel.TemplateModel.ValueForeground);
+            btn_waring.Background = GetBrush(this.monitorViewModel.TemplateModel.WaringValueForegrund);
+            btn_alert.Background = GetBrush(this.monitorViewModel.TemplateModel.AlertValueForegrund);
+
+            // 初始化数据值
+            num_cronradus.Value = this.monitorViewModel.TemplateModel.BorderWidth;
+            num_height.Value = this.monitorViewModel.TemplateModel.BorderHeight;
+            num_fontsize.Value = this.monitorViewModel.TemplateModel.FontSize;
+            num_thinkless.Value = this.monitorViewModel.TemplateModel.BorderThickness;
+        }
+
+        private void uploadImg_Click(object sender, RoutedEventArgs e)
+        {
+            // 点击上传电路图
+            var file = new OpenFileDialog();
+            // 限制svg
+            file.Filter = "(.svg)|*svg";
+            if (file.ShowDialog() == true)
+            {
+                var filePath = file.FileName;
+                this.monitorViewModel.ConfigModel.SelectedFilePath = filePath; // 记录文件路径
+                this.SvgContainer.LoadDocument(filePath);
+            }
+        }
+
+
+        private void btn_deletepoint_Click(object sender, RoutedEventArgs e)
+        {
+            // 删除温度点
+
+            if (HandyControl.Controls.MessageBox.Show("确定删除吗?", "温馨提示", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            {
+                var name = ((Button)sender).Tag.ToString();
+                if (name != null)
+                {
+                    this.monitorViewModel.DeletePoint(name);
+                }
+            }
+        }
+
+        private void com_sensor_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            // 传感器选择
+            var sensorcode = ((ComboBox)sender).SelectedValue;
+            if (sensorcode != null)
+            {
+                this.monitorViewModel.DiagramConfigModel.SensorCode = sensorcode.ToString();
+            }
+
+        }
+
+        private void btn_select_sensor_Click(object sender, RoutedEventArgs e)
+        {
+            // 选择传感器 传感选择界面中只能展示当前站点关联设备所关联的采集器  再通过采集器进行筛选传感器信息
+            var frm = new SensorSelectModal();
+            frm.ShowTerminal = true;
+            frm.MonitorId = this.monitorViewModel.regionId;
+            frm.Confirm += (e, d) =>
+            {
+                // 确认数据
+                if (d.Any())
+                    this.monitorViewModel.SetSensorCode(d[0]);
+                frm.Close();
+            };
+            frm.OpenDialoge();
+        }
+
+        #endregion
+
+        #region 监测点管理相关
+
 
         private void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
@@ -145,27 +248,6 @@ namespace MonitorPlatform.Wpf.View
                 }
             }
         }
-
-        private void uploadImg_Click(object sender, RoutedEventArgs e)
-        {
-            // 点击上传电路图
-            var file = new OpenFileDialog();
-            // 限制svg
-            file.Filter = "(.svg)|*svg";
-            if(file.ShowDialog()==true)
-            {
-                var filePath=file.FileName;
-                this.monitorViewModel.ConfigModel.SelectedFilePath = filePath; // 记录文件路径
-                this.SvgContainer.LoadDocument(filePath);
-            }
-        }
-
-        private void devivetype_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-           
-
-        }
-
         private void monitorType_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             // 站点类型切换
@@ -176,44 +258,11 @@ namespace MonitorPlatform.Wpf.View
             }
         }
 
-        private void ToggleButton_Checked(object sender, RoutedEventArgs e)
-        {
-            // 是否编辑的按钮切换
-            this.SvgContainer.ViewerModel = ESTControl.SvgViewer.SvgViewModel.Edit;
-        }
+        #endregion
 
-        private void ToggleButton_Unchecked(object sender, RoutedEventArgs e)
-        {
-            this.SvgContainer.ViewerModel = ESTControl.SvgViewer.SvgViewModel.View;
-            this.monitorViewModel.OpenRightDrawAction("false");
-        }
+        #region 温度显示模板配置
 
-        private void btnSavePic_Click(object sender, RoutedEventArgs e)
-        {
-            // 点击保存当前的数据
-            // 调用进度条
-            // 提示保存成功
-            this.monitorViewModel.SavePicData(this.monitorViewModel.ConfigModel.SelectedFilePath);
-        }
-
-        private void brnConfigTemp_Click(object sender, RoutedEventArgs e)
-        {
-            // 配置温度
-            this.monitorViewModel.OpenConfigDrawAction(true);
-            this.monitorViewModel.TemplateModel=this.ValueTemplate.UpdateElement(this.monitorViewModel.TemplateModel,"");
-            // 初始化按钮的颜色
-            btn_background.Background = GetBrush(this.monitorViewModel.TemplateModel.BorderBackground);
-            btn_bordercolor.Background = GetBrush(this.monitorViewModel.TemplateModel.BorderBrush);
-            btn_normal.Background = GetBrush(this.monitorViewModel.TemplateModel.ValueForeground);
-            btn_waring.Background = GetBrush(this.monitorViewModel.TemplateModel.WaringValueForegrund);
-            btn_alert.Background = GetBrush(this.monitorViewModel.TemplateModel.AlertValueForegrund);
-
-            // 初始化数据值
-            num_cronradus.Value = this.monitorViewModel.TemplateModel.BorderWidth;
-            num_height.Value=this.monitorViewModel.TemplateModel.BorderHeight;
-            num_fontsize.Value=this.monitorViewModel.TemplateModel.FontSize;
-            num_thinkless.Value=this.monitorViewModel.TemplateModel.BorderThickness;
-        }
+     
         private Brush GetBrush(string hex)=> new SolidColorBrush((Color)ColorConverter.ConvertFromString(hex));
         private void btn_bordercolor_Click(object sender, RoutedEventArgs e)
         {
@@ -359,57 +408,147 @@ namespace MonitorPlatform.Wpf.View
             UpdateElement();
         }
 
-        private void btn_deletepoint_Click(object sender, RoutedEventArgs e)
+        #endregion
+
+        #region 设备管理相关
+        // 设备采集协议绑定
+        private void ptotoco_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            // 删除温度点
-           
+            if (this.ptotoco.SelectedItem != null)
+            {
+                var item = this.ptotoco.SelectedItem;
+                this.monitorViewModel.DeviceModel.Ptotocol = item.ToString();
+            }
+        }
+
+        // 绑定设被的采集模式
+        private void collection_type_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (this.collection_type.SelectedValue != null)
+            {
+                var item = this.collection_type.SelectedValue;
+                this.monitorViewModel.DeviceModel.Type = item.ToString();
+            }
+        }
+        // 更新设备缓存
+        private void btn_chche_update_Click(object sender, RoutedEventArgs e)
+        {
+            this.monitorViewModel.UpdateDeviceCache();
+        }
+        // 远程重启
+        private void btn_remote_start_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        #endregion
+
+        #region 传感器管理相关
+        // 添加传感器信息
+        private void btn_addsensor_Click(object sender, RoutedEventArgs e)
+        {
+            this.monitorViewModel.CreateSensor();
+        }
+        // 删除传感器
+        private void btn_delete_sensor_Click(object sender, RoutedEventArgs e)
+        {
             if (HandyControl.Controls.MessageBox.Show("确定删除吗?", "温馨提示", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                var name = ((Button)sender).Tag.ToString();
-                if (name != null)
+                var id = ((Button)sender).Tag.ToString();
+                if (id != null)
                 {
-                    this.monitorViewModel.DeletePoint(name);
+                    this.monitorViewModel.DeleteSensor(Guid.Parse(id));
+                }
+            }
+        }
+        // 保存传感器
+        private void btn_save_sensor_Click(object sender, RoutedEventArgs e)
+        {
+            this.monitorViewModel.SaveSensor();
+        }
+        // 编辑传感器
+        private void btn_edit_sensor_Click(object sender, RoutedEventArgs e)
+        {
+            var id = ((Button)sender).Tag.ToString();
+            this.monitorViewModel.CreateSensor(true, Guid.Parse(id));
+        }
+        #endregion
+
+        #region 采集终端管理相关
+
+        // 添加采集器信息
+        private void btn_addterminal_Click(object sender, RoutedEventArgs e)
+        {
+            this.monitorViewModel.CreateTerminal();
+        }
+
+        // 保存采集器
+        private void btn_save_terminal_Click(object sender, RoutedEventArgs e)
+        {
+            this.monitorViewModel.SaveTerminal();
+        }
+
+        // 编辑采集器
+        private void btn_edit_terminal_Click(object sender, RoutedEventArgs e)
+        {
+            var id = ((Button)sender).Tag.ToString();
+            this.monitorViewModel.CreateTerminal(true, Guid.Parse(id));
+        }
+
+        // 删除采集器
+        private void btn_delete_terminal_Click(object sender, RoutedEventArgs e)
+        {
+            if (HandyControl.Controls.MessageBox.Show("确定删除吗?", "温馨提示", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            {
+                var id = ((Button)sender).Tag.ToString();
+                if (id != null)
+                {
+                    this.monitorViewModel.DeleteTerminal(Guid.Parse(id));
                 }
             }
         }
 
-        private void btn_sensorconfig_Click(object sender, RoutedEventArgs e)
+        // 查看关联的传感器
+        private void btn_view_sensor_Click(object sender, RoutedEventArgs e)
         {
+            var id = ((Button)sender).Tag.ToString();
+            this.monitorViewModel.GetTerminalRlt(Guid.Parse(id));
         }
-
-        private void com_sensor_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        // 关联传感器
+        private void btn_rlt_sensor_Click(object sender, RoutedEventArgs e)
         {
-            // 传感器选择
-            var sensorcode = ((ComboBox)sender).SelectedValue;
-            if (sensorcode != null)
+            // 点击关联传感器
+            var sensor = new SensorSelectModal();
+            sensor.ShowInTaskbar = true;
+            sensor.MonitorId = this.monitorViewModel.RegionId;
+            sensor.Confirm += (e, data) =>
             {
-                this.monitorViewModel.DiagramConfigModel.SensorCode = sensorcode.ToString();
-            }
-           
-        }
-
-        private void btn_select_sensor_Click(object sender, RoutedEventArgs e)
-        {
-            // 选择传感器 传感选择界面中只能展示当前站点关联设备所关联的采集器  再通过采集器进行筛选传感器信息
-            var frm = new SensorSelectModal();
-            frm.ShowTerminal = true;
-            frm.Confirm += (e, d) =>
-            {
-                // 确认数据
-                if(d.Any())
-                 this.monitorViewModel.SetSensorCode(d[0]);
-                frm.Close();
+                this.monitorViewModel.SaveRltSensor(data);
+                sensor.Close();
             };
-            frm.ShowDialog();
+            sensor.OpenDialoge();
         }
-
-        private void com_device_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        // 远程写入
+        private void btn_write_sensor_Click(object sender, RoutedEventArgs e)
         {
-            if (this.com_device.SelectedValue != null)
+            this.monitorViewModel.WriteSensor();
+        }
+        // 删除关联的传感器
+        private void btn_deleterlt_sensor_Click(object sender, RoutedEventArgs e)
+        {
+            if (HandyControl.Controls.MessageBox.Show("确定删除吗?", "温馨提示", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                var item = (Guid)this.com_device.SelectedValue;
-                this.monitorViewModel.MonitorModel.DeviceId = item;
+                var id = ((Button)sender).Tag.ToString();
+                if (id != null)
+                {
+                    this.monitorViewModel.DeleteTerminalRlt(Guid.Parse(id));
+                }
             }
         }
+
+
+        #endregion
+
+
     }
 }

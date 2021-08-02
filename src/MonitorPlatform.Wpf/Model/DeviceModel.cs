@@ -28,18 +28,41 @@ namespace MonitorPlatform.Wpf.Model
     {
         private string name { get; set; }
         public string Name { get => name; set { name = value; this.DoNotify(); } }
+
+
         private string factory { get; set; }
         public string Factory { get => factory; set { factory = value; this.DoNotify(); } }
         private string description { get; set; }
         public string Description { get => description; set { description = value; this.DoNotify(); } }
-        private DeviceCollectionType type { get; set; }
-        public DeviceCollectionType Type { get => type; set { type = value; this.DoNotify(); } }
-        private PtotocolType ptotocolType { get; set; }
-        public PtotocolType PtotocolType { get => ptotocolType; set { ptotocolType = value; this.DoNotify(); } }
+        private string type { get; set; }
+        public string Type { get => type; set { type = value; this.DoNotify(); } }
+        private string ptotocol { get; set; }
+        public string Ptotocol{ get => ptotocol; set { ptotocol = value; this.DoNotify(); } }
         private string ipAddress { get; set; }
         [IsIPAddress]
         public string IpAddress { get => ipAddress; set { ipAddress = value; this.DoNotify(); } }
         private int port { get; set; }
         public int Port { get => port; set { port = value; this.DoNotify(); } }
+        private double warnValue { get; set; }
+        /// <summary>
+        /// 预警温度
+        /// </summary>
+        public double WarnValue { get => warnValue; set { warnValue = value; this.DoNotify(); } }
+        private double alertValue { get; set; }
+        /// <summary>
+        /// 报警温度
+        /// </summary>
+        public double AlertValue { get => alertValue; set { alertValue = value; this.DoNotify(); } }
+        private double tolerantValue { get; set; }
+        /// <summary>
+        /// 容错温度
+        /// </summary>
+        public double TolerantValue { get => tolerantValue; set { tolerantValue = value; this.DoNotify(); } }
+
+        private Guid monitorId { get; set; }
+        /// <summary>
+        /// 容错温度
+        /// </summary>
+        public Guid MonitorId { get => monitorId; set { monitorId = value; this.DoNotify(); } }
     }
 }

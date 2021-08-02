@@ -14,6 +14,7 @@
     <ProjectReference Include="..\..\..\..\..\main-project\EST.Components\src\core\ESTCore.ORM.FreeSql\ESTCore.ORM.FreeSql.csproj" />
     <ProjectReference Include="..\..\..\..\..\main-project\EST.Components\src\core\ESTCore.Message\ESTCore.Message.csproj" />
     <ProjectReference Include="..\..\..\..\..\main-project\EST.Components\src\core\ESTCore.Caching\ESTCore.Caching.csproj" />
+    <ProjectReference Include="..\..\MonitorPlatform.Contracts\MonitorPlatform.Contracts.csproj" />
     <ProjectReference Include="..\..\MonitorPlatform.Share\MonitorPlatform.Share.csproj" />
   </ItemGroup>
 </Project>

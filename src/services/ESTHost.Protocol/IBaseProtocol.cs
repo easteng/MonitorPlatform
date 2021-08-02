@@ -43,5 +43,15 @@ namespace ESTHost.ProtocolBase
         /// </summary>
         /// <returns></returns>
         abstract Task StopAsync();
+        /// <summary>
+        /// 写入传感器
+        /// </summary>
+        /// <returns></returns>
+        abstract Task WriteSensor(Guid deviceId,Guid terminalId);
+        /// <summary>
+        /// 重启采集
+        /// </summary>
+        /// <returns></returns>
+        abstract Task Restart(Guid deviceId, Guid terminalId);
     }
 }

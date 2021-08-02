@@ -55,7 +55,7 @@ namespace ESTHost.DataCenter
             {
                 reg.OptionServer(o =>
                 {
-                    o.AddRepeater<IotMessageRepeater>(MessageTopic.DeviceData); // 添加设备采集数据
+                   // o.AddRepeater<IotMessageRepeater>(MessageTopic.DeviceData); // 添加设备采集数据
                     o.AddRepeater<RemoteControlRepeater>(MessageTopic.RemoteControlCommand); // 添加远程控制命转发器
                     o.AddRepeater<NoticeMessageRepeater>(MessageTopic.Notice); // 添加通知消息转换器
                     o.Build(); // 构建服务

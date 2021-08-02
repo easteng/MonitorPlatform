@@ -30,6 +30,11 @@ namespace MonitorPlatform.Share.Message
         /// 主题信息
         /// </summary>
         public override string Topic { get => MessageTopic.DeviceData; set => base.Topic = value; }
+        
+        /// <summary>
+        /// 所属设备的id
+        /// </summary>
+        public Guid DeviceId { get; set; }
 
         public Guid TerminalId { get; set; }
         /// <summary>
@@ -42,8 +47,9 @@ namespace MonitorPlatform.Share.Message
         public List<IOTMessage> IOTData { get; set; }
         public DeviceMessage() { }
         
-        public DeviceMessage(Guid terminalId,List<IOTMessage> iotData,string protocol)
+        public DeviceMessage(Guid deviceId,Guid terminalId,List<IOTMessage> iotData,string protocol)
         {
+            this.DeviceId= deviceId;
             this.TerminalId = terminalId;   
             this.IOTData = iotData; 
             this.Protocol= protocol;

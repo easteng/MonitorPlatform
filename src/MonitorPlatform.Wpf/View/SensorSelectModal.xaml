@@ -34,7 +34,7 @@
                 <RowDefinition Height="20"/>
                 <RowDefinition Height="40"/>
             </Grid.RowDefinitions>
-            <Border Background="#57575A" MouseLeftButtonDown="Border_MouseLeftButtonDown">
+            <Border Background="#007ACC" MouseLeftButtonDown="Border_MouseLeftButtonDown">
                 <TextBlock Text="传感器选择" VerticalAlignment="Center" Foreground="#fff" Margin="10,0"/>
             </Border>
             <Grid Grid.Row="1" >
@@ -43,7 +43,7 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <Border Width="200" 
+                <!--<Border Width="200" 
                         Name="border_terminal_info"
                         Margin="0">
                     <Grid>
@@ -59,7 +59,7 @@
                             </ListBox.ItemTemplate>
                         </ListBox>
                     </Grid>
-                </Border>
+                </Border>-->
 
                 <Grid Grid.Column="1">
                     <StackPanel x:Name="radiopanel" Orientation="Vertical" Height="auto" HorizontalAlignment="Stretch">

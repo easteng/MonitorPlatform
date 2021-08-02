@@ -15,8 +15,11 @@ using ESTCore.Message.Handler;
 using ESTCore.Message.Message;
 
 using ESTHost.Core;
+using ESTHost.ProtocolBase;
 
 using MonitorPlatform.Share;
+
+using Silky.Lms.Core;
 
 using System;
 using System.Collections.Generic;
@@ -39,7 +42,19 @@ namespace ESTHost.DataCenter.Repeater
         public async Task Repeater(BaseMessage message)
         {
             // 发送命令到订阅该主题的服务端
-           await this.serverProvider.Publish(MessageTopic.RemoteControlCommand, message);
+           // await this.serverProvider.Publish(MessageTopic.RemoteControlCommand, message);
+
+            // 接收到控制命令，通过服务进行相关处理
+            var control=message.GetMessage<RemoteControlMessage>();
+            if (control.ControlType == ControlType.Write)
+            {
+                // 写入的操作
+                var provider = EngineContext.Current.ResolveNamed<IBaseProtocol>(control.Ptotocol);
+                if(provider != null)
+                {
+                   await provider.WriteSensor(control.DeviceId, control.TerminalId);
+                }
+            }
         }
     }
 }

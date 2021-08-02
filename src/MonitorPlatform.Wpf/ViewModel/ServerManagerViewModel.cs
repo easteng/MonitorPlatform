@@ -303,7 +303,7 @@ namespace MonitorPlatform.Wpf.ViewModel
                 // 可以写入,调用消息发送接口
                 var message = new RemoteControlMessage();
                 message.ControlType = ControlType.Write;
-                message.PtotocolType = terminal.Ptotocol;
+               // message.PtotocolType = terminal.Ptotocol;
                 // 查找采集器关联的设备
                 var device = deviceRltRepository.Orm.Select<DeviceRltTerminal, Device>()
                     .Where((a, b) => a.TerminalId == id && a.DeviceId == b.Id)

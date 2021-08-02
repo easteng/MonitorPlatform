@@ -24,5 +24,44 @@ namespace MonitorPlatform.Share
         /// </summary>
 
         public string Content { get; set; }
+
+        /// <summary>
+        /// 消息等级
+        /// </summary>
+        public NoticeMessageLevel Level { get; set; }
+
+        public static NoticeMessage CreateSuccessMessage(string content)
+        {
+            var notic= CreateNoticeInstance(content);
+            notic.Level= NoticeMessageLevel.Success;
+            return notic;
+        }
+
+        public static NoticeMessage CreateWaringMessage(string content)
+        {
+            var notic = CreateNoticeInstance(content);
+            notic.Level = NoticeMessageLevel.Waring;
+            return notic;
+        }
+
+        public static NoticeMessage CreateDangerMessage(string content)
+        {
+            var notic = CreateNoticeInstance(content);
+            notic.Level = NoticeMessageLevel.Danger;
+            return notic;
+        }
+        public static NoticeMessage CreateErrorMessage(string content)
+        {
+            var notic = CreateNoticeInstance(content);
+            notic.Level = NoticeMessageLevel.Error;
+            return notic;
+        }
+
+        private static NoticeMessage CreateNoticeInstance(string content)
+        {
+            var notic = new NoticeMessage();
+            notic.Content = content;
+            return notic;
+        }
     }
 }

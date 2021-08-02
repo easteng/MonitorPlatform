@@ -45,11 +45,11 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <Border 
-                    Width="200"
+                    Width="240"
                     BorderBrush="{StaticResource FormBorderBrush}"
-                        Margin="0,20"
+                        Margin="0,30,0,0"
                         Name="border_station_info"
-                        BorderThickness="1">
+                        BorderThickness="1,1,0,1">
                     <StackPanel>
                         <Grid Height="30">
                             <TextBlock Text="站点信息" Margin="10,0" Foreground="#fff" HorizontalAlignment="Left" VerticalAlignment="Center"/>
@@ -59,8 +59,10 @@
                                   x:Name="treeview_station"
                                   Height="auto"
                                   MaxHeight="500"
+                                  Cursor="Hand"
                                   BorderBrush="{StaticResource FormBorderBrush}"
                                   Background="{StaticResource FormBackground}"
+                                  BorderThickness="0"
                                   SelectedItemChanged="TreeView_SelectedItemChanged"
                                   ScrollViewer.VerticalScrollBarVisibility="Hidden"
                             ItemsSource="{Binding MonitorModels}">

@@ -13,7 +13,7 @@
  */
 using ESTCore.Common;
 
-using MonitorPlatform.Share.ServerCache;
+using MonitorPlatform.Share.CacheItem;
 
 using System;
 using System.Collections.Generic;
@@ -40,20 +40,20 @@ namespace ESTHost.Core.Colleaction
         /// </summary>
         /// <param name="devices">关联当前协议的服务</param>
         /// <param name="name">一般为协议名称，用来决定数据的接收者</param>
-        public static void CreateService(List<DeviceCacheItem> devices, string name)
+        public static void CreateService(List<CacheItemDevice> devices, string name)
         {
             try
             {
                 devices?.ForEach(device =>
                 {
-                    if (!servicesDictionary.TryGetValue(device.Id, out var server))
+                    if (!servicesDictionary.TryGetValue(device.DeviceId, out var server))
                     {
                         // 不存在服务，则重新创建
-                        if (device.Type == MonitorPlatform.Share.DeviceCollectionType.Client)
+                        if (device.Type == MonitorPlatform.Share.DeviceCollectionType.Server)
                             server = ModbusTcpNet.CreateModbus(device, name);
                         else
                             server = ModbusTcpServer.CreateModbus(device);
-                        servicesDictionary.TryAdd(device.Id, server);
+                        servicesDictionary.TryAdd(device.DeviceId, server);
                     }
                 });
             }
@@ -106,6 +106,16 @@ namespace ESTHost.Core.Colleaction
                 return server.WriteSensors(data);
             }
             return OperateResult.CreateFailedResult<byte[]>(null);
+        }
+
+        public static OperateResult<byte[]> SetSensorCount(Guid deviceId, byte[] data)
+        {
+            var server = servicesDictionary.GetValueOrDefault(deviceId);
+            if (server != null)
+            {
+                return server.SetSensorCount(data);
+            }
+            return OperateResult.CreateFailedResult<byte[]>(new OperateResult());
         }
 
         /// <summary>

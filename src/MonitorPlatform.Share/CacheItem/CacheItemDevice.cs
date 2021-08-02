@@ -1,48 +1,55 @@
 ﻿/**********************************************************************
-*******命名空间： MonitorPlatform.Domain.Entities
-*******类 名 称： Sensor
-*******类 说 明： 传感器表
+*******命名空间： MonitorPlatform.Share.CacheItem
+*******类 名 称： CacheItemDevice
+*******类 说 明： 
 *******作    者： Easten
 *******机器名称： DESKTOP-EC8U0GP
 *******CLR 版本： 4.0.30319.42000
-*******创建时间： 7/11/2021 11:00:38 AM
+*******创建时间： 8/1/2021 12:38:59 PM
 *******联系方式： 1301485237@qq.com
 ***********************************************************************
 ******* ★ Copyright @easten company 2021-2022. All rights reserved ★ *********
 ***********************************************************************
  */
-using ESTCore.Domain.Entity;
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MonitorPlatform.Domain.Entities
+namespace MonitorPlatform.Share.CacheItem
 {
-    public class Sensor : BaseEntity<Guid>
+    [Serializable]
+    /// <summary>
+    /// 设备缓存--用来存储服务启动时的基础信息
+    /// </summary>
+    public class CacheItemDevice
     {
         /// <summary>
-        /// 监测点id
+        /// 协议类型
         /// </summary>
+        public string Protocol { get; set; }
+
+        /// <summary>
+        /// 设备id
+        /// </summary>
+        public Guid DeviceId { get; set; }
+
         public Guid MonitorId { get; set; }
 
         /// <summary>
-        /// 监测点
+        /// 服务采集模式  客户端模式  服务端模式
         /// </summary>
-        public Monitor Monitor { get; set; }
+        public string Type { get; set; }
+
         /// <summary>
-        /// 传感器编号
+        /// ip 地址
         /// </summary>
-        public string SensorCode { get; set; }
+        public string IpAddress { get; set; }
+
         /// <summary>
-        /// 安装位置
+        /// 服务端口
         /// </summary>
-        public string Position { get; set; }
-        /// <summary>
-        /// 备注
-        /// </summary>
-        public string Remark { get; set; }
+        public int Port { get; set; }
     }
 }

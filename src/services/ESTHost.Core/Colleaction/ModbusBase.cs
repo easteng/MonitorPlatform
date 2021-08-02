@@ -54,6 +54,13 @@ namespace ESTHost.Core.Colleaction
         public abstract OperateResult<byte[]> WriteSensors(byte[] sensor);
 
         /// <summary>
+        /// 设置传感器个数
+        /// </summary>
+        /// <param name="sensor"></param>
+        /// <returns></returns>
+        public abstract OperateResult<byte[]> SetSensorCount(byte[] sensor);
+
+        /// <summary>
         /// 重启终端
         /// </summary>
         /// <param name="command"></param>

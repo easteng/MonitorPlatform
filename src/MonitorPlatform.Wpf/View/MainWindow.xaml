@@ -124,8 +124,8 @@
                             <RadioButton Tag="OperationMonitor" Style="{StaticResource defaultRadioStyle}" Content="运行监测" Margin="30 0 0 0"/>
                             <RadioButton Tag="DataQuery" Style="{StaticResource defaultRadioStyle}" Content="数据查询" Margin="30 0 0 0"/>
                             <RadioButton Tag="Monitor" Style="{StaticResource defaultRadioStyle}" Content="站点管理" Margin="30 0 0 0"/>
-                            <RadioButton Tag="DeviceManager" Style="{StaticResource defaultRadioStyle}" Content="设备管理" Margin="30 0 0 0"/>
-                            <RadioButton Tag="System" Style="{StaticResource defaultRadioStyle}" Content="系统管理" Margin="30 0 0 0"/>
+                            <!--<RadioButton Tag="SMSConfig" Style="{StaticResource defaultRadioStyle}" Content="短信管理" Margin="30 0 0 0"/>
+                            <RadioButton Tag="System" Style="{StaticResource defaultRadioStyle}" Content="系统管理" Margin="30 0 0 0"/>-->
                         </StackPanel>
                     </StackPanel>
                     <Grid HorizontalAlignment="Right" Margin="30,0">
@@ -168,7 +168,7 @@
                             <Popup x:Name="user_popue" 
                                    PopupAnimation="Fade"
                                    Width="90"
-                                   Height="100" 
+                                   Height="130" 
                                    PlacementTarget="{Binding ElementName=btn_user}" 
                                    Placement="Bottom" AllowsTransparency="True" 
                                    StaysOpen="False">
@@ -181,13 +181,29 @@
                                     <StackPanel>
                                         <Button VerticalAlignment="Top"
                                          Cursor="Hand"
+                                         x:Name="btn_user_manager"
+                                                Click="btn_user_manager_Click"
                                          Content="123"
                                          Margin="10,0"
                                          Foreground="#fff">
                                             <Button.Template>
                                                 <ControlTemplate TargetType="Button">
                                                     <Grid>
-                                                        <TextBlock Text="用户详细" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                                                        <TextBlock Text="用户管理" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                                                    </Grid>
+                                                </ControlTemplate>
+                                            </Button.Template>
+                                        </Button>
+                                        <Button VerticalAlignment="Top"
+                                         Cursor="Hand"
+                                         Margin="10,0"
+                                                x:Name="btn_sms_config"
+                                                Click="btn_sms_config_Click"
+                                         Foreground="#fff">
+                                            <Button.Template>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Grid>
+                                                        <TextBlock Text="短信管理" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                                                     </Grid>
                                                 </ControlTemplate>
                                             </Button.Template>

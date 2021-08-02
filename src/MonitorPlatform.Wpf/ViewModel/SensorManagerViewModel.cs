@@ -192,5 +192,11 @@ namespace MonitorPlatform.Wpf.ViewModel
             this.SensorList = ObjectMapper.Map<List<SensorModel>>(list).CreateIndex();
         }
 
+        public void GetSensorByMonitor(Guid id)
+        {
+            var list =
+               sensorRepository.Where(a=>a.MonitorId==id).ToList(); 
+            this.SensorList = ObjectMapper.Map<List<SensorModel>>(list).CreateIndex();
+        }
     }
 }

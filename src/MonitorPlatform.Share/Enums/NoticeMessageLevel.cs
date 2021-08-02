@@ -1,14 +1,14 @@
 ﻿/**********************************************************************
-*******命名空间： MonitorPlatform.Contracts.ServerCache
-*******类 名 称： SensorCacheItem
-*******类 说 明： 传感器缓存实体
+*******命名空间： MonitorPlatform.Share.Message
+*******类 名 称： NoticeMessageLevel
+*******类 说 明： 
 *******作    者： Easten
-*******机器名称： EASTEN
+*******机器名称： DESKTOP-EC8U0GP
 *******CLR 版本： 4.0.30319.42000
-*******创建时间： 7/27/2021 11:31:30 AM
+*******创建时间： 8/1/2021 11:47:25 PM
 *******联系方式： 1301485237@qq.com
 ***********************************************************************
-******* ★ Copyright @Easten 2020-2021. All rights reserved ★ *********
+******* ★ Copyright @easten company 2021-2022. All rights reserved ★ *********
 ***********************************************************************
  */
 using System;
@@ -20,21 +20,25 @@ using System.Threading.Tasks;
 namespace MonitorPlatform.Share
 {
     /// <summary>
-    ///  传感器缓存实体
+    /// 通知消息等级
     /// </summary>
-    public class SensorCacheItem
+    public enum NoticeMessageLevel
     {
         /// <summary>
-        /// 指定采集器中传感器的编号
+        /// 成功的
         /// </summary>
-        public int SensorNo { get; set; }
+        Success,
         /// <summary>
-        /// 传感器编号
+        /// 警告
         /// </summary>
-        public string SensorCode { get; set; }
+        Waring,
         /// <summary>
-        /// 安装位置
+        /// 危险
         /// </summary>
-        public string Position { get; set; }
+        Danger,
+        /// <summary>
+        /// 异常
+        /// </summary>
+        Error
     }
 }

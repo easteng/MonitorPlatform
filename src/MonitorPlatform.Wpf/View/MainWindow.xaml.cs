@@ -207,8 +207,28 @@ namespace MonitorPlatform.Wpf
                 ui.Width =this.Width-width;
             }
         }
+
         #endregion
 
+        private void btn_user_manager_Click(object sender, RoutedEventArgs e)
+        {
+            ToggleViewPage("UserManager");
+            UnRadioCheck();
+        }
 
+        private void btn_sms_config_Click(object sender, RoutedEventArgs e)
+        {
+            ToggleViewPage("SMSConfig");
+            UnRadioCheck();
+        }
+
+        private void UnRadioCheck()
+        {
+            var radios = menu_bar.Children;
+            foreach (RadioButton item in radios)
+            {
+                item.IsChecked = false;
+            }
+        }
     }
 }

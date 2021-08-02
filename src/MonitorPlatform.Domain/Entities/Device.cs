@@ -31,16 +31,51 @@ namespace MonitorPlatform.Domain.Entities
         public string Name { get; set; }
         public string Factory { get; set; }
         public string Description { get; set; }
+
+        /// <summary>
+        /// 监测点id
+        /// </summary>
+        public Guid MonitorId { get; set;  }
+
+        /// <summary>
+        /// 监测点
+        /// </summary>
+        public Monitor Monitor { get; set;  }
+
         /// <summary>
         /// 服务采集模式  客户端模式  服务端模式
         /// </summary>
-        public DeviceCollectionType Type { get; set; }
+        public string Type { get; set; }
+
         /// <summary>
         /// 协议类型，  一台串口服务器只能有一种采集协议
         /// </summary>
-        public PtotocolType PtotocolType { get; set; }
+        public string Ptotocol { get; set; }
+
+        /// <summary>
+        /// ip 地址
+        /// </summary>
         public string IpAddress { get; set; }
+
+        /// <summary>
+        /// 服务端口
+        /// </summary>
         public int Port { get; set; }
+
+        /// <summary>
+        /// 预警温度
+        /// </summary>
+        public double WarnValue { get; set; }
+
+        /// <summary>
+        /// 报警温度
+        /// </summary>
+        public double AlertValue { get; set; }
+
+        /// <summary>
+        /// 容错温度
+        /// </summary>
+        public double TolerantValue { get; set; }
 
         /// <summary>
         ///绑定的传感器

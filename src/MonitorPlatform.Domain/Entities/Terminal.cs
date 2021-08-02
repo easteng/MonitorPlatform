@@ -14,6 +14,15 @@ namespace MonitorPlatform.Domain.Entities
     public class Terminal : BaseEntity<Guid>
     {
         /// <summary>
+        /// 监测点id
+        /// </summary>
+        public Guid MonitorId { get; set; }
+
+        /// <summary>
+        /// 监测点
+        /// </summary>
+        public Monitor Monitor { get; set; }
+        /// <summary>
         /// 采集器名称
         /// </summary>
         public string Name { get; set; }
@@ -23,23 +32,9 @@ namespace MonitorPlatform.Domain.Entities
         public string Addr { get; set; }
 
         /// <summary>
-        /// 数据协议
+        /// 采集频率
         /// </summary>
-        public PtotocolType Ptotocol { get; set; }
         public int Frequency { get; set; }
-
-        /// <summary>
-        /// 预警温度
-        /// </summary>
-        public double WarinValue { get; set; }
-        /// <summary>
-        /// 报警温度
-        /// </summary>
-        public double AlertValue { get; set; }
-        /// <summary>
-        /// 容错温度
-        /// </summary>
-        public double TolerantValue { get; set; }
 
         /// <summary>
         /// 传感器列表

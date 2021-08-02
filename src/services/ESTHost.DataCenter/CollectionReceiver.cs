@@ -21,9 +21,9 @@ using ESTHost.ProtocolBase;
 
 using Microsoft.Extensions.Logging;
 
+using MonitorPlatform.Contracts;
 using MonitorPlatform.Share;
 using MonitorPlatform.Share.Message;
-using MonitorPlatform.Share.ServerCache;
 
 using System;
 using System.Collections.Generic;
@@ -54,10 +54,9 @@ namespace ESTHost.DataCenter
         /// <returns></returns>
         public async Task Receive(DeviceMessage deviceMessage)
         {
-            var termnalString = redisCachingProvider.StringGet($"Terminal:{deviceMessage.TerminalId}");
-            var terminal = ESTCache.Get<TerminalCacheItem>(termnalString);
+            // 获取设备的缓存信息，信息包括预警温度值，报警温度值等
+            var device = this.redisCachingProvider?.GetDeviceInfoCache(deviceMessage.DeviceId);
             var iotMessage = deviceMessage.IOTData;
-
             this.logger.LogInformation($"接收到采集数据：{deviceMessage.Protocol}：{deviceMessage}");
 
             foreach (var item in iotMessage)
@@ -69,11 +68,11 @@ namespace ESTHost.DataCenter
                     Battary = item.Battary,
                     Value = item.Value
                 };
-                if (terminal != null)
+                if (device != null)
                 {
-                    if (item.Value > terminal.WarinValue && item.Value <= terminal.AlertValue)
+                    if (item.Value > device.WarnValue && item.Value <= device.AlertValue)
                         standard.Status = PointStatus.Warning; // 温度预警
-                    else if (item.Value > terminal.AlertValue)
+                    else if (item.Value > device.AlertValue)
                         standard.Status = PointStatus.Alerting; // 温度预警
                     else
                         standard.Status = PointStatus.Normal; // 温度预警
