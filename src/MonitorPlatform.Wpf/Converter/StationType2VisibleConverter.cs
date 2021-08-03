@@ -34,11 +34,15 @@ namespace MonitorPlatform.Wpf.Converter
             var type = (TreeNodeType)value;
             if (type == TreeNodeType.Station)
             {
-                return Regex.Unescape(StringToUnicode("&#xe864;"));
+                return Regex.Unescape(StringToUnicode("&#xe666;"));
+            } 
+            else if (type == TreeNodeType.Termianl)
+            {
+                return Regex.Unescape(StringToUnicode("&#xe66c;"));
             }
             else
             {
-                return Regex.Unescape(StringToUnicode("&#xe66e;"));
+                return Regex.Unescape(StringToUnicode("&#xe668;"));
             }
         }
 

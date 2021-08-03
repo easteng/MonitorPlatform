@@ -32,10 +32,13 @@ namespace MonitorPlatform.Wpf.View
     {
         MonitorViewModel monitorViewModel;
         private object DevicePage;
+        private object TerminalPage;
+        private object ConfigPage;
+        private object DefaultPage;
         public Monitor()
         {
             InitializeComponent();
-            this.DataContext= monitorViewModel=new MonitorViewModel();
+            this.DataContext = monitorViewModel = new MonitorViewModel();
             monitorViewModel.ReloadImage += MonitorViewModel_ReloadImage;
             this.SvgContainer.PointSelectedEvent += SvgContainer_PointSelectedEvent;
             this.SvgContainer.ElementUpdate += SvgContainer_ElementUpdate;
@@ -43,23 +46,35 @@ namespace MonitorPlatform.Wpf.View
             // 如果配置数据不为空，则渲染标记点
             monitorViewModel.InitPoint += MonitorViewModel_InitPoint;
 
-            DevicePage = this.device_tabitem;
+            DevicePage = this.tabitem_device;
+            TerminalPage = this.tabitem_sensor;
+            ConfigPage = this.tabitem_cofig;
+            DefaultPage=this.tabitem_default;
+
+            SetTabControlPage(DefaultPage);
         }
+        // 设置选项页
+        private void SetTabControlPage(object obj)
+        {
+            this.monitor_tabcontrol.Items.Clear(); // 先清空选项
+            this.monitor_tabcontrol.Items.Add(obj);
+        }
+
 
         #region 测温点添加及图纸管理
 
-      
+
 
         private void MonitorViewModel_InitPoint(object sender, List<DiagramConfigModel> e)
         {
             this.SvgContainer.Initialization();
             if (e == null) return;
-           
+
             foreach (var item in e)
             {
                 var point = new Point(item.PointX, item.PointY);
                 var template = new Template();
-                template.UpdateElement(this.monitorViewModel.TemplateModel,item.SensorCode);
+                template.UpdateElement(this.monitorViewModel.TemplateModel, item.SensorCode);
                 template.Name = item.PropName;
                 this.SvgContainer.AddUIElement(template, point);
             }
@@ -81,16 +96,16 @@ namespace MonitorPlatform.Wpf.View
         {
             this.monitorViewModel.OpenRightDrawAction("true");
             // 判断上一个温度是否保存
-            if (this.monitorViewModel.DiagramConfigModel!=null&&!this.monitorViewModel.DiagramConfigModel.IsSave)
+            if (this.monitorViewModel.DiagramConfigModel != null && !this.monitorViewModel.DiagramConfigModel.IsSave)
             {
                 //没有保存
                 HandyControl.Controls.MessageBox.Show("请先保存当前数据", "温馨提示");
                 return;
             }
             // 对坐标进行转换，需要与温度模板的长宽做计算
-            var template=new Template();
+            var template = new Template();
             template.Name = GenerateName();
-            template.UpdateElement(this.monitorViewModel.TemplateModel,"");
+            template.UpdateElement(this.monitorViewModel.TemplateModel, "");
             this.SvgContainer.AddUIElement(template, point);
             this.monitorViewModel.NewPoint(template.Name, point);
         }
@@ -209,61 +224,26 @@ namespace MonitorPlatform.Wpf.View
         private void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             // 监测点选中
-            var treeView = ((TreeView)sender).SelectedItem as MonitorModel;
-            if(treeView != null)
+            var treeNode = ((TreeView)sender).SelectedItem as TreeViewModel;
+            switch (treeNode.NodeType)
             {
-                //monitorViewModel.ActiveMonitorId = treeView.Id;
-                //monitorViewModel.TreeSelected(treeView);
-
-                //if (treeView.Type == StationType.Station)
-                //{
-                //    //判断，如果存在在不在添加
-                //    if (!monitor_tabcontrol.Items.Contains(DevicePage))
-                //    {
-                //        monitor_tabcontrol.Items.Insert(0,DevicePage); 
-                //    }
-                //}
-                //else
-                //{
-                //    monitor_tabcontrol.Items.Remove(DevicePage);
-                //}
+                case TreeNodeType.Station:
+                    this.SetTabControlPage(DevicePage);
+                    break;
+                case TreeNodeType.Room:
+                    this.SetTabControlPage(ConfigPage);
+                    break;
+                case TreeNodeType.Termianl:
+                    this.SetTabControlPage(TerminalPage);
+                    break;
+                default:
+                    break;
             }
+
+
         }
 
-        private void btn_addchild_Click(object sender, RoutedEventArgs e)
-        {
-            // 添加子级
-            var tag = ((Button)sender).Tag;
-            if (tag != null)
-            {
-                this.monitorViewModel.ActiveMonitorId = Guid.Parse(tag.ToString());
-                this.monitorViewModel.OpenLeftDrawAction("addchild");
-            }
-        }
 
-        private void btn_editchild_Click(object sender, RoutedEventArgs e)
-        {
-            // 编辑数据
-            var tag = ((Button)sender).Tag;
-            if (tag != null)
-            {
-                this.monitorViewModel.ActiveMonitorId=Guid.Parse(tag.ToString());
-                this.monitorViewModel.OpenLeftDrawAction("edit");
-            }
-        }
-
-        private void btn_delete_item_Click(object sender, RoutedEventArgs e)
-        {
-            // 删除数据
-            if (HandyControl.Controls.MessageBox.Show("确定删除吗?", "温馨提示", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-            {
-                var tag = ((Button)sender).Tag;
-                if (tag != null)
-                {
-                    this.monitorViewModel.DeleteMonitorAction(Guid.Parse(tag.ToString()));
-                }
-            }
-        }
         private void monitorType_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             // 站点类型切换
@@ -278,21 +258,23 @@ namespace MonitorPlatform.Wpf.View
 
         #region 温度显示模板配置
 
-     
-        private Brush GetBrush(string hex)=> new SolidColorBrush((Color)ColorConverter.ConvertFromString(hex));
+
+        private Brush GetBrush(string hex) => new SolidColorBrush((Color)ColorConverter.ConvertFromString(hex));
         private void btn_bordercolor_Click(object sender, RoutedEventArgs e)
         {
             // 配置温度边框颜色
-            OpenColorPickWindow(btn_bordercolor, color => {
+            OpenColorPickWindow(btn_bordercolor, color =>
+            {
                 this.monitorViewModel.TemplateModel.BorderBrush = color;
                 btn_bordercolor.Background = GetBrush(color);
                 UpdateElement();
-            }, color => {
+            }, color =>
+            {
                 this.monitorViewModel.TemplateModel.BorderBrush = color;
                 btn_bordercolor.Background = GetBrush(color);
                 UpdateElement();
             });
-           
+
         }
 
         /// <summary>
@@ -300,9 +282,9 @@ namespace MonitorPlatform.Wpf.View
         /// </summary>
         private void UpdateElement()
         {
-            this.ValueTemplate.UpdateElement(this.monitorViewModel.TemplateModel,"");
+            this.ValueTemplate.UpdateElement(this.monitorViewModel.TemplateModel, "");
         }
-        private void OpenColorPickWindow(FrameworkElement element,Action<string> change,Action<string> confirm)
+        private void OpenColorPickWindow(FrameworkElement element, Action<string> change, Action<string> confirm)
         {
             var picker = SingleOpenHelper.CreateControl<HandyControl.Controls.ColorPicker>();
             var window = new HandyControl.Controls.PopupWindow
@@ -315,7 +297,7 @@ namespace MonitorPlatform.Wpf.View
             };
             picker.Confirmed += (sender, e) =>
             {
-               confirm.Invoke(GetColorString(e));
+                confirm.Invoke(GetColorString(e));
                 window.Close();
             };
             picker.Canceled += delegate { window.Close(); };
@@ -329,7 +311,7 @@ namespace MonitorPlatform.Wpf.View
         /// <returns></returns>
         private string GetColorString(FunctionEventArgs<Color> data)
         {
-            var str= data.Info.ToString();
+            var str = data.Info.ToString();
             if (str.Length > 7)
             {
                 str = $"#{str.Substring(3)}";
@@ -340,11 +322,13 @@ namespace MonitorPlatform.Wpf.View
         private void btn_background_Click(object sender, RoutedEventArgs e)
         {
             // 配置温度背景
-            OpenColorPickWindow(btn_background, color => {
+            OpenColorPickWindow(btn_background, color =>
+            {
                 this.monitorViewModel.TemplateModel.BorderBackground = color;
                 btn_background.Background = GetBrush(color);
                 UpdateElement();
-            }, color => {
+            }, color =>
+            {
                 btn_background.Background = GetBrush(color);
                 UpdateElement();
             });
@@ -353,11 +337,13 @@ namespace MonitorPlatform.Wpf.View
         private void btn_normal_Click(object sender, RoutedEventArgs e)
         {
             // 配置正常温度颜色
-            OpenColorPickWindow(btn_normal, color => {
+            OpenColorPickWindow(btn_normal, color =>
+            {
                 this.monitorViewModel.TemplateModel.ValueForeground = color;
                 btn_normal.Background = GetBrush(color);
                 UpdateElement();
-            }, color => {
+            }, color =>
+            {
                 this.monitorViewModel.TemplateModel.ValueForeground = color;
                 btn_normal.Background = GetBrush(color);
                 UpdateElement();
@@ -367,11 +353,13 @@ namespace MonitorPlatform.Wpf.View
         private void btn_waring_Click(object sender, RoutedEventArgs e)
         {
             // 配置预警温度颜色
-            OpenColorPickWindow(btn_waring, color => {
+            OpenColorPickWindow(btn_waring, color =>
+            {
                 this.monitorViewModel.TemplateModel.WaringValueForegrund = color;
                 btn_waring.Background = GetBrush(color);
                 UpdateElement();
-            }, color => {
+            }, color =>
+            {
                 this.monitorViewModel.TemplateModel.WaringValueForegrund = color;
                 btn_waring.Background = GetBrush(color);
                 UpdateElement();
@@ -381,11 +369,13 @@ namespace MonitorPlatform.Wpf.View
         private void btn_alert_Click(object sender, RoutedEventArgs e)
         {
             // 配置报警温度颜色
-            OpenColorPickWindow(btn_alert, color => {
+            OpenColorPickWindow(btn_alert, color =>
+            {
                 this.monitorViewModel.TemplateModel.AlertValueForegrund = color;
                 btn_alert.Background = GetBrush(color);
                 UpdateElement();
-            }, color => {
+            }, color =>
+            {
                 this.monitorViewModel.TemplateModel.AlertValueForegrund = color;
                 btn_alert.Background = GetBrush(color);
                 UpdateElement();
@@ -495,7 +485,7 @@ namespace MonitorPlatform.Wpf.View
         // 添加采集器信息
         private void btn_addterminal_Click(object sender, RoutedEventArgs e)
         {
-            this.monitorViewModel.CreateTerminal();
+            // this.monitorViewModel.CreateTerminal();
         }
 
         // 保存采集器
@@ -508,7 +498,7 @@ namespace MonitorPlatform.Wpf.View
         private void btn_edit_terminal_Click(object sender, RoutedEventArgs e)
         {
             var id = ((Button)sender).Tag.ToString();
-            this.monitorViewModel.CreateTerminal(true, Guid.Parse(id));
+            // this.monitorViewModel.CreateTerminal(true, Guid.Parse(id));
         }
 
         // 删除采集器
@@ -566,22 +556,91 @@ namespace MonitorPlatform.Wpf.View
 
         #endregion
 
-
         #region 左侧树结构相关内容
 
         // 添加顶级树节点
         private void btn_add_treenode_Click(object sender, RoutedEventArgs e)
         {
+            this.monitorViewModel.CreateTreeNode();
+        }
 
+        private void btn_addchild_Click(object sender, RoutedEventArgs e)
+        {
+            // 添加子级
+            var tag = ((Button)sender).Tag;
+            if (tag != null)
+            {
+                var model = GetTreeViewModel(this.monitorViewModel.TreeViewModels, Guid.Parse(tag.ToString()));
+                this.monitorViewModel.CreateTreeNode(model);
+            }
+        }
+
+        private void btn_editchild_Click(object sender, RoutedEventArgs e)
+        {
+            // 编辑数据
+            var tag = ((Button)sender).Tag;
+            if (tag != null)
+            {
+                var model = GetTreeViewModel(this.monitorViewModel.TreeViewModels, Guid.Parse(tag.ToString()));
+                // this.monitorViewModel.ActiveMonitorId = Guid.Parse(tag.ToString());
+                this.monitorViewModel.EditTreeNode(model);
+            }
+        }
+
+        private void btn_delete_item_Click(object sender, RoutedEventArgs e)
+        {
+            // 删除数据
+            if (HandyControl.Controls.MessageBox.Show("确定删除吗?", "温馨提示", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            {
+                var tag = ((Button)sender).Tag;
+                if (tag != null)
+                {
+                    var model = GetTreeViewModel(this.monitorViewModel.TreeViewModels, Guid.Parse(tag.ToString()));
+                    this.monitorViewModel.DeleteTreeNode(model);
+                }
+            }
         }
 
         // 保存站点信息
         private void btn_save_station_Click(object sender, RoutedEventArgs e)
         {
-
+            this.monitorViewModel.SaveStation();
         }
+        /// <summary>
+        /// 获取树节点
+        /// </summary>
+        /// <param name="list"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        private TreeViewModel GetTreeViewModel(List<TreeViewModel> list, Guid id)
+        {
+            TreeViewModel res = null;
+            foreach (var item in list)
+            {
+                if (item.Id == id)
+                {
+                    return item;
+                }
+                else
+                {
+                    if (item.Children != null && item.Children.Any())
+                    {
+                        res = GetTreeViewModel(item.Children, id);
+                    }
+                }
+                if (res != null) return res;
+            }
+            return res;
+        }
+
+        // 保存配电室
+        private void btn_save_power_Click(object sender, RoutedEventArgs e)
+        {
+            this.monitorViewModel.SavePowerRoom();
+        }
+
         #endregion
 
-       
+
     }
 }

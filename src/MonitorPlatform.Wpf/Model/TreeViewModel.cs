@@ -36,8 +36,11 @@ namespace MonitorPlatform.Wpf.Model
         /// <summary>
         /// 节点id
         /// </summary>
-        private Guid nodeId { get; set; }
-        public Guid NodeId { get => nodeId; set { nodeId = value; this.DoNotify(); } }
+        private Guid id { get; set; }
+        public Guid Id { get => id; set { id = value; this.DoNotify(); } }
+
+        private Guid parentId { get; set; }
+        public Guid ParentId { get => parentId; set { parentId = value; this.DoNotify(); } }
         /// <summary>
         /// 节点类型
         /// </summary>

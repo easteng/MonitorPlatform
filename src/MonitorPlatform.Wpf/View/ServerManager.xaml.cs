@@ -60,7 +60,7 @@ namespace MonitorPlatform.Wpf.View
             if (this.ptotoco.SelectedValue != null)
             {
                 var item = (PtotocolType)this.ptotoco.SelectedValue;
-                this.serverManagerViewModel.TerminalModel.Ptotocol = item;
+               // this.serverManagerViewModel.TerminalModel.Ptotocol = item;
             }
         }
 

@@ -64,5 +64,11 @@ namespace MonitorPlatform.Wpf.Model
         /// 容错温度
         /// </summary>
         public Guid MonitorId { get => monitorId; set { monitorId = value; this.DoNotify(); } }
+
+        /// <summary>
+        /// 站点
+        /// </summary>
+        private StationModel station { get; set; }
+        public StationModel Station { get => station; set { station = value; this.DoNotify(); } }
     }
 }

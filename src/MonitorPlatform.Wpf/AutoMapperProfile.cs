@@ -35,8 +35,7 @@ namespace MonitorPlatform.Wpf
                 cfg.CreateMap<UserModel, User>();
                 cfg.CreateMap<Sensor, SensorModel>();
                 cfg.CreateMap<SensorModel, Sensor>();
-                cfg.CreateMap<Device, DeviceModel>();
-                cfg.CreateMap<DeviceModel, Device>();
+             
                 cfg.CreateMap<Monitor, MonitorModel>();
                 cfg.CreateMap<MonitorModel, Monitor>();
                 cfg.CreateMap<DiagramConfig, DiagramConfigModel>();
@@ -50,6 +49,20 @@ namespace MonitorPlatform.Wpf
                 cfg.CreateMap<Terminal, TerminalModel>();
                 cfg.CreateMap<SMSConfigModel, SmsConfig>();
                 cfg.CreateMap<SmsConfig, SMSConfigModel>();
+
+
+                // 站点
+                cfg.CreateMap<Station, StationModel>();
+                cfg.CreateMap<StationModel, Station>();
+
+                // 配电室
+                cfg.CreateMap<PowerRoom, PowerRoomModel>();
+                cfg.CreateMap<PowerRoomModel, PowerRoom>();
+
+                // 设备
+                cfg.CreateMap<Device, DeviceModel>();
+                cfg.CreateMap<DeviceModel, Device>();
+
             });
         }
     }

@@ -268,9 +268,15 @@ namespace MonitorPlatform.Wpf.ViewModel
         public List<TreeViewModel> TreeViewModels
         {
             get { return treeViewModels; }
-            set { treeViewModels = value; }
+            set { treeViewModels = value; this.DoNotify(); }
         }
+        private TreeViewModel treeViewModel;
 
+        public TreeViewModel TreeViewModel
+        {
+            get { return treeViewModel; }
+            set { treeViewModel = value; this.DoNotify(); }
+        }
 
         #endregion
 
@@ -317,8 +323,7 @@ namespace MonitorPlatform.Wpf.ViewModel
             this.SensorModels = new List<SensorModel>();
             this.Protocols = new List<string>();
             this.DeviceTypes = new List<string>();
-            this.MonitorModels.Add(new MonitorModel() { Name = "请添顶级监测点" });
-
+            this.DeviceModels=new List<DeviceModel>();
             this.messageClientProvider = EngineContext.Current.Resolve<IMessageClientProvider>();
 
             monitorRepositiry = ESTRepository.Builder<Monitor, Guid>();
@@ -367,47 +372,50 @@ namespace MonitorPlatform.Wpf.ViewModel
                 var stations = stationRepository.Select.IncludeMany(a => a.Rooms, b => b.IncludeMany(c => c.Terminals)).ToList();
                 if (stations.Any())
                 {
-                    var tree = new TreeViewModel();
+                    //var tree = new TreeViewModel();
+                    var tree = new List<TreeViewModel>();
                     stations?.ForEach(a =>
                     {
-                        tree.NodeName = a.Name;
-                        tree.NodeType = TreeNodeType.Station;
-                        tree.NodeId = a.Id;
-                        tree.Children = new List<TreeViewModel>();
+                        var node1 = new TreeViewModel();
+                        node1.NodeName = a.Name;
+                        node1.NodeType = TreeNodeType.Station;
+                        node1.Id = a.Id;
                         if (a.Rooms.Any())
                         {
-                            var tre = new TreeViewModel();
+                            node1.Children = new List<TreeViewModel>();
                             a.Rooms.ForEach(b =>
                             {
-                                tre.NodeName = a.Name;
-                                tre.NodeType = TreeNodeType.Room;
-                                tre.NodeId = a.Id;
-                                tre.Children = new List<TreeViewModel>();
-                                tree.Children.Add(tre);
+                                var node2 = new TreeViewModel();
+                                node2.NodeName = b.Name;
+                                node2.NodeType = TreeNodeType.Room;
+                                node2.Id = b.Id;
+                                node2.ParentId = a.Id;
                                 if (b.Terminals.Any())
                                 {
-                                    var tr = new TreeViewModel();
+                                    node2.Children = new List<TreeViewModel>();
                                     b.Terminals?.ForEach(c =>
                                     {
-                                        tr.NodeName = a.Name;
-                                        tr.NodeType = TreeNodeType.Termianl;
-                                        tr.NodeId = a.Id;
-                                        tre.Children.Add(tre);
+                                        var node3 = new TreeViewModel();
+                                        node3.ParentId = b.Id;
+                                        node3.NodeName = c.Name;
+                                        node3.NodeType = TreeNodeType.Termianl;
+                                        node3.Id = c.Id;
+                                        node2.Children.Add(node3);
                                     });
                                 }
+                                node1.Children.Add(node2);
                             });
                         }
-
-                        this.TreeViewModels.Add(tree);
+                        tree.Add(node1);
                     });
+                   this.TreeViewModels = tree;  
                 }
             });
         }
-
         // 树节点选中事件
-        public void TreeSelected(TreeViewModel model)
+        public void TreeSelected(TreeViewModel node)
         {
-            this.SelectedTreeNode = model;
+            //this.SelectedTreeNode = model;
             this.BottomShow = false;
             this.RightShow = false;
             // 根据节点类型展示不同的内容
@@ -416,8 +424,8 @@ namespace MonitorPlatform.Wpf.ViewModel
                 case TreeNodeType.Station:
                     // 选中了站点或者厂区  此时展示设备配置界面，查询该厂区下的设备信息
                     // TODO 
-                    this.SensorModels?.Clear();
-                    this.Terminals?.Clear();
+                    var devices=stationRepository.Select
+                        .IncludeMany()
                     break;
                 case TreeNodeType.Room:
                     // 选中了配电室，展示一次图配置相关内容，同时展示采集器，可远程写入数据
@@ -428,8 +436,6 @@ namespace MonitorPlatform.Wpf.ViewModel
                     GetTemplateStyle();
                     // 读取当前监测点的温度点数据
                     RefreshDiagramConfigs();
-                    // 读取采集终端
-                    GetTerminalByMonitor(model.Id);
                     break;
                 case TreeNodeType.Termianl:
                     // 选中了终端，显示传感器配置界面
@@ -449,14 +455,53 @@ namespace MonitorPlatform.Wpf.ViewModel
             {
                 // 新增厂区或者站点信息
                 this.CreateStation();
+            }else if (node.NodeType == TreeNodeType.Station)
+            {
+                // 新增配电室
+                this.CreatePowerRoom(node.Id);
+            }
+            else if (node.NodeType == TreeNodeType.Room)
+            {
+                // 新增配电室
+                this.CreateTerminal(node.Id);
             }
         }
         public void EditTreeNode(TreeViewModel node)
         {
-
+            if (node.NodeType==TreeNodeType.Station)
+            {
+                //编辑 站点
+                this.GetStation(node.Id);
+            }else if (node.NodeType == TreeNodeType.Room)
+            {
+                this.GetPowerRoom(node.Id);
+            }
+            else if (node.NodeType == TreeNodeType.Termianl)
+            {
+                this.GetTerminal(node.Id);
+            }
         }
-
-        #region 新增厂区或者站点
+        public void DeleteTreeNode(TreeViewModel node)
+        {
+            if (node.Id == Guid.Empty)
+            {
+                Growl.Error("操作失败");
+                return;
+            }
+            if (node.NodeType == TreeNodeType.Station)
+            {
+                //编辑 站点
+                this.DeleteStation(node.Id);
+            }
+            else if (node.NodeType == TreeNodeType.Room)
+            {
+                this.DeletePowerRoom(node.Id);
+            }else if(node.NodeType == TreeNodeType.Termianl)
+            {
+                this.DeleteTerminal(node.Id);
+            }
+        }
+        #region 1、新增厂区或者站点
 
         /// <summary>
         /// 厂区实体
@@ -475,9 +520,9 @@ namespace MonitorPlatform.Wpf.ViewModel
         public bool StationDrawShow
         {
             get { return stationDrawShow; }
-            set { stationDrawShow = value; }
+            set { stationDrawShow = value; this.DoNotify(); }
         }
-        private void GetStation(Guid id)
+        public void GetStation(Guid id)
         {
             var station = stationRepository.Get(id);
             this.StationModel = ObjectMapper.Map<StationModel>(station);
@@ -490,9 +535,9 @@ namespace MonitorPlatform.Wpf.ViewModel
             this.StationDrawShow = true;
         }
         // 保存厂区
-        private void SaveStation(bool edit=false)
+        public void SaveStation(bool edit=false)
         {
-            if (edit)
+            if (StationModel!=null&& StationModel.Id!=Guid.Empty)
             {
                 var station = ObjectMapper.Map<Station>(this.StationModel);
                 stationRepository.Update(station);
@@ -502,22 +547,172 @@ namespace MonitorPlatform.Wpf.ViewModel
                 var station = ObjectMapper.Map<Station>(this.StationModel);
                 stationRepository.Insert(station);
             }
+            this.StationDrawShow = false;
             Growl.Success("保存成功");
+            this.BuildTree();
         }
         // 删除厂区
-        private void DeleteStation(Guid id)
+        public void DeleteStation(Guid id)
         {
+            // 判断是否有配电室
+            if (powerRepository.Where(a => a.StationId == id).Any())
+            {
+                Growl.Error("该站点包含配电室，无法直接删除");
+                return;
+            }
+
             stationRepository.Delete(id);
+            this.BuildTree();
             Growl.Success("删除成功");
         }
 
 
         #endregion
 
+        #region 2、新增配电室
 
+        // 实体
+        private PowerRoomModel powerRoom;
 
+        public PowerRoomModel PowerRoom
+        {
+            get { return powerRoom; }
+            set { powerRoom = value;this.DoNotify(); }
+        }
 
+        // 抽屉状态
+        private bool powerRoomDrawShow;
 
+        public bool PowerRoomDrawShow
+        {
+            get { return powerRoomDrawShow; }
+            set { powerRoomDrawShow = value; this.DoNotify(); }
+        }
+        public void GetPowerRoom(Guid id)
+        {
+            var station = powerRepository.Get(id);
+            this.PowerRoom = ObjectMapper.Map<PowerRoomModel>(station);
+            this.PowerRoomDrawShow = true;
+        }
+        //新增配电室
+        private void CreatePowerRoom(Guid stationId)
+        {
+            this.PowerRoom = new PowerRoomModel();
+            this.PowerRoom.StationId= stationId;    
+            this.PowerRoomDrawShow = true;
+        }
+        // 保存配电室
+        public void SavePowerRoom(bool edit = false)
+        {
+            var id = Guid.Empty;
+            if (PowerRoom != null && PowerRoom.Id != Guid.Empty)
+            {
+                var power = ObjectMapper.Map<PowerRoom>(this.PowerRoom);
+                powerRepository.Update(power);
+            }
+            else
+            {
+                var power = ObjectMapper.Map<PowerRoom>(this.PowerRoom);
+                id = powerRepository.Insert(power).Id;
+            }
+            this.PowerRoomDrawShow = false;
+            Growl.Success("保存成功");
+            var node = new TreeViewModel();
+            node.ParentId = PowerRoom.StationId;
+            node.Id = id;
+            node.NodeName = PowerRoom.Name;
+            this.BuildTree();
+        }
+        // 删除配电室
+        public void DeletePowerRoom(Guid id)
+        {
+            if (termianlRepository.Where(a => a.PowerRoomId == id).Any())
+            {
+                Growl.Error("该站点包含终端信息，无法直接删除");
+                return;
+            }
+            powerRepository.Delete(id);
+            this.BuildTree();
+            Growl.Success("删除成功");
+        }
+        #endregion
+
+        #region 3、终端采集器相关
+
+        // 获取配电室绑定的采集器信息
+        public void GetTerminal(Guid id)
+        {
+            var terminal = termianlRepository.Get(id);
+            this.terminalModel = ObjectMapper.Map<TerminalModel>(terminal);
+            // 根据采集器查找设备列表
+            var devices = termianlRepository.Select.IncludeMany(a => a.PowerRoom.Station.Devices).ToList(a=>a.Device);
+            this.DeviceModels = ObjectMapper.Map<List<DeviceModel>>(devices).CreateIndex();
+        }
+        // 添加采集器
+        public void CreateTerminal(Guid powerId)
+        {
+            this.TerminalShow = true;
+            this.TerminalModel = new TerminalModel();
+            this.terminalModel.PowerRoomId = powerId;
+            // 根据配电室查询设备列表
+            var stations = stationRepository.Select.IncludeMany(a => a.Rooms, b => b.Where(c => c.Id == powerId))
+               .IncludeMany(a => a.Devices).ToList().SelectMany(a => a.Devices).ToList();
+            this.DeviceModels = ObjectMapper.Map<List<DeviceModel>>(stations).CreateIndex();
+        }
+        // 保存采集器
+        public void SaveTerminal()
+        {
+            if (this.TerminalModel.Name.IsNullOrEmpty())
+            {
+                Growl.Error("采集器名称不能为空"); return;
+            }
+
+            if (this.TerminalModel.Addr.IsNullOrEmpty())
+            {
+                Growl.Error("采集器地址位不能为空"); return;
+            }
+
+            if (!int.TryParse(this.TerminalModel.Addr, out var ad))
+            {
+                Growl.Error("地址位必须位Int 类型");
+                return;
+            }
+
+            // 查询当前配电室的采集器地址有无重复
+
+            var terminal = termianlRepository.Where(a => a.Addr == this.TerminalModel.Addr && a.PowerRoomId == this.RegionId).First();
+
+            if (terminal != null)
+            {
+                Growl.Error($"采集器地址{this.TerminalModel.Addr}已经存在");
+                return;
+            }
+            var id = this.TerminalModel.Id;
+            terminal = this.termianlRepository.Find(id);
+            if (terminal != null)
+            {
+                // 更新
+                terminal = ObjectMapper.Map<Terminal>(this.TerminalModel);
+                this.termianlRepository.Update(terminal);
+            }
+            else
+            {
+                terminal = ObjectMapper.Map<Terminal>(this.TerminalModel);
+                termianlRepository.Insert(terminal);
+            }
+            Growl.Success("保存成功");
+            this.TerminalShow = false;
+            this.BuildTree();
+        }
+
+        // 删除采集器
+        public void DeleteTerminal(Guid id)
+        {
+            termianlRepository.Delete(id);
+            Growl.Info("操作成功");
+            this.BuildTree();
+        }
+        #endregion
 
         // 打开左侧抽屉
         public void OpenLeftDrawAction(object data)
@@ -634,10 +829,19 @@ namespace MonitorPlatform.Wpf.ViewModel
             Growl.Success("删除成功");
         }
 
-       
+
         #endregion
 
         #region 设备管理相关
+
+        private List<DeviceModel> deviceModels;
+
+        public List<DeviceModel> DeviceModels
+        {
+            get { return deviceModels; }
+            set { deviceModels = value; this.DoNotify(); }
+        }
+
         // 保存或更新监测点关联的设备信息
         public void SaveDeviceAction(object data)
         {
@@ -959,90 +1163,7 @@ namespace MonitorPlatform.Wpf.ViewModel
 
         #endregion
 
-        #region 终端采集器相关
-        
-        // 获取配电室绑定的采集器信息
-        public void GetTerminalByMonitor(Guid id)
-        {
-            //var terminal = termianlRepository.Where(a => a.MonitorId == id).ToList();
-            //this.Terminals=ObjectMapper.Map<List<TerminalModel>>(terminal).CreateIndex();
-        }
-        // 添加采集器
-        public void CreateTerminal(bool edit = false, Guid id = default)
-        {
-            if (this.RegionId == Guid.Empty)
-            {
-                Growl.Error("请先选择配电室");
-                return;
-            }
-            this.TerminalShow = true;
-            if (edit)
-            {
-                var sensor = this.termianlRepository.Find(id);
-                this.TerminalModel = ObjectMapper.Map<TerminalModel>(sensor);
-            }
-            else
-            {
-                this.TerminalModel = new TerminalModel();
-            }
-        }
-        // 保存采集器
-        public void SaveTerminal()
-        {
-            if (this.TerminalModel.Name.IsNullOrEmpty())
-            {
-                Growl.Error("采集器名称不能为空"); return;
-            }
-
-            if (this.TerminalModel.Addr.IsNullOrEmpty())
-            {
-                Growl.Error("采集器地址位不能为空"); return;
-            }
-
-            if (!int.TryParse(this.TerminalModel.Addr,out var ad))
-            {
-                Growl.Error("地址位必须位Int 类型");
-                return;
-            }
-
-            // 查询当前配电室的采集器地址有无重复
-
-            var terminal = termianlRepository.Where(a => a.Addr == this.TerminalModel.Addr && a.PowerRoomId == this.RegionId).First();
-
-            if(terminal!= null)
-            {
-                Growl.Error($"采集器地址{this.TerminalModel.Addr}已经存在");
-                return;
-            }
-            var id = this.TerminalModel.Id;
-            terminal = this.termianlRepository.Find(id);
-            if (terminal != null)
-            {
-                // 更新
-                terminal = ObjectMapper.Map<Terminal>(this.TerminalModel);
-              //  terminal.MonitorId = this.RegionId;
-                this.termianlRepository.Update(terminal);
-            }
-            else
-            {
-                terminal = ObjectMapper.Map<Terminal>(this.TerminalModel);
-              //  terminal.MonitorId = this.RegionId;
-                termianlRepository.Insert(terminal);
-            }
-
-            Growl.Success("保存成功");
-            this.TerminalShow = false;
-            this.GetTerminalByMonitor(this.RegionId);
-        }
-
-        // 删除采集器
-        public void DeleteTerminal(Guid id)
-        {
-            termianlRepository.Delete(id);
-            Growl.Info("操作成功");
-            this.GetTerminalByMonitor(this.RegionId);
-        }
-        #endregion
+      
 
         #region 采集器关联传感器相关
         public void GetTerminalRlt(Guid id)
@@ -1112,6 +1233,14 @@ namespace MonitorPlatform.Wpf.ViewModel
             else if (data.ToString() == "terminalRlt")
             {
                 this.TerminalRltShow = false;
+            }
+            else if (data.ToString() == "StationDraw")
+            {
+                this.StationDrawShow = false;
+            }
+            else if (data.ToString() == "PowerRoom")
+            {
+                this.PowerRoomDrawShow = false;
             }
             else
             {

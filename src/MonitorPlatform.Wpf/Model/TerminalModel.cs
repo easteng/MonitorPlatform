@@ -1,4 +1,5 @@
-﻿using MonitorPlatform.Share;
+﻿using MonitorPlatform.Domain.Entities;
+using MonitorPlatform.Share;
 using MonitorPlatform.Wpf.Common;
 using System;
 using System.Collections.Generic;
@@ -31,11 +32,11 @@ namespace MonitorPlatform.Wpf.Model
         private int frequency { get; set; }
         public int Frequency { get => frequency; set { frequency = value; this.DoNotify(); } }
 
-        /// <summary>
-        /// 数据协议
-        /// </summary>
-        private PtotocolType ptotocol { get; set; }
-        public PtotocolType Ptotocol { get => ptotocol; set { ptotocol = value; this.DoNotify(); } }
+        ///// <summary>
+        ///// 数据协议
+        ///// </summary>
+        //private PtotocolType ptotocol { get; set; }
+        //public PtotocolType Ptotocol { get => ptotocol; set { ptotocol = value; this.DoNotify(); } }
 
         /// <summary>
         /// 预警温度
@@ -51,20 +52,28 @@ namespace MonitorPlatform.Wpf.Model
         public double TolerantValue { get => tolerantValue; set { tolerantValue = value; this.DoNotify(); } }
 
         /// <summary>
-        /// 监测点
+        /// 配电室
         /// </summary>
-        private Guid monitorId { get; set; }
+        private Guid powerRoomId { get; set; }
         /// <summary>
-        /// 监测点id
+        /// 配电室
         /// </summary>
-        public Guid MonitorId { get => monitorId; set { monitorId = value; this.DoNotify(); } }
+        public Guid PowerRoomId { get => powerRoomId; set { powerRoomId = value; this.DoNotify(); } }
         /// <summary>
-        /// 监测点
+        /// 配电室
         /// </summary>
-        private MonitorModel monitor { get; set; }
+        private PowerRoomModel powerRoom { get; set; }
         /// <summary>
-        /// 监测点
+        /// 配电室
         /// </summary>
-        public MonitorModel Monitor { get => monitor; set { monitor = value; this.DoNotify(); } }
+        public PowerRoomModel PowerRoom { get => powerRoom; set { powerRoom = value; this.DoNotify(); } }
+
+        /// <summary>
+        /// 设备终端
+        /// </summary>
+        private Guid deviceId { get; set; }
+        public Guid DeviceId { get => deviceId; set { deviceId = value; this.DoNotify(); } }
+        private DeviceModel device { get; set; }
+        public DeviceModel Device { get => device; set { device = value; this.DoNotify(); } }
     }
 }
