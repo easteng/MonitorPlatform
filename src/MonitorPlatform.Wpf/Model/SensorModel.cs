@@ -47,20 +47,20 @@ namespace MonitorPlatform.Wpf.Model
         }
 
         /// <summary>
-        /// 监测点
+        /// 采集器
         /// </summary>
-        private Guid monitorId { get; set; }
+        private Guid terminalId { get; set; }
         /// <summary>
-        /// 监测点id
+        /// 采集器
         /// </summary>
-        public Guid MonitorId { get => monitorId; set { monitorId = value; this.DoNotify(); } }
+        public Guid TerminalId { get => terminalId; set { terminalId = value; this.DoNotify(); } }
         /// <summary>
-        /// 监测点
+        /// 采集器
         /// </summary>
-        private MonitorModel monitor { get; set; }
+        private TerminalModel terminal { get; set; }
         /// <summary>
-        /// 监测点
+        /// 采集器
         /// </summary>
-        public MonitorModel Monitor { get => monitor; set { monitor = value; this.DoNotify(); } }
+        public TerminalModel Terminal { get => terminal; set { terminal = value; this.DoNotify(); } }
     }
 }

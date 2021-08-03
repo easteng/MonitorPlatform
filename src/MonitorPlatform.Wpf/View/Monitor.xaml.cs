@@ -31,10 +31,6 @@ namespace MonitorPlatform.Wpf.View
     public partial class Monitor : UserControl
     {
         MonitorViewModel monitorViewModel;
-        private object DevicePage;
-        private object TerminalPage;
-        private object ConfigPage;
-        private object DefaultPage;
         public Monitor()
         {
             InitializeComponent();
@@ -46,18 +42,35 @@ namespace MonitorPlatform.Wpf.View
             // 如果配置数据不为空，则渲染标记点
             monitorViewModel.InitPoint += MonitorViewModel_InitPoint;
 
-            DevicePage = this.tabitem_device;
-            TerminalPage = this.tabitem_sensor;
-            ConfigPage = this.tabitem_cofig;
-            DefaultPage=this.tabitem_default;
+            this.tabitem_cofig.Visibility = Visibility.Collapsed;
+            this.tabitem_device.Visibility = Visibility.Collapsed;
+            this.tabitem_sensor.Visibility = Visibility.Collapsed;
 
-            SetTabControlPage(DefaultPage);
+            this.tree_station.Loaded += Tree_station_Loaded;
+            this.tree_station.LayoutUpdated += Tree_station_LayoutUpdated;
+            this.tree_station.Initialized += Tree_station_Initialized;
         }
-        // 设置选项页
-        private void SetTabControlPage(object obj)
+
+        private void Tree_station_Initialized(object sender, EventArgs e)
         {
-            this.monitor_tabcontrol.Items.Clear(); // 先清空选项
-            this.monitor_tabcontrol.Items.Add(obj);
+           // throw new NotImplementedException();
+        }
+
+        private void Tree_station_LayoutUpdated(object sender, EventArgs e)
+        {
+            //throw new NotImplementedException();
+            foreach (ItemCollection item in tree_station.Items)
+            {
+                foreach (var data in item)
+                {
+                  //  data.
+                }
+            }
+        }
+
+        private void Tree_station_Loaded(object sender, RoutedEventArgs e)
+        {
+           // throw new NotImplementedException();
         }
 
 
@@ -218,41 +231,10 @@ namespace MonitorPlatform.Wpf.View
 
         #endregion
 
-        #region 监测点管理相关
+        #region 监测点管理相关 废弃
 
 
-        private void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
-        {
-            // 监测点选中
-            var treeNode = ((TreeView)sender).SelectedItem as TreeViewModel;
-            switch (treeNode.NodeType)
-            {
-                case TreeNodeType.Station:
-                    this.SetTabControlPage(DevicePage);
-                    break;
-                case TreeNodeType.Room:
-                    this.SetTabControlPage(ConfigPage);
-                    break;
-                case TreeNodeType.Termianl:
-                    this.SetTabControlPage(TerminalPage);
-                    break;
-                default:
-                    break;
-            }
-
-
-        }
-
-
-        private void monitorType_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            // 站点类型切换
-            //var item = ((ComboBox)sender).SelectedItem as ComboxItem;
-            //if (item != null)
-            //{
-            //    this.monitorViewModel.MonitorModel.Type = (StationType)item.Value;
-            //}
-        }
+        
 
         #endregion
 
@@ -416,148 +398,34 @@ namespace MonitorPlatform.Wpf.View
 
         #endregion
 
-        #region 设备管理相关
-        // 设备采集协议绑定
-        private void ptotoco_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        
+
+        #region 1.左侧树结构相关内容
+        // 树节点选中
+        private void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            if (this.ptotoco.SelectedItem != null)
+            this.tabitem_cofig.Visibility = Visibility.Collapsed;
+            this.tabitem_device.Visibility = Visibility.Collapsed;
+            this.tabitem_sensor.Visibility = Visibility.Collapsed;
+            var treeNode = ((TreeView)sender).SelectedItem as TreeViewModel;
+            if (treeNode == null) return;
+            // 监测点选中
+            switch (treeNode.NodeType)
             {
-                var item = this.ptotoco.SelectedItem;
-                this.monitorViewModel.DeviceModel.Ptotocol = item.ToString();
+                case TreeNodeType.Station:
+                    this.tabitem_device.Visibility = Visibility.Visible;
+                    break;
+                case TreeNodeType.Room:
+                    this.tabitem_cofig.Visibility = Visibility.Visible;
+                    break;
+                case TreeNodeType.Termianl:
+                    this.tabitem_sensor.Visibility = Visibility.Visible;
+                    break;
+                default:
+                    break;
             }
+            this.monitorViewModel.TreeSelected(treeNode);
         }
-
-        // 绑定设被的采集模式
-        private void collection_type_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (this.collection_type.SelectedValue != null)
-            {
-                var item = this.collection_type.SelectedValue;
-                this.monitorViewModel.DeviceModel.Type = item.ToString();
-            }
-        }
-        // 更新设备缓存
-        private void btn_chche_update_Click(object sender, RoutedEventArgs e)
-        {
-            this.monitorViewModel.UpdateDeviceCache();
-        }
-        // 远程重启
-        private void btn_remote_start_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        #endregion
-
-        #region 传感器管理相关
-        // 添加传感器信息
-        private void btn_addsensor_Click(object sender, RoutedEventArgs e)
-        {
-            this.monitorViewModel.CreateSensor();
-        }
-        // 删除传感器
-        private void btn_delete_sensor_Click(object sender, RoutedEventArgs e)
-        {
-            if (HandyControl.Controls.MessageBox.Show("确定删除吗?", "温馨提示", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-            {
-                var id = ((Button)sender).Tag.ToString();
-                if (id != null)
-                {
-                    this.monitorViewModel.DeleteSensor(Guid.Parse(id));
-                }
-            }
-        }
-        // 保存传感器
-        private void btn_save_sensor_Click(object sender, RoutedEventArgs e)
-        {
-            this.monitorViewModel.SaveSensor();
-        }
-        // 编辑传感器
-        private void btn_edit_sensor_Click(object sender, RoutedEventArgs e)
-        {
-            var id = ((Button)sender).Tag.ToString();
-            this.monitorViewModel.CreateSensor(true, Guid.Parse(id));
-        }
-        #endregion
-
-        #region 采集终端管理相关
-
-        // 添加采集器信息
-        private void btn_addterminal_Click(object sender, RoutedEventArgs e)
-        {
-            // this.monitorViewModel.CreateTerminal();
-        }
-
-        // 保存采集器
-        private void btn_save_terminal_Click(object sender, RoutedEventArgs e)
-        {
-            this.monitorViewModel.SaveTerminal();
-        }
-
-        // 编辑采集器
-        private void btn_edit_terminal_Click(object sender, RoutedEventArgs e)
-        {
-            var id = ((Button)sender).Tag.ToString();
-            // this.monitorViewModel.CreateTerminal(true, Guid.Parse(id));
-        }
-
-        // 删除采集器
-        private void btn_delete_terminal_Click(object sender, RoutedEventArgs e)
-        {
-            if (HandyControl.Controls.MessageBox.Show("确定删除吗?", "温馨提示", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-            {
-                var id = ((Button)sender).Tag.ToString();
-                if (id != null)
-                {
-                    this.monitorViewModel.DeleteTerminal(Guid.Parse(id));
-                }
-            }
-        }
-
-        // 查看关联的传感器
-        private void btn_view_sensor_Click(object sender, RoutedEventArgs e)
-        {
-            var id = ((Button)sender).Tag.ToString();
-            this.monitorViewModel.GetTerminalRlt(Guid.Parse(id));
-        }
-        // 关联传感器
-        private void btn_rlt_sensor_Click(object sender, RoutedEventArgs e)
-        {
-            // 点击关联传感器
-            var sensor = new SensorSelectModal();
-            sensor.ShowInTaskbar = true;
-            sensor.MonitorId = this.monitorViewModel.RegionId;
-            sensor.Confirm += (e, data) =>
-            {
-                this.monitorViewModel.SaveRltSensor(data);
-                sensor.Close();
-            };
-            sensor.OpenDialoge();
-        }
-        // 远程写入
-        private void btn_write_sensor_Click(object sender, RoutedEventArgs e)
-        {
-            this.monitorViewModel.WriteSensor();
-        }
-        // 删除关联的传感器
-        private void btn_deleterlt_sensor_Click(object sender, RoutedEventArgs e)
-        {
-            if (HandyControl.Controls.MessageBox.Show("确定删除吗?", "温馨提示", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-            {
-                var id = ((Button)sender).Tag.ToString();
-                if (id != null)
-                {
-                    this.monitorViewModel.DeleteTerminalRlt(Guid.Parse(id));
-                }
-            }
-        }
-
-
-
-        #endregion
-
-        #region 左侧树结构相关内容
-
         // 添加顶级树节点
         private void btn_add_treenode_Click(object sender, RoutedEventArgs e)
         {
@@ -639,6 +507,114 @@ namespace MonitorPlatform.Wpf.View
             this.monitorViewModel.SavePowerRoom();
         }
 
+
+        #endregion
+
+        #region 2 设备管理相关
+
+        // 点击添加设备
+        private void btn_add_device_Click(object sender, RoutedEventArgs e)
+        {
+            this.monitorViewModel.CreateDevice();
+        }
+        // 点击编辑设备
+        private void btn_edit_device_Click(object sender, RoutedEventArgs e)
+        {
+            var tag = ((Button)sender).Tag;
+            if (tag != null)
+            {
+                var id = Guid.Parse(tag.ToString());
+                this.monitorViewModel.GetDevice(id);
+            }
+        }
+        // 删除设备
+        private void btn_delete_device_Click(object sender, RoutedEventArgs e)
+        {
+            if (HandyControl.Controls.MessageBox.Show("确定删除吗?", "温馨提示", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            {
+                var tag = ((Button)sender).Tag;
+                if (tag != null)
+                {
+                    var id = Guid.Parse(tag.ToString());
+                    this.monitorViewModel.DeleteDevice(id);
+                }
+            }
+        }
+        // 设备协选择
+        private void com_device_ptocol_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (this.com_device_ptocol.SelectedItem != null)
+            {
+                var item = this.com_device_ptocol.SelectedItem;
+                this.monitorViewModel.DeviceModel.Ptotocol = item.ToString();
+            }
+        }
+        // 设备采集模式 服务端、客户端、4g、串口
+        private void collection_type_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (this.collection_type.SelectedValue != null)
+            {
+                var item = this.collection_type.SelectedValue;
+                this.monitorViewModel.DeviceModel.Type = item.ToString();
+            }
+        }
+        // 保存设备信息
+        private void btn_save_device_Click(object sender, RoutedEventArgs e)
+        {
+            this.monitorViewModel.SaveDevice();
+        }
+        #endregion
+
+        #region 3.传感器管理相关
+        // 添加传感器信息
+        private void btn_addsensor_Click(object sender, RoutedEventArgs e)
+        {
+            this.monitorViewModel.CreateSensor();
+        }
+        // 删除传感器
+        private void btn_delete_sensor_Click(object sender, RoutedEventArgs e)
+        {
+            if (HandyControl.Controls.MessageBox.Show("确定删除吗?", "温馨提示", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            {
+                var id = ((Button)sender).Tag.ToString();
+                if (id != null)
+                {
+                    this.monitorViewModel.DeleteSensor(Guid.Parse(id));
+                }
+            }
+        }
+        // 保存传感器
+        private void btn_save_sensor_Click(object sender, RoutedEventArgs e)
+        {
+            this.monitorViewModel.SaveSensor();
+        }
+        // 编辑传感器
+        private void btn_edit_sensor_Click(object sender, RoutedEventArgs e)
+        {
+            var id = ((Button)sender).Tag.ToString();
+            this.monitorViewModel.GetSensor(Guid.Parse(id));
+        }
+
+        // 传感器写入终端
+        private void btn_write_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+        #endregion
+
+        #region 4.采集终端管理相关
+        private void com_select_device_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var item = ((ComboBox)sender).SelectedItem as ComboxItem;
+            if (item != null)
+            {
+                this.monitorViewModel.MonitorModel.DeviceId = (Guid)item.Value;
+            }
+        }
+        private void btn_save_terminal_Click(object sender, RoutedEventArgs e)
+        {
+            this.monitorViewModel.SaveTerminal();
+        }
         #endregion
 
 

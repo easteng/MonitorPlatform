@@ -20,7 +20,7 @@
                     <Style TargetType="TextBlock" x:Key="BaseIcon">
                         <Setter Property="FontFamily" Value="../Assets/Fonts/#iconfont"/>
                     </Style>
-                    <convert:StationType2VisibleConverter x:Key="StationType2VisibleConverter"/>
+                    <convert:StationType2IconConverter x:Key="StationType2IconConverter"/>
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
@@ -73,7 +73,7 @@
                                             <ColumnDefinition Width="20"/>
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
-                                        <TextBlock Text="{Binding Type,Converter={StaticResource StationType2VisibleConverter}}" Foreground="#DAAD44" FontSize="13"  FontFamily="../Assets/Fonts/#iconfont" />
+                                        <TextBlock Text="{Binding Type,Converter={StaticResource StationType2IconConverter}}" Foreground="#DAAD44" FontSize="13"  FontFamily="../Assets/Fonts/#iconfont" />
                                         <TextBlock Grid.Column="1"  Text="{Binding Name}" FontSize="13" VerticalAlignment="Center" FontWeight="Bold" Foreground="#DAAD44"/>
                                     </Grid>
                                 </HierarchicalDataTemplate>

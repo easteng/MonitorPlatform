@@ -24,10 +24,29 @@ using System.Windows.Data;
 
 namespace MonitorPlatform.Wpf.Converter
 {
-    /// <summary>
-    ///  站点类型转空间可视化
-    /// </summary>
-    public class StationType2VisibleConverter : IValueConverter
+    ///// <summary>
+    /////  站点类型转空间可视化
+    ///// </summary>
+    //public class StationType2VisibleConverter : IValueConverter
+    //{
+    //    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    //    {
+    //        var type = (TreeNodeType)value;
+    //        switch (type)
+    //        {
+    //            case TreeNodeType.Station:
+    //                break;
+    //            case TreeNodeType.Room:
+    //                break;
+    //            case TreeNodeType.Termianl:
+    //                break;
+    //            default:
+    //                break;
+    //        }
+    //    }
+    //}
+
+    public class StationType2IconConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -35,7 +54,7 @@ namespace MonitorPlatform.Wpf.Converter
             if (type == TreeNodeType.Station)
             {
                 return Regex.Unescape(StringToUnicode("&#xe666;"));
-            } 
+            }
             else if (type == TreeNodeType.Termianl)
             {
                 return Regex.Unescape(StringToUnicode("&#xe66c;"));

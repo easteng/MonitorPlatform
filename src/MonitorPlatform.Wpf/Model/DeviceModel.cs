@@ -59,11 +59,14 @@ namespace MonitorPlatform.Wpf.Model
         /// </summary>
         public double TolerantValue { get => tolerantValue; set { tolerantValue = value; this.DoNotify(); } }
 
-        private Guid monitorId { get; set; }
         /// <summary>
-        /// 容错温度
+        /// 站点id
         /// </summary>
-        public Guid MonitorId { get => monitorId; set { monitorId = value; this.DoNotify(); } }
+        private Guid stationId { get; set; }
+        /// <summary>
+        /// 站点
+        /// </summary>
+        public Guid StationId { get => stationId; set { stationId = value; this.DoNotify(); } }
 
         /// <summary>
         /// 站点
