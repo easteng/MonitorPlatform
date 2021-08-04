@@ -74,9 +74,6 @@ namespace ESTHost.Tools
             service.ServiceDesc = "温度数据采集中心服务";
             service.Status = ServiceStatus.NoInstalled;
             service.FileInfos = new List<ServiceContent.FileInfo>();
-
-
-
         }
 
     }
