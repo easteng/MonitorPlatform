@@ -25,6 +25,7 @@ namespace MonitorPlatform.Wpf.View
     public partial class Template : UserControl
     {
         TemplateViewModel templateViewModel;
+        public bool Custom { get; set;  }
         public Template()
         {
             this.DataContext= templateViewModel=new TemplateViewModel();
@@ -35,9 +36,9 @@ namespace MonitorPlatform.Wpf.View
         /// 更新要素的值
         /// </summary>
         /// <param name="model"></param>
-        public TemplateModel UpdateElement(TemplateModel model,string code)
+        public TemplateModel UpdateElement(TemplateModel model,string code,bool custom,string color)
         {
-           return  this.templateViewModel.InitTemplate(model, code);
+           return  this.templateViewModel.InitTemplate(model, code,custom,color);
         }
 
         /// <summary>
@@ -55,7 +56,6 @@ namespace MonitorPlatform.Wpf.View
                 // 当前的组件
                 this.templateViewModel.Update(value, enumState);
             }
-           
         }
     }
 }

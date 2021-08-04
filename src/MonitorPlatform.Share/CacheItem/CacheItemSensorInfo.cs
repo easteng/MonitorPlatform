@@ -28,7 +28,7 @@ namespace MonitorPlatform.Share.CacheItem
         public string SensorCode { get; set; }
         public string StationName { get; set; }  // 所属站点
         public string Position { get;set; }  // 安装位置
-        public string RegionName { get; set; }  // 配电室名称
+        public string PowerRoom { get; set; }  // 配电室名称
         public string PointName { get;set;} // 点位名称
     }
 }

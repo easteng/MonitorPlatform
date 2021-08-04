@@ -11,6 +11,7 @@
 ******* ★ Copyright @easten company 2021-2022. All rights reserved ★ *********
 ***********************************************************************
  */
+using MonitorPlatform.Domain.Entities;
 using MonitorPlatform.Share;
 using MonitorPlatform.Wpf.Common;
 
@@ -24,8 +25,15 @@ namespace MonitorPlatform.Wpf.Model
 {
     public class TemplateModel : NotifyBase
     {
-        private Guid monitorId { get; set; }
-        public Guid MonitorId { get => monitorId; set { monitorId = value; this.DoNotify(); } }
+        private Guid powerRoomId { get; set; }
+        public Guid PowerRoomId { get => powerRoomId; set { powerRoomId = value; this.DoNotify(); } }
+        private PowerRoomModel powerRoom { get; set; }
+        public PowerRoomModel PowerRoom { get => powerRoom; set { powerRoom = value; this.DoNotify(); } }
+
+        private Guid diagramConfigId { get; set; }
+        public Guid DiagramConfigId { get => diagramConfigId; set { diagramConfigId = value; this.DoNotify(); } }
+        public DiagramConfigModel DiagramConfig { get => diagramConfig; set { diagramConfig = value; this.DoNotify(); } }
+        private DiagramConfigModel diagramConfig { get; set; }
 
         private string name { get; set; }
         public string Name { get => name; set { name = value; this.DoNotify(); } }

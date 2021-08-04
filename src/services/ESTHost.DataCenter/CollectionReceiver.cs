@@ -57,6 +57,7 @@ namespace ESTHost.DataCenter
             // 获取设备的缓存信息，信息包括预警温度值，报警温度值等
             var device = this.redisCachingProvider?.GetDeviceInfoCache(deviceMessage.DeviceId);
             var iotMessage = deviceMessage.IOTData;
+            if (iotMessage == null) return;
             this.logger.LogInformation($"接收到采集数据：{deviceMessage.Protocol}：{deviceMessage}");
 
             foreach (var item in iotMessage)

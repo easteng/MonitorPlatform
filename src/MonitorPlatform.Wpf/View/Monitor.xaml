@@ -68,7 +68,6 @@
                                   SelectedItemChanged="TreeView_SelectedItemChanged"
                                   ScrollViewer.VerticalScrollBarVisibility="Hidden"
                             ItemsSource="{Binding TreeViewModels}">
-
                             <TreeView.ItemTemplate>
                                 <HierarchicalDataTemplate ItemsSource="{Binding Children}">
                                     <Grid Height="20" Width="auto">
@@ -138,6 +137,11 @@
                                     Content="添加设备"
                                     Click="btn_add_device_Click"
                                     Margin="5,5" Style="{StaticResource ButtonDashedSuccess}"  Height="25" Padding="10,0"/>
+                                <Button
+                                    x:Name="btn_update_cache"
+                                    Content="同步数据"
+                                    Click="btn_update_cache_Click"
+                                    Margin="5,5" Style="{StaticResource ButtonDashedWarning}"  Height="25" Padding="10,0"/>
                             </StackPanel>
                             <!--内容区域-->
                             <Grid Margin="5,0" Grid.Row="2">
@@ -161,7 +165,7 @@
                                                 <GridViewColumn Width="150" Header="IP地址" DisplayMemberBinding="{Binding IpAddress}"/>
                                                 <GridViewColumn Width="100" Header="端口号" DisplayMemberBinding="{Binding Port}"/>
                                                 <GridViewColumn Width="100" Header="采集模式" DisplayMemberBinding="{Binding Type}"/>
-                                                <GridViewColumn Width="100" Header="协议类型" DisplayMemberBinding="{Binding PtotocolType}"/>
+                                                <GridViewColumn Width="100" Header="协议类型" DisplayMemberBinding="{Binding Ptotocol}"/>
                                                 <GridViewColumn HeaderContainerStyle="{StaticResource CenterGridViewColumnHeader}" Width="150" Header="操作">
                                                     <GridViewColumn.CellTemplate>
                                                         <DataTemplate>
@@ -261,43 +265,41 @@
                     <!--电路图管理-->
                     <Border x:Name="tabitem_cofig"   Background="#B9BCBF" Cursor="Hand" BorderThickness="0">
                         <hc:SimplePanel Background="{StaticResource FormBackground}">
-                            <Border Grid.Column="1" 
-                        Margin="0"
-                        BorderBrush="{StaticResource FormBorderBrush}" BorderThickness="1">
+                            <Border Grid.Column="1" Margin="0" BorderBrush="{StaticResource FormBorderBrush}" BorderThickness="1">
                                 <Grid>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="40"/>
                                         <RowDefinition Height="*"/>
                                     </Grid.RowDefinitions>
                                     <StackPanel Orientation="Horizontal">
-                                        <Button IsEnabled="{Binding ConfigModel.CanUpload}" FontSize="15" Content="&#xe61f;" FontFamily="../Assets/Fonts/#iconfont" Name="brnConfigTemp" Click="brnConfigTemp_Click" Margin="5,0" Style="{StaticResource ButtonPrimary}" Padding="10,0" Height="25">
+                                        <Button FontSize="15" Content="&#xe61f;" FontFamily="../Assets/Fonts/#iconfont" Name="brnConfigTemp" Click="brnConfigTemp_Click" Margin="5,0" Style="{StaticResource ButtonDashedPrimary}" Padding="10,0" Height="25">
                                             <hc:Poptip.Instance>
-                                                <hc:Poptip Content="配置温度模板" hc:Foreground="Red" PlacementType="Top"/>
+                                                <hc:Poptip Content="配置温度模板" hc:Foreground="CadetBlue" PlacementType="Top"/>
                                             </hc:Poptip.Instance>
                                         </Button>
-                                        <Button IsEnabled="{Binding ConfigModel.CanUpload}"  FontSize="15"  Command="{Binding GetConfigCommand}" Content="&#xe6b4;" FontFamily="../Assets/Fonts/#iconfont" Margin="1,0" Style="{StaticResource ButtonSuccess}" Padding="10,0" Height="25">
+                                        <Button  FontSize="15"  Command="{Binding GetConfigCommand}" Content="&#xe6b4;" FontFamily="../Assets/Fonts/#iconfont" Margin="1,0" Style="{StaticResource ButtonDashedSuccess}" Padding="10,0" Height="25">
                                             <hc:Poptip.Instance>
                                                 <hc:Poptip Content="查看配置" hc:Foreground="Red" PlacementType="Top"/>
                                             </hc:Poptip.Instance>
                                         </Button>
-                                        <Button IsEnabled="{Binding ConfigModel.CanUpload}" FontSize="15" Content="&#xe603;" FontFamily="../Assets/Fonts/#iconfont" Name="uploadImg" Click="uploadImg_Click" Margin="5,0" Style="{StaticResource ButtonDanger}" Padding="10,0" Height="25">
+                                        <Button  FontSize="15" Content="&#xe603;" FontFamily="../Assets/Fonts/#iconfont" Name="uploadImg" Click="uploadImg_Click" Margin="5,0" Style="{StaticResource ButtonDashedDanger}" Padding="10,0" Height="25">
                                             <hc:Poptip.Instance>
                                                 <hc:Poptip Content="上传图纸" hc:Foreground="Red" PlacementType="Top"/>
                                             </hc:Poptip.Instance>
                                         </Button>
                                         <TextBlock  Text="是否编辑:" Margin="10,0" VerticalAlignment="Center" Foreground="#fff"/>
-                                        <ToggleButton IsEnabled="{Binding ConfigModel.CanUpload}" Unchecked="ToggleButton_Unchecked" Checked="ToggleButton_Checked" IsChecked="{Binding ConfigModel.IsEdit}" Height="20" Margin="5,5" HorizontalAlignment="Center" Style="{StaticResource ToggleButtonSwitch}"/>
-                                        <TextBlock  Text="图形名称:" Margin="10,0" VerticalAlignment="Center" Foreground="#fff"/>
+                                        <ToggleButton  Unchecked="ToggleButton_Unchecked" Checked="ToggleButton_Checked" IsChecked="{Binding ConfigModel.IsEdit}" Height="20" Margin="5,5" HorizontalAlignment="Center" Style="{StaticResource ToggleButtonSwitch}"/>
+                                        <!--<TextBlock  Text="图形名称:" Margin="10,0" VerticalAlignment="Center" Foreground="#fff"/>
                                         <hc:TextBox 
-                                 Background="{StaticResource FormBackground}"
-                                 BorderBrush="{StaticResource FormBorderBrush}"
-                                 hc:Foreground="#fff"
-                                 IsReadOnly="{Binding ConfigModel.CanUpload,Converter={StaticResource Boolean2BooleanReConverter}}"
-                                 hc:InfoElement.Necessary="True"
-                                 Width="150"
-                                 Height="25"
-                                 ShowClearButton="True" Text="{Binding ConfigModel.PicName}"/>
-                                        <Button IsEnabled="{Binding ConfigModel.CanUpload}" FontSize="18" Content="&#xe60b;" FontFamily="../Assets/Fonts/#iconfont" Name="btnSavePic" Click="btnSavePic_Click" Margin="5,0" Style="{StaticResource ButtonPrimary}" Padding="10,0" Height="25">
+                                             Background="{StaticResource FormBackground}"
+                                             BorderBrush="{StaticResource FormBorderBrush}"
+                                             hc:Foreground="#fff"
+                                             IsReadOnly="{Binding ConfigModel.CanUpload,Converter={StaticResource Boolean2BooleanReConverter}}"
+                                             hc:InfoElement.Necessary="True"
+                                             Width="150"
+                                             Height="25"
+                                             ShowClearButton="True" Text="{Binding ConfigModel.PicName}"/>-->
+                                        <Button FontSize="15" Content="&#xe60b;" FontFamily="../Assets/Fonts/#iconfont" Name="btnSavePic" Click="btnSavePic_Click" Margin="5,0" Style="{StaticResource ButtonDashedWarning}" Padding="10,0" Height="25">
                                             <hc:Poptip.Instance>
                                                 <hc:Poptip Content="保存数据" hc:Foreground="Red" PlacementType="Top"/>
                                             </hc:Poptip.Instance>
@@ -316,14 +318,14 @@
 
             <!--顶部抽屉  温度点配置-->
             <hc:Drawer Name="DrawerRight" MaskCanClose="False" Dock="Top" IsOpen="{Binding RightShow}">
-                <Border Margin="0,70,5,0" Background="{DynamicResource FormBackground}" Width="400" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource BorderBrush}">
+                <Border Margin="0,200,5,0" Background="{DynamicResource FormBackground}" Width="400" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource BorderBrush}">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="30"/>
                             <RowDefinition/>
                         </Grid.RowDefinitions>
                         <Border Background="#005B99">
-                            <TextBlock Margin="0,0,0,0" Text="监测点属性" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#fff" FontSize="16"/>
+                            <TextBlock Margin="0,0,0,0" Text="温度点属性" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#fff" FontSize="16"/>
                         </Border>
                         <StackPanel Grid.Row="1" Margin="20,0">
                             <hc:TextBox
@@ -355,6 +357,15 @@
                                        Padding="10,0"
                                        Style="{StaticResource ButtonDashedSuccess}" Height="30" Click="btn_select_sensor_Click"/>
                             </StackPanel>
+                            <CheckBox Content="自定义温度值颜色" IsChecked="{Binding DiagramConfigModel.CustomStyle}"  HorizontalAlignment="Left" Margin="0,15,0,0" Foreground="#fff"/>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" x:Name="radio_container" Visibility="{Binding DiagramConfigModel.CustomStyle, Converter={StaticResource Boolean2VisibilityConverter}}">
+                                <RadioButton Margin="15,16,0,0" Foreground="#D4CE0A" Content="触头A项" Cursor="Hand"/>
+                                <RadioButton Margin="15,16,0,0" Foreground="#32C50E" Content="触头B项" Cursor="Hand"/>
+                                <RadioButton Margin="15,16,0,0" Foreground="#F35750" Content="触头C项" Cursor="Hand"/>
+                            </StackPanel>
+                            <!--<Border BorderBrush="Gray" BorderThickness="1" Margin="20" Width="200">
+                                <local:Template x:Name="CustomValueTemplate" Margin="0,20" Background="Transparent"/>
+                            </Border>-->
                             <StackPanel Orientation="Horizontal" Margin="0,10" HorizontalAlignment="Right">
                                 <Button
                                      x:Name="btnCancle"
@@ -439,7 +450,7 @@
             </hc:Drawer>
             <!--顶部抽屉 配置温度模板属性-->
             <hc:Drawer Name="DrawerRight2" Dock="Top" ShowMask="False" MaskCanClose="False" IsOpen="{Binding ConfigShow}">
-                <Border Margin="0,70,5,0" Background="{DynamicResource FormBackground}" Width="540" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource BorderBrush}">
+                <Border Margin="0,200,5,0" Background="{DynamicResource FormBackground}" Width="540" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource BorderBrush}">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="30"/>
@@ -465,27 +476,27 @@
                                 <Border Background="{StaticResource FormBackground}" CornerRadius="4">
                                     <StackPanel>
                                         <StackPanel Orientation="Horizontal" Margin="10">
-                                            <Button IsEnabled="{Binding ConfigModel.CanUpload}" Name="btn_bordercolor" Click="btn_bordercolor_Click" FontSize="12" Content="边框颜色"  Margin="5,0" Style="{StaticResource ButtonPrimary}" Padding="10,0" Height="25">
+                                            <Button Name="btn_bordercolor" Click="btn_bordercolor_Click" FontSize="12" Content="边框颜色"  Margin="5,0" Style="{StaticResource ButtonPrimary}" Padding="10,0" Height="25">
                                                 <hc:Poptip.Instance>
                                                     <hc:Poptip Content="点击设置" hc:Foreground="Red" PlacementType="Top"/>
                                                 </hc:Poptip.Instance>
                                             </Button>
-                                            <Button IsEnabled="{Binding ConfigModel.CanUpload}" Name="btn_background" Click="btn_background_Click" FontSize="12" Content="背景颜色"  Margin="5,0" Style="{StaticResource ButtonPrimary}" Padding="10,0" Height="25">
+                                            <Button  Name="btn_background" Click="btn_background_Click" FontSize="12" Content="背景颜色"  Margin="5,0" Style="{StaticResource ButtonPrimary}" Padding="10,0" Height="25">
                                                 <hc:Poptip.Instance>
                                                     <hc:Poptip Content="点击设置" hc:Foreground="Red" PlacementType="Top"/>
                                                 </hc:Poptip.Instance>
                                             </Button>
-                                            <Button IsEnabled="{Binding ConfigModel.CanUpload}" Name="btn_normal" Click="btn_normal_Click" FontSize="12" Content="正常温度"  Margin="5,0" Style="{StaticResource ButtonPrimary}" Padding="10,0" Height="25">
+                                            <Button  Name="btn_normal" Click="btn_normal_Click" FontSize="12" Content="正常温度"  Margin="5,0" Style="{StaticResource ButtonPrimary}" Padding="10,0" Height="25">
                                                 <hc:Poptip.Instance>
                                                     <hc:Poptip Content="点击设置" hc:Foreground="Red" PlacementType="Top"/>
                                                 </hc:Poptip.Instance>
                                             </Button>
-                                            <Button IsEnabled="{Binding ConfigModel.CanUpload}" FontSize="12" Name="btn_waring" Click="btn_waring_Click" Content="预警温度"  Margin="5,0" Style="{StaticResource ButtonPrimary}" Padding="10,0" Height="25">
+                                            <Button  FontSize="12" Name="btn_waring" Click="btn_waring_Click" Content="预警温度"  Margin="5,0" Style="{StaticResource ButtonPrimary}" Padding="10,0" Height="25">
                                                 <hc:Poptip.Instance>
                                                     <hc:Poptip Content="点击设置" hc:Foreground="Red" PlacementType="Top"/>
                                                 </hc:Poptip.Instance>
                                             </Button>
-                                            <Button IsEnabled="{Binding ConfigModel.CanUpload}" FontSize="12" Content="报警温度" Name="btn_alert" Click="btn_alert_Click"  Margin="5,0" Style="{StaticResource ButtonPrimary}" Padding="10,0" Height="25">
+                                            <Button  FontSize="12" Content="报警温度" Name="btn_alert" Click="btn_alert_Click"  Margin="5,0" Style="{StaticResource ButtonPrimary}" Padding="10,0" Height="25">
                                                 <hc:Poptip.Instance>
                                                     <hc:Poptip Content="点击设置" hc:Foreground="Red" PlacementType="Top"/>
                                                 </hc:Poptip.Instance>
@@ -718,7 +729,7 @@
                         <Border Background="#005B99">
                             <TextBlock Margin="0,0,0,0" Text="设备信息管理" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#fff" FontSize="16"/>
                         </Border>
-                        <StackPanel Grid.Row="1" Margin="20,0">
+                        <Grid Grid.Row="1" Margin="20,0">
                             <StackPanel Margin="40,0">
                                 <hc:TextBox
                                 Background="{StaticResource FormBackground}" 
@@ -749,13 +760,11 @@
                                             SelectionChanged="collection_type_SelectionChanged"
                                              Margin="0,16,0,0">
                                 </hc:ComboBox>
-                                <hc:ComboBox ItemsSource="{Binding PtotocolList}"
+                                <hc:ComboBox ItemsSource="{Binding Protocols}"
                                       Name="com_device_ptocol"
                                       hc:ItemContainerStyle="{StaticResource hc-comboBoxStyle}"
                                       hc:InfoElement.TitleWidth="80"
-                                      DisplayMemberPath="Key"
-                                      SelectedValuePath="Value"
-                                      SelectedItem="{Binding DeviceModel.Ptotocol}"
+                                      SelectedValue="{Binding DeviceModel.Ptotocol}"
                                       Style="{StaticResource ComboBoxExtend}"
                                       Background="{StaticResource FormBackground}" 
                                       BorderBrush="{StaticResource FormBorderBrush}"
@@ -774,9 +783,9 @@
                                 hc:InfoElement.TitleWidth="90" 
                                 hc:InfoElement.Placeholder="请输入ip地址" 
                                 hc:InfoElement.Title="服务IP地址" 
-                                hc:InfoElement.Necessary="True" 
+                                hc:InfoElement.Necessary="False" 
                                 hc:InfoElement.TitlePlacement="Left" 
-                                hc:TextType="Url"
+                                hc:TextType="PInt"
                                 Text="{Binding DeviceModel.IpAddress}"
                                 Margin="0,16,0,0"/>
                                 <hc:TextBox
@@ -791,6 +800,34 @@
                                 Text="{Binding DeviceModel.Port}"
                                  hc:TextType="NnInt"
                                 Margin="0,16,0,0"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <hc:TextBox
+                                        Background="{StaticResource FormBackground}" 
+                                        BorderBrush="{StaticResource FormBorderBrush}"
+                                        Foreground="{StaticResource FormForeground}"
+                                        hc:InfoElement.TitleWidth="90" 
+                                        hc:InfoElement.Placeholder="请输预警温度" 
+                                        hc:InfoElement.Title="预警温度"
+                                        hc:InfoElement.Necessary="False" 
+                                        hc:InfoElement.TitlePlacement="Left" 
+                                        Width="150"
+                                        Text="{Binding DeviceModel.WarnValue}"
+                                        hc:TextType="NnInt"
+                                        Margin="0,16,0,0"/>
+                                    <hc:TextBox
+                                        Background="{StaticResource FormBackground}" 
+                                        BorderBrush="{StaticResource FormBorderBrush}"
+                                        Foreground="{StaticResource FormForeground}"
+                                        hc:InfoElement.TitleWidth="90" 
+                                        hc:InfoElement.Placeholder="请输入报警温度" 
+                                        hc:InfoElement.Title="报警温度"
+                                        hc:InfoElement.Necessary="False" 
+                                        hc:InfoElement.TitlePlacement="Left" 
+                                        Width="150"
+                                        Text="{Binding DeviceModel.AlertValue}"
+                                        hc:TextType="NnInt"
+                                        Margin="80,16,0,0"/>
+                                </StackPanel>
                                 <StackPanel Orientation="Horizontal" Margin="0,10" HorizontalAlignment="Right">
                                     <Button
                                      Content="取消"
@@ -806,7 +843,7 @@
                                      Width="60" Height="25" Padding="10,0"/>
                                 </StackPanel>
                             </StackPanel>
-                        </StackPanel>
+                        </Grid>
                     </Grid>
                 </Border>
             </hc:Drawer>

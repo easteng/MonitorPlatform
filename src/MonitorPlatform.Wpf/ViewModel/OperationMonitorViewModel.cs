@@ -92,8 +92,23 @@ namespace MonitorPlatform.Wpf.ViewModel
             set { warnCount = value; this.DoNotify(); }
         }
 
+        // 树结构定义
+        private List<TreeViewModel> treeViewModels;
 
-        readonly IBaseRepository<Monitor, Guid> monitorRepositiry;
+        public List<TreeViewModel> TreeViewModels
+        {
+            get { return treeViewModels; }
+            set { treeViewModels = value; this.DoNotify(); }
+        }
+        private TreeViewModel treeViewModel;
+
+        public TreeViewModel TreeViewModel
+        {
+            get { return treeViewModel; }
+            set { treeViewModel = value; this.DoNotify(); }
+        }
+
+        readonly IBaseRepository<Station, Guid> stationRepository;
         readonly IBaseRepository<Diagram, Guid> diagramrRepositiry;
         readonly IBaseRepository<TemplateStyle, Guid> styleRepository;
         readonly IBaseRepository<DiagramConfig, Guid> diagramConfigRepository;
@@ -104,7 +119,7 @@ namespace MonitorPlatform.Wpf.ViewModel
            // this.ConfigModel = new ConfigModel();
             this.MonitorModels = new List<MonitorModel>();
             this.MonitorModels.Add(new MonitorModel() { Name = "请添顶级监测点" });
-            monitorRepositiry = ESTRepository.Builder<Monitor, Guid>();
+            stationRepository = ESTRepository.Builder<Station, Guid>();
             diagramrRepositiry = ESTRepository.Builder<Diagram, Guid>();
             styleRepository = ESTRepository.Builder<TemplateStyle, Guid>();
             diagramConfigRepository = ESTRepository.Builder<DiagramConfig, Guid>();
@@ -113,34 +128,76 @@ namespace MonitorPlatform.Wpf.ViewModel
             this.Alert = new List<string>();
             this.Waring=new List<string>();
 
-            Refresh();
+            BuildTree();
         }
 
-        private void Refresh()
+        // 加载树结构
+        private void BuildTree()
         {
             Task.Run(() =>
             {
-                var monitors =
-                monitorRepositiry.Where(a => true)
-                .ToTreeList();
-                if (monitors.Any())
+                var stations = stationRepository.Select.IncludeMany(a => a.Rooms, b => b.IncludeMany(c => c.Terminals)).ToList();
+                if (stations.Any())
                 {
-                    this.MonitorModels = ObjectMapper.Map<List<MonitorModel>>(monitors).ToList();
+                    //var tree = new TreeViewModel();
+                    var tree = new List<TreeViewModel>();
+                    stations?.ForEach(a =>
+                    {
+                        var node1 = new TreeViewModel();
+                        node1.NodeName = a.Name;
+                        node1.NodeType = TreeNodeType.Station;
+                        node1.Id = a.Id;
+                        if (a.Rooms.Any())
+                        {
+                            node1.Children = new List<TreeViewModel>();
+                            a.Rooms.ForEach(b =>
+                            {
+                                var node2 = new TreeViewModel();
+                                node2.NodeName = b.Name;
+                                node2.NodeType = TreeNodeType.Room;
+                                node2.Id = b.Id;
+                                node2.ParentId = a.Id;
+                                //if (b.Terminals.Any())
+                                //{
+                                //    node2.Children = new List<TreeViewModel>();
+                                //    b.Terminals?.ForEach(c =>
+                                //    {
+                                //        var node3 = new TreeViewModel();
+                                //        node3.ParentId = b.Id;
+                                //        node3.NodeName = c.Name;
+                                //        node3.NodeType = TreeNodeType.Termianl;
+                                //        node3.Id = c.Id;
+                                //        node2.Children.Add(node3);
+                                //    });
+                                //}
+                                node1.Children.Add(node2);
+                            });
+                        }
+                        tree.Add(node1);
+                    });
+                    this.TreeViewModels = tree;
                 }
             });
         }
 
-        public void TreeSelected(MonitorModel model)
+
+        public void TreeSelected(TreeViewModel node)
         {
-            //if (model.Type == StationType.Region)
-            //{
-            //    // 查询并读取上传的图片资源,绑定图片的名称
-            //    ReadImgdata();
-            //    // 读取当前监测点的温度模板
-            //    GetTemplateStyle();
-            //    // 读取当前监测点的温度点数据
-            //    RefreshDiagramConfigs();
-            //}
+            this.TreeViewModel = node;
+            // 如果时配电室，则显示 线路图
+            if (node.NodeType ==TreeNodeType.Room)
+            {
+                // 查询并读取上传的图片资源,绑定图片的名称
+                ReadImgdata();
+                // 读取当前监测点的温度模板
+                GetTemplateStyle();
+                // 读取当前监测点的温度点数据
+                RefreshDiagramConfigs();
+            }
+            else
+            {
+                // 不是配电室，展示该站点下的配电室列表及设备的信息等
+            }
         }
 
         /// <summary>
@@ -148,30 +205,36 @@ namespace MonitorPlatform.Wpf.ViewModel
         /// </summary>
         private void ReadImgdata()
         {
-            //var id = this.ActiveMonitorId;// 监测点id
-            //var diagram = diagramrRepositiry.Where(a => a.MonitorId == id).First();
-            //if (diagram != null)
-            //{
-            //    var filePath = Path.Combine(Directory.GetCurrentDirectory(), $"file");
-            //    if (!Directory.Exists(filePath))
-            //    {
-            //        // 不存在就创建
-            //        Directory.CreateDirectory(filePath);
-            //    }
-            //    filePath = Path.Combine(filePath, $"\\{diagram.Id}.svg");
-            //    if (File.Exists(filePath))
-            //    {
-            //        // 图片存在
-            //        this.ReloadImage?.Invoke(filePath, new EventArgs());
-            //    }
-            //    else
-            //    {
-            //        // 图片不存在，将数据库中的文件写入到本地
-            //        var data = diagram.Data;
-            //        File.WriteAllBytes(filePath, data);
-            //        this.ReloadImage?.Invoke(this, new EventArgs());
-            //    }
-            //}
+            var diagram = diagramrRepositiry.Where(a => a.PowerRoomId == this.TreeViewModel.Id).First();
+            if (diagram != null)
+            {
+                var filePath = Path.Combine(Directory.GetCurrentDirectory(), $"file");
+                if (!Directory.Exists(filePath))
+                {
+                    // 不存在就创建
+                    Directory.CreateDirectory(filePath);
+                }
+                filePath = Path.Combine(filePath, $"\\{diagram.Id}.svg");
+                if (File.Exists(filePath))
+                {
+                    // 图片存在
+                    this.ReloadImage?.Invoke(filePath, new EventArgs());
+                }
+                else
+                {
+                    // 图片不存在，将数据库中的文件写入到本地
+                    Task.Run(() =>
+                    {
+                        var data = diagram.Data;
+                        File.WriteAllBytes(filePath, data);
+                        this.ReloadImage?.Invoke(this, new EventArgs());
+                    });
+                }
+            }
+            else
+            {
+                this.ReloadImage?.Invoke(false, new EventArgs());
+            }
         }
 
         /// <summary>
@@ -179,28 +242,27 @@ namespace MonitorPlatform.Wpf.ViewModel
         /// </summary>
         public void RefreshDiagramConfigs()
         {
-            //var list = diagramrRepositiry
-            //    .Orm
-            //    .Select<Diagram, DiagramConfig>()
-            //    .Where((d, c) => d.MonitorId == this.ActiveMonitorId && c.DiagramId == d.Id)
-            //    .ToList<DiagramConfig>();
-            //this.DiagramConfigModels = ObjectMapper.Map<List<DiagramConfigModel>>(list).CreateIndex();
-            //this.InitPoint?.Invoke(this, DiagramConfigModels);
+            // 获取该配电室中的温度配置点数据
+            var points = diagramrRepositiry.Select
+                .Where(a => a.PowerRoomId == this.TreeViewModel.Id)
+                .IncludeMany(a=>a.Configs).ToList()
+                .SelectMany(a=>a.Configs).ToList();
+            this.DiagramConfigModels = ObjectMapper.Map<List<DiagramConfigModel>>(points).CreateIndex();
+            this.InitPoint?.Invoke(this, DiagramConfigModels);
         }
 
         // 获取当前监测点的温度模板
         private void GetTemplateStyle()
         {
-            //var monitorId = this.ActiveMonitorId;
-            //var temp = styleRepository.Where(a => a.MonitorId == monitorId).First();
-            //if (temp != null)
-            //{
-            //    this.TemplateModel = ObjectMapper.Map<TemplateModel>(temp);
-            //}
-            //else
-            //{
-            //    this.TemplateModel = null;
-            //}
+            var temp = styleRepository.Where(a => a.PowerRoomId == this.TreeViewModel.Id).First();
+            if (temp != null)
+            {
+                this.TemplateModel = ObjectMapper.Map<TemplateModel>(temp);
+            }
+            else
+            {
+                this.TemplateModel = null;
+            }
         }
 
         /// <summary>

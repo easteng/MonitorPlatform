@@ -23,7 +23,7 @@ using System.Threading.Tasks;
 
 namespace MonitorPlatform.Domain.Entities
 {
-    public class DiagramConfig:BaseEntity<Guid>
+    public class DiagramConfig : BaseEntity<Guid>
     {
         public Guid DiagramId { get; set; }
         public Diagram Diagram { get; set; }
@@ -42,13 +42,9 @@ namespace MonitorPlatform.Domain.Entities
         /// </summary>
         public double PointY { get; set; }
         /// <summary>
-        /// 自定义样式
-        /// </summary>
-        public string CustomStyle { get;set;  }
-        /// <summary>
         /// 温度点名称
         /// </summary>
-        public string PointName { get;set;  }
+        public string PointName { get; set; }
         /// <summary>
         /// 属性name  
         /// </summary>
@@ -64,5 +60,18 @@ namespace MonitorPlatform.Domain.Entities
         /// 是否发送短信
         /// </summary>
         public bool IsSendMsg { get; set; }
+
+        // 是否自定义样式
+        public bool CustomStyle { get; set; }
+
+        /// <summary>
+        /// 是否显示边框
+        /// </summary>
+        public bool ShowBorder { get; set; }
+
+        /// <summary>
+        /// 温度颜色
+        /// </summary>
+        public string ValueColor { get; set; }
     }
 }

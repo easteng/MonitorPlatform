@@ -33,8 +33,10 @@ namespace MonitorPlatform.Wpf.Model
             this.PointY = point.Y;  
         }
 
-        public Guid DiagramId { get; set; }
-        public Diagram Diagram { get; set; }
+        private Guid diagramId { get; set; }
+        public Guid DiagramId { get => diagramId; set { diagramId = value; this.DoNotify(); } }
+        private Diagram diagram { get; set; }
+        public Diagram Diagram { get => diagram; set { diagram = value; this.DoNotify(); } }
         /// <summary>
         /// 传感器id
         /// </summary>
@@ -58,11 +60,6 @@ namespace MonitorPlatform.Wpf.Model
         /// </summary>
         private double pointY { get; set; }
         public double PointY { get => pointY; set { pointY = value; this.DoNotify(); } }
-        /// <summary>
-        /// 自定义样式
-        /// </summary>
-        private string customStyle { get; set; }
-        public string CustomStyle { get => customStyle; set { customStyle = value; this.DoNotify(); } }
         /// <summary>
         /// 温度点名称
         /// </summary>
@@ -92,5 +89,19 @@ namespace MonitorPlatform.Wpf.Model
         /// 是否保存
         /// </summary>
         public bool IsSave { get; set; }
+
+        private bool customStyle { get; set; }
+        public bool CustomStyle { get => isSendMsg; set { isSendMsg = value; this.DoNotify(); } }
+        /// <summary>
+        /// 是否显示边框
+        /// </summary>
+        private bool showBorder { get; set; }
+        public bool ShowBorder { get => showBorder; set { showBorder = value; this.DoNotify(); } }
+
+        /// <summary>
+        /// 温度颜色
+        /// </summary>
+        public string valueColor { get; set;  }
+        public string ValueColor { get => valueColor; set { valueColor = value; this.DoNotify(); } }
     }
 }

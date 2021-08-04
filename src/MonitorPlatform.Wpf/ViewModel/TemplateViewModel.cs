@@ -71,7 +71,7 @@ namespace MonitorPlatform.Wpf.ViewModel
         /// 外部控件传值并初始化
         /// </summary>
         /// <param name="model"></param>
-        public TemplateModel InitTemplate(TemplateModel model,string code)
+        public TemplateModel InitTemplate(TemplateModel model, string code, bool custom, string color = "")
         {
             if (model == null)
             {
@@ -84,6 +84,17 @@ namespace MonitorPlatform.Wpf.ViewModel
                 GetDefaultColor(this.TemplateModel);
             }
             this.TemplateModel.SensorCode = code;
+
+            if (custom)
+            {
+                TemplateModel.BorderThickness = 1;
+                templateModel.BorderBackground = "#00FFFFFF";
+                templateModel.AlertValueForegrund = color;
+                templateModel.DefaultValueForeground = color;
+                templateModel.WaringValueForegrund = color;
+                templateModel.ValueForeground = color;
+                templateModel.BorderBrush = color;
+            }
             return this.TemplateModel;
         }
         /// <summary>
@@ -92,25 +103,41 @@ namespace MonitorPlatform.Wpf.ViewModel
         /// <param name="code"></param>
         /// <param name="value"></param>
         /// <param name="status"></param>
-        public void Update(double value, PointStatus status)
+        public void Update(double value, PointStatus status, TemplateModel custom)
         {
-            //if (this.TemplateModel.SensorCode == code)
-            //{
-
-            //}
+            this.TemplateModel.ValueForeground = custom.ValueForeground;
             this.TemplateModel.Value = value;
             switch (status)
             {
                 case PointStatus.Normal:
-                    this.TemplateModel.ValueForeground = this.StaticTemplateModel.DefaultValueForeground;
                     this.TemplateModel.BadgeBackground = this.TemplateModel.NormalBadgeColor;
                     break;
                 case PointStatus.Warning:
-                    this.TemplateModel.ValueForeground = this.StaticTemplateModel.WaringValueForegrund;
                     this.TemplateModel.BadgeBackground = this.TemplateModel.WaringBadgeColor;
                     break;
                 case PointStatus.Alerting:
-                    this.TemplateModel.ValueForeground = this.StaticTemplateModel.AlertValueForegrund;
+                    this.TemplateModel.BadgeBackground = this.TemplateModel.AlertBadgeColor;
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        public void Update(double value, PointStatus status)
+        {
+            this.TemplateModel.Value = value;
+            switch (status)
+            {
+                case PointStatus.Normal:
+                    this.TemplateModel.ValueForeground = TemplateModel.DefaultValueForeground;
+                    this.TemplateModel.BadgeBackground = this.TemplateModel.NormalBadgeColor;
+                    break;
+                case PointStatus.Warning:
+                    this.TemplateModel.ValueForeground = TemplateModel.WaringValueForegrund;
+                    this.TemplateModel.BadgeBackground = this.TemplateModel.WaringBadgeColor;
+                    break;
+                case PointStatus.Alerting:
+                    this.TemplateModel.ValueForeground = TemplateModel.AlertValueForegrund;
                     this.TemplateModel.BadgeBackground = this.TemplateModel.AlertBadgeColor;
                     break;
                 default:
