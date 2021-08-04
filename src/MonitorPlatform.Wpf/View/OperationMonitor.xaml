@@ -47,7 +47,7 @@
                 <Border 
                     Width="240"
                     BorderBrush="{StaticResource FormBorderBrush}"
-                        Margin="0,30,0,0"
+                        Margin="0,0,0,0"
                         Name="border_station_info"
                         BorderThickness="1,1,0,1">
                     <StackPanel>
@@ -65,7 +65,7 @@
                                   BorderThickness="0"
                                   SelectedItemChanged="TreeView_SelectedItemChanged"
                                   ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                            ItemsSource="{Binding MonitorModels}">
+                            ItemsSource="{Binding TreeViewModels}">
                             <TreeView.ItemTemplate>
                                 <HierarchicalDataTemplate ItemsSource="{Binding Children}">
                                     <Grid>
@@ -73,8 +73,8 @@
                                             <ColumnDefinition Width="20"/>
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
-                                        <TextBlock Text="{Binding Type,Converter={StaticResource StationType2IconConverter}}" Foreground="#DAAD44" FontSize="13"  FontFamily="../Assets/Fonts/#iconfont" />
-                                        <TextBlock Grid.Column="1"  Text="{Binding Name}" FontSize="13" VerticalAlignment="Center" FontWeight="Bold" Foreground="#DAAD44"/>
+                                        <TextBlock Text="{Binding NodeType,Converter={StaticResource StationType2IconConverter}}" Foreground="#DAAD44" FontSize="13"  FontFamily="../Assets/Fonts/#iconfont" />
+                                        <TextBlock Grid.Column="1"  Text="{Binding NodeName}" FontSize="13" VerticalAlignment="Center" FontWeight="Bold" Foreground="#DAAD44"/>
                                     </Grid>
                                 </HierarchicalDataTemplate>
                             </TreeView.ItemTemplate>

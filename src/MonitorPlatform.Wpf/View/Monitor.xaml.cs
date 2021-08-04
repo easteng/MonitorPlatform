@@ -46,38 +46,30 @@ namespace MonitorPlatform.Wpf.View
             this.tabitem_device.Visibility = Visibility.Collapsed;
             this.tabitem_sensor.Visibility = Visibility.Collapsed;
 
-            this.tree_station.Loaded += Tree_station_Loaded;
-            this.tree_station.LayoutUpdated += Tree_station_LayoutUpdated;
-            this.tree_station.Initialized += Tree_station_Initialized;
-        }
-
-        private void Tree_station_Initialized(object sender, EventArgs e)
-        {
-           // throw new NotImplementedException();
-        }
-
-        private void Tree_station_LayoutUpdated(object sender, EventArgs e)
-        {
-            //throw new NotImplementedException();
-            foreach (ItemCollection item in tree_station.Items)
+            // 绑定自定义温度点
+            foreach (var item in this.radio_container.Children)
             {
-                foreach (var data in item)
+                if(item is RadioButton rad)
                 {
-                  //  data.
+                    rad.Checked += Rad_Checked;
                 }
             }
         }
 
-        private void Tree_station_Loaded(object sender, RoutedEventArgs e)
+        private void Rad_Checked(object sender, RoutedEventArgs e)
         {
-           // throw new NotImplementedException();
+            var radio=(RadioButton)sender;
+            if (radio.IsChecked.Value)
+            {
+                var color = radio.Foreground.ToString();
+                this.monitorViewModel.DiagramConfigModel.ValueColor = color;
+            }
         }
-
-
+        
         #region 测温点添加及图纸管理
 
 
-
+        // 初始化测温点
         private void MonitorViewModel_InitPoint(object sender, List<DiagramConfigModel> e)
         {
             this.SvgContainer.Initialization();
@@ -87,12 +79,22 @@ namespace MonitorPlatform.Wpf.View
             {
                 var point = new Point(item.PointX, item.PointY);
                 var template = new Template();
-                template.UpdateElement(this.monitorViewModel.TemplateModel, item.SensorCode);
+                template.UpdateElement(this.monitorViewModel.TemplateModel, item.SensorCode,item.CustomStyle,item.ValueColor);
                 template.Name = item.PropName;
                 this.SvgContainer.AddUIElement(template, point);
             }
         }
 
+        private TemplateModel GetCustomTemplateModel(bool showBorder,string color)
+        {
+            var model = new TemplateModel();
+            model.BorderThickness = showBorder ? 1 : 0;
+            model.DefaultValueForeground = color;
+            model.AlertValueForegrund = color;
+            model.WaringValueForegrund = color;
+            model.BorderBackground = "#00FFFFFF";
+            return model;
+        }
 
         // 移动温度元素后更新坐标值
 
@@ -118,34 +120,41 @@ namespace MonitorPlatform.Wpf.View
             // 对坐标进行转换，需要与温度模板的长宽做计算
             var template = new Template();
             template.Name = GenerateName();
-            template.UpdateElement(this.monitorViewModel.TemplateModel, "");
+            template.UpdateElement(this.monitorViewModel.TemplateModel, "",false,"");
             this.SvgContainer.AddUIElement(template, point);
             this.monitorViewModel.NewPoint(template.Name, point);
         }
+        // 生产属性名称
         private string GenerateName()
         {
             var id = DateTime.Now.ToString("yyyyMMddHHmmss");
             return $"est_{id}";
         }
+        // 加载电路图纸
         private void MonitorViewModel_ReloadImage(object sender, EventArgs e)
         {
-            if (sender != null)
+            if(sender is bool)
+            {
+                this.SvgContainer.UnloadDocument(false);
+            }
+            else if (sender != null)
             {
                 this.SvgContainer.LoadDocument(sender.ToString());
             }
         }
+        // 编辑按钮切换
         private void ToggleButton_Checked(object sender, RoutedEventArgs e)
         {
             // 是否编辑的按钮切换
             this.SvgContainer.ViewerModel = ESTControl.SvgViewer.SvgViewModel.Edit;
         }
-
+        // 编辑按钮切换
         private void ToggleButton_Unchecked(object sender, RoutedEventArgs e)
         {
             this.SvgContainer.ViewerModel = ESTControl.SvgViewer.SvgViewModel.View;
             this.monitorViewModel.OpenRightDrawAction("false");
         }
-
+        // 保存图纸
         private void btnSavePic_Click(object sender, RoutedEventArgs e)
         {
             // 点击保存当前的数据
@@ -153,12 +162,12 @@ namespace MonitorPlatform.Wpf.View
             // 提示保存成功
             this.monitorViewModel.SavePicData(this.monitorViewModel.ConfigModel.SelectedFilePath);
         }
-
+        // 配置温度模板样式
         private void brnConfigTemp_Click(object sender, RoutedEventArgs e)
         {
             // 配置温度
             this.monitorViewModel.OpenConfigDrawAction(true);
-            this.monitorViewModel.TemplateModel = this.ValueTemplate.UpdateElement(this.monitorViewModel.TemplateModel, "");
+            this.monitorViewModel.TemplateModel = this.ValueTemplate.UpdateElement(this.monitorViewModel.TemplateModel, "",false,"");
             // 初始化按钮的颜色
             btn_background.Background = GetBrush(this.monitorViewModel.TemplateModel.BorderBackground);
             btn_bordercolor.Background = GetBrush(this.monitorViewModel.TemplateModel.BorderBrush);
@@ -172,7 +181,7 @@ namespace MonitorPlatform.Wpf.View
             num_fontsize.Value = this.monitorViewModel.TemplateModel.FontSize;
             num_thinkless.Value = this.monitorViewModel.TemplateModel.BorderThickness;
         }
-
+        // 点击上传电路图
         private void uploadImg_Click(object sender, RoutedEventArgs e)
         {
             // 点击上传电路图
@@ -186,8 +195,7 @@ namespace MonitorPlatform.Wpf.View
                 this.SvgContainer.LoadDocument(filePath);
             }
         }
-
-
+        // 删除测温点
         private void btn_deletepoint_Click(object sender, RoutedEventArgs e)
         {
             // 删除温度点
@@ -201,24 +209,13 @@ namespace MonitorPlatform.Wpf.View
                 }
             }
         }
-
-        private void com_sensor_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            // 传感器选择
-            var sensorcode = ((ComboBox)sender).SelectedValue;
-            if (sensorcode != null)
-            {
-                this.monitorViewModel.DiagramConfigModel.SensorCode = sensorcode.ToString();
-            }
-
-        }
-
+        // 选择传感器
         private void btn_select_sensor_Click(object sender, RoutedEventArgs e)
         {
             // 选择传感器 传感选择界面中只能展示当前站点关联设备所关联的采集器  再通过采集器进行筛选传感器信息
             var frm = new SensorSelectModal();
             frm.ShowTerminal = true;
-            frm.MonitorId = this.monitorViewModel.regionId;
+            frm.PowerRoomId = this.monitorViewModel.SelectedTreeNode.Id;
             frm.Confirm += (e, d) =>
             {
                 // 确认数据
@@ -228,6 +225,10 @@ namespace MonitorPlatform.Wpf.View
             };
             frm.OpenDialoge();
         }
+
+        // 自定义温度点的颜色
+
+
 
         #endregion
 
@@ -264,7 +265,7 @@ namespace MonitorPlatform.Wpf.View
         /// </summary>
         private void UpdateElement()
         {
-            this.ValueTemplate.UpdateElement(this.monitorViewModel.TemplateModel, "");
+            this.ValueTemplate.UpdateElement(this.monitorViewModel.TemplateModel, "",this.monitorViewModel.DiagramConfigModel.CustomStyle, this.monitorViewModel.DiagramConfigModel.ValueColor);
         }
         private void OpenColorPickWindow(FrameworkElement element, Action<string> change, Action<string> confirm)
         {
@@ -598,25 +599,30 @@ namespace MonitorPlatform.Wpf.View
         // 传感器写入终端
         private void btn_write_Click(object sender, RoutedEventArgs e)
         {
-
+            this.monitorViewModel.WriteSensor();
         }
         #endregion
 
         #region 4.采集终端管理相关
         private void com_select_device_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var item = ((ComboBox)sender).SelectedItem as ComboxItem;
+            var item = ((ComboBox)sender).SelectedItem as DeviceModel;
             if (item != null)
             {
-                this.monitorViewModel.MonitorModel.DeviceId = (Guid)item.Value;
+                this.monitorViewModel.TerminalModel.DeviceId = item.Id;
             }
         }
         private void btn_save_terminal_Click(object sender, RoutedEventArgs e)
         {
             this.monitorViewModel.SaveTerminal();
         }
+
         #endregion
 
-
+        // 同步缓存
+        private void btn_update_cache_Click(object sender, RoutedEventArgs e)
+        {
+            this.monitorViewModel.UpdateDeviceCache();
+        }
     }
 }

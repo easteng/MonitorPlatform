@@ -89,6 +89,7 @@ namespace MonitorPlatform.Wpf.ViewModel
         readonly IBaseRepository<DeviceRltTerminal, Guid> deviceRltTerminalRepository;
         readonly IBaseRepository<Terminal, Guid> terminalRepository;
         readonly IBaseRepository<TerminalRltSensor, Guid> terminalTltsensorRepository;
+        readonly IBaseRepository<PowerRoom, Guid> powerRepository;
 
         public SensorManagerViewModel()
         {
@@ -96,6 +97,7 @@ namespace MonitorPlatform.Wpf.ViewModel
             deviceRltTerminalRepository = ESTRepository.Builder<DeviceRltTerminal, Guid>();
             terminalRepository = ESTRepository.Builder<Terminal, Guid>();
             terminalTltsensorRepository = ESTRepository.Builder<TerminalRltSensor, Guid>();
+            powerRepository = ESTRepository.Builder<PowerRoom, Guid>();
             this.Refresh();
 
 
@@ -179,22 +181,31 @@ namespace MonitorPlatform.Wpf.ViewModel
         }
 
 
-        // 查询采集器下的传感器
-        public void QueryTerminalSensor(Guid id )
+        /// <summary>
+        /// 根据配电室id获取下面的采集器
+        /// </summary>
+        /// <param name="id"></param>
+        public void QueryTerminalByPowerId(Guid id )
         {
-            var list =
-                terminalTltsensorRepository.
-                Orm.Select<TerminalRltSensor, Sensor>()
-                .Where((t, s) => t.TerminalId == id && t.SensorId == s.Id)
-                .ToList<Sensor>();
-            this.SensorList = ObjectMapper.Map<List<SensorModel>>(list).CreateIndex();
+            var list = powerRepository.Select
+                .Where(a => a.Id == id)
+                .IncludeMany(a => a.Terminals).ToList()
+                .SelectMany(a=>a.Terminals).ToList();
+            this.Terminals = ObjectMapper.Map<List<TerminalModel>>(list).CreateIndex();
         }
 
-        public void GetSensorByMonitor(Guid id)
+        /// <summary>
+        /// 获取指定采集器中的传感器
+        /// </summary>
+        /// <param name="id"></param>
+        public void GetSensorByTerminal(Guid id)
         {
-            var list =
-               sensorRepository.Where(a=>a.TerminalId == id).ToList(); 
-            this.SensorList = ObjectMapper.Map<List<SensorModel>>(list).CreateIndex();
+            var sensor = terminalRepository
+                .Select
+                .Where(a => a.Id == id)
+                .IncludeMany(a=>a.Sensors).ToList()
+                .SelectMany(a=>a.Sensors).ToList(); 
+            this.SensorList = ObjectMapper.Map<List<SensorModel>>(sensor).CreateIndex();
         }
     }
 }

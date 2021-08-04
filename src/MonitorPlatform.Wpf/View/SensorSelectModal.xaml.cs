@@ -27,32 +27,28 @@ namespace MonitorPlatform.Wpf.View
         List<Guid> SelectedSensors { get; set;  }=new List<Guid>();
 
         public bool ShowTerminal=false;
-        // 串口服务器器  用来过滤采集器
-        public Guid MonitorId { get;set; }
+        // 配电室id
+        public Guid PowerRoomId { get;set; }
         public SensorSelectModal()
         {
-            
-
             InitializeComponent();
             this.DataContext = sensorManagerViewModel = new SensorManagerViewModel();
-           
-          
         }
 
         public void OpenDialoge()
         {
-            if (ShowTerminal)
-            {
-                //border_terminal_info.Width = 200;
-                sensorManagerViewModel.ColumnWidth = 0;
-            }
-            else
-            {
-                //border_terminal_info.Width = 0;
-                sensorManagerViewModel.ColumnWidth = 80;
-            }
-
-            sensorManagerViewModel.GetSensorByMonitor(this.MonitorId);
+            //if (ShowTerminal)
+            //{
+            //    //border_terminal_info.Width = 200;
+            //    //sensorManagerViewModel.ColumnWidth = 0;
+            //}
+            //else
+            //{
+            //    //border_terminal_info.Width = 0;
+            //   // sensorManagerViewModel.ColumnWidth = 80;
+            //}
+            sensorManagerViewModel.ColumnWidth = 0;
+            sensorManagerViewModel.QueryTerminalByPowerId(this.PowerRoomId);
             this.ShowDialog();
         }
         private void SensorSelectModal_Activated(object sender, EventArgs e)
@@ -67,7 +63,6 @@ namespace MonitorPlatform.Wpf.View
             var id = Guid.Parse(checkbox.Tag.ToString());
             if (checkbox != null && checkbox.IsChecked.Value)
             {
-
                 // 选中
                 this.SelectedSensors.Add(id);
             }
@@ -116,7 +111,7 @@ namespace MonitorPlatform.Wpf.View
             var selectItem=((ListBox)sender).SelectedItem as TerminalModel;
             if (selectItem != null)
             {
-                this.sensorManagerViewModel.QueryTerminalSensor(selectItem.Id);
+                this.sensorManagerViewModel.GetSensorByTerminal(selectItem.Id);
             }
         }
     }

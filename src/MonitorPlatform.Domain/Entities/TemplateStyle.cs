@@ -26,9 +26,14 @@ namespace MonitorPlatform.Domain.Entities
     /// </summary>
     public class TemplateStyle:BaseEntity<Guid>
     {
-        // 配电室
-        public Guid PowerRoomId { get; set; }
+        // 配电室 可以为空
+        public Guid?PowerRoomId { get; set; }
         public PowerRoom PowerRoom { get; set; }    
+
+        // 温度点 可为空
+        public Guid?DiagramConfigId { get;set;  }
+        public DiagramConfig DiagramConfig { get;set;  }
+
 
         public string BorderBrush { get; set; }
         public int BorderThickness { get; set; }

@@ -26,7 +26,9 @@ namespace MonitorPlatform.Share
     /// </summary>
     public class DeviceCollectionType
     {
-        public static string Server = "server";
-        public static string Client = "client";
+        public static string TcpServer = "TcpServer";
+        public static string ModbusTcp = "ModbusTcp";
+        public static string SerialPort = "SerialPort";
+        public static string Gprs = "Gprs";
     }
 }

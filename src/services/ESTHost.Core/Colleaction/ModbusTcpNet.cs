@@ -271,6 +271,7 @@ namespace ESTHost.Core.Colleaction
         /// <param name="terminalId"></param>
         public override void EndWrite(Guid terminalId)
         {
+            this.terminals = this.redisCachingProvider?.GetTerminalsByDevice(this.deviceItem.DeviceId);
             this.canRead = true;
             Thread.Sleep(100);
         }

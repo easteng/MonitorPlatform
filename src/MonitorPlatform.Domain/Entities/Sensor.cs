@@ -27,6 +27,10 @@ namespace MonitorPlatform.Domain.Entities
     public class Sensor : BaseEntity<Guid>
     {
         /// <summary>
+        /// 传感器序号
+        /// </summary>
+        public int No { get; set; }
+        /// <summary>
         /// 采集器id
         /// </summary>
         public Guid TerminalId { get; set; }

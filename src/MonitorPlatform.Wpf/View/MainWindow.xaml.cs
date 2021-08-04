@@ -42,7 +42,7 @@ namespace MonitorPlatform.Wpf
             }
 
             // 默认跳转到首页
-            this.ToggleViewPage("Dashboard");
+            this.ToggleViewPage("OperationMonitor");
         }
 
         // 切换菜单显示

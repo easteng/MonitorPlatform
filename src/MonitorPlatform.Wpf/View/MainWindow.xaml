@@ -80,9 +80,9 @@
             <Border Style="{StaticResource GlobalBackgroundColor}" BorderThickness="1" MouseLeftButtonDown="Border_MouseLeftButtonDown">
                 <Grid>
                     <StackPanel Orientation="Horizontal">
-                        <Border Background="{StaticResource LogoBackgound}" MinWidth="240" HorizontalAlignment="Left" Margin="0" CornerRadius="5,0,0,0">
+                        <Border Background="{StaticResource LogoBackgound}" MinWidth="300" HorizontalAlignment="Left" Margin="0" CornerRadius="5,0,0,0">
                             <TextBlock 
-                            Text="&#xe631; BIM施工管理系统" 
+                            Text="&#xe631; 联盟化工厂有限公司测温系统" 
                                 FontFamily="../Assets/Fonts/#iconfont"
                             Style="{StaticResource MainTitle}">
                                 <TextBlock.Effect>
@@ -120,7 +120,7 @@
                         
                         <!--顶部菜单-->
                         <StackPanel Grid.Row="1" Name="menu_bar" Orientation="Horizontal"  VerticalAlignment="Center" Margin="20,0" >
-                            <RadioButton Tag="Dashboard" Style="{StaticResource defaultRadioStyle}" Content="系统首页" IsChecked="True" Margin="15 0 0 0"/>
+                            <!--<RadioButton Tag="Dashboard" Style="{StaticResource defaultRadioStyle}" Content="系统首页" IsChecked="True" Margin="15 0 0 0"/>-->
                             <RadioButton Tag="OperationMonitor" Style="{StaticResource defaultRadioStyle}" Content="运行监测" Margin="30 0 0 0"/>
                             <RadioButton Tag="DataQuery" Style="{StaticResource defaultRadioStyle}" Content="数据查询" Margin="30 0 0 0"/>
                             <RadioButton Tag="Monitor" Style="{StaticResource defaultRadioStyle}" Content="站点管理" Margin="30 0 0 0"/>

@@ -49,9 +49,9 @@ namespace ESTHost.Core.Colleaction
                     if (!servicesDictionary.TryGetValue(device.DeviceId, out var server))
                     {
                         // 不存在服务，则重新创建
-                        if (device.Type == MonitorPlatform.Share.DeviceCollectionType.Server)
+                        if (device.Type == MonitorPlatform.Share.DeviceCollectionType.TcpServer)
                             server = ModbusTcpNet.CreateModbus(device, name);
-                        else
+                        else if(device.Type == MonitorPlatform.Share.DeviceCollectionType.ModbusTcp)
                             server = ModbusTcpServer.CreateModbus(device);
                         servicesDictionary.TryAdd(device.DeviceId, server);
                     }
