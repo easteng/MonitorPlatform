@@ -601,6 +601,17 @@ namespace MonitorPlatform.Wpf.View
         {
             this.monitorViewModel.WriteSensor();
         }
+
+        // 下载导入模板
+        private void btn_down_temp_Click(object sender, RoutedEventArgs e)
+        {
+            this.monitorViewModel.DownloadSensorTemp();
+        }
+        // 导入文件
+        private void btn_import_sensor_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
         #endregion
 
         #region 4.采集终端管理相关
@@ -624,5 +635,7 @@ namespace MonitorPlatform.Wpf.View
         {
             this.monitorViewModel.UpdateDeviceCache();
         }
+
+      
     }
 }

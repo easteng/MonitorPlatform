@@ -216,6 +216,16 @@
                                     Click="btn_write_Click"
                                    Content="写入终端"
                                    Margin="5" Style="{StaticResource ButtonDashedInfo}" Height="25" Padding="10,0"/>
+                                <Button x:Name="btn_down_temp" Click="btn_down_temp_Click"    FontSize="15" Content="&#xe698;" FontFamily="../Assets/Fonts/#iconfont" Margin="5" Style="{StaticResource ButtonDashedWarning}" Padding="10,0" Height="25">
+                                    <hc:Poptip.Instance>
+                                        <hc:Poptip Content="下载导入模板" hc:Foreground="#007ACC" PlacementType="Top"/>
+                                    </hc:Poptip.Instance>
+                                </Button>
+                                <Button  x:Name="btn_import_sensor" Click="btn_import_sensor_Click" FontSize="15" Content="&#xe699;" FontFamily="../Assets/Fonts/#iconfont" Margin="5" Style="{StaticResource ButtonDashedWarning}" Padding="10,0" Height="25">
+                                    <hc:Poptip.Instance>
+                                        <hc:Poptip Content="导入传感器" hc:Foreground="#007ACC" PlacementType="Top"/>
+                                    </hc:Poptip.Instance>
+                                </Button>
                             </StackPanel>
                             <!--传感器列表-->
                             <ListView 

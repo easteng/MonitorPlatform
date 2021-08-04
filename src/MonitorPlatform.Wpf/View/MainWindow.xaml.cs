@@ -43,6 +43,14 @@ namespace MonitorPlatform.Wpf
 
             // 默认跳转到首页
             this.ToggleViewPage("OperationMonitor");
+            Application.Current.Exit += Current_Exit;
+            Application.Current.ShutdownMode = ShutdownMode.OnMainWindowClose;
+        }
+
+        private void Current_Exit(object sender, ExitEventArgs e)
+        {
+            Application.Current.Shutdown(-1);
+            Application.Current.ShutdownMode = ShutdownMode.OnMainWindowClose;
         }
 
         // 切换菜单显示
@@ -143,7 +151,8 @@ namespace MonitorPlatform.Wpf
             var exit = new ExitConfirm();
             exit.FormExit += (a, b) =>
              {
-                 Application.Current.Shutdown();
+                 this.Close();
+                 Application.Current.Shutdown(-1);
              };
             exit.FormMini += (a, b) =>
             {

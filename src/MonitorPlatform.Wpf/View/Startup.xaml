@@ -1,0 +1,29 @@
+﻿<Window x:Class="MonitorPlatform.Wpf.View.Startup"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MonitorPlatform.Wpf.View"
+        mc:Ignorable="d"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen"
+        AllowsTransparency="True"
+        Background="{x:Null}"
+        xmlns:hc="https://handyorg.github.io/handycontrol"
+        Title="Startup" Height="250" Width="500">
+    <Border MouseLeftButtonDown="Border_MouseLeftButtonDown" Background="{StaticResource FormBackground}" CornerRadius="10" Margin="5">
+        <Border.Effect>
+            <DropShadowEffect Color="#fff" ShadowDepth="0" BlurRadius="10" Opacity="0.5" Direction="0"/>
+        </Border.Effect>
+        <StackPanel Orientation="Vertical" Margin="0,32,0,0">
+            <TextBlock Text="联盟化工厂有限公司测温系统" FontFamily="kaiti" FontWeight="ExtraBold" HorizontalAlignment="Center" Margin="0,10" Foreground="#2DBBFF" FontSize="30"/>
+            <hc:CircleProgressBar IsIndeterminate="True" Margin="0,0,0,0" Width="40" Height="40" ArcThickness="5" Style="{StaticResource ProgressBarWarningCircle}"/>
+            <TextBlock Text="系统启动中" HorizontalAlignment="Center" Margin="0,20" Foreground="#F0A85D" FontSize="15"/>
+            <StackPanel Width="300">
+                <ProgressBar Style="{StaticResource ProgressBarFlat}" Margin="0,8,0,10" Value="110" Maximum="100" IsIndeterminate="True"/>
+            </StackPanel>
+            <TextBlock Text="@copyRight 2021 西安东腾网络科技有限公司" HorizontalAlignment="Right" Margin="0,10,10,20" Foreground="#18DD5D" FontSize="12"/>
+        </StackPanel>
+    </Border>
+</Window>

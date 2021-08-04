@@ -14,6 +14,8 @@
 using ESTCore.Message.Client;
 using ESTCore.ORM.FreeSql;
 
+using ESTTool.Excel;
+
 using FreeSql;
 
 using HandyControl.Controls;
@@ -38,6 +40,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Input;
 
 namespace MonitorPlatform.Wpf.ViewModel
@@ -1450,6 +1453,46 @@ namespace MonitorPlatform.Wpf.ViewModel
             catch (Exception ex)
             {
                 Growl.Error("写入失败");
+            }
+        }
+        #endregion
+
+        #region 导入导出操作
+        /// <summary>
+        /// 下载传感器导入模板
+        /// </summary>
+        public void DownloadSensorTemp()
+        {
+            // 创建文件
+            var workbook = ExcelExtension.CreateExcelFile(ExcelFileType.Xlsx);
+            // 创建工作表
+            var sheet = workbook.CreateSheet("传感器");
+            // 定义表头
+            var head = new string[] { "序号(整数)", "传感器编号", "安装位置" };
+            // 创建第一行
+            var row1 = sheet.CreateRow(0);
+            // 合并单元格
+            ExcelExtension.CellRangeAddress(0, 1, 0, 2);// 合并
+            row1.CreateCell(0).SetCellValue("传感器导入模板，说明：前两行不要删除！！！,记得加边框");
+            var row2 = sheet.CreateRow(1);
+            for (int i = 0; i < head.Length; i++)
+            {
+                row2.CreateCell(i).SetCellValue(head[i]);
+            }
+            // 导出文件
+
+            var stream = workbook.ConvertToBytes();
+            var dialog = new SaveFileDialog();
+            dialog.Filter = "(.xlsx)|*.xlsx";
+            dialog.Title = "保存模板文件";
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                // 保存文件
+                var filePath = dialog.FileName;
+                FileStream fileStream = File.Create(filePath);
+                fileStream.Write(stream);
+                fileStream.Close();
+                Growl.Success("下载成功");
             }
         }
         #endregion

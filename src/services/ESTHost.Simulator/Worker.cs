@@ -36,26 +36,55 @@ namespace ESTHost.Simulator
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            var list = new List<CacheItemTerminal>();
             var devices = new List<CacheItemDevice>();
             // 获取设备
-            var protocol = this.redisCachingProvider.GetDevicesByProtocol("WTR20A");
-
-            if (protocol != null)
+            var protocol1 = this.redisCachingProvider.GetDevicesByProtocol("WTR20A");
+            var protpcol2 = this.redisCachingProvider.GetDevicesByProtocol("WTR31");
+            if (protocol1 != null)
             {
                 // 获取采集器
-                foreach (var item in protocol)
+                foreach (var item in protocol1)
                 {
                     var device = this.redisCachingProvider.GetTerminalsByDevice(item.DeviceId);
+                    if (device != null)
+                    {
+                        list.AddRange(device);
+                    }
                 }
             }
+            if (protpcol2 != null)
+            {
+                foreach (var item in protpcol2)
+                {
+                    var device = this.redisCachingProvider.GetTerminalsByDevice(item.DeviceId);
+                    if (device != null)
+                    {
+                        list.AddRange(device);
+                    }
+                }
 
+            }
+
+
+            var sensorList = new List<CacheItemSensor>();
+            list?.ForEach(a =>
+            {
+                var sensors = this.redisCachingProvider.GetTerminalSensorCache(a.Id);
+                if (sensors != null && sensors.Any())
+                {
+                    sensorList.AddRange(sensors);
+                }
+            });
+
+            // 获取协议下的
             // 获取传感器信息
-            var sensors = this.redisCachingProvider.GetTerminalSensorCache(Guid.Parse("6107f1df-efc2-bf7c-00e9-d761574ab9a6"));
+          
             var battary = new Random();
             var Value = new Random();
             while (!stoppingToken.IsCancellationRequested)
             {
-                sensors?.ForEach(a =>
+                sensorList?.ForEach(a =>
                 {
                     var standard = new StandardMessage()
                     {
@@ -63,7 +92,8 @@ namespace ESTHost.Simulator
                         // TerminalId = item.TerminalId,
                         // TerminalId = item.TerminalId,
                         Battary = battary.Next(1, 3),
-                        Value = Value.Next(20, 80)
+                        Value = Value.Next(20, 80),
+                        Time = DateTime.Now
                     };
 
                     if (standard.Value > 40 && standard.Value < 60)

@@ -5,6 +5,7 @@
     <TargetFramework>net5.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
+    <ApplicationIcon>3333.ico</ApplicationIcon>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -61,6 +62,7 @@
     <PackageReference Include="XamlFlair.WPF" Version="1.2.11" />
     <ProjectReference Include="..\..\..\..\main-project\EST.Components\src\core\ESTCore.ORM.FreeSql\ESTCore.ORM.FreeSql.csproj" />
     <ProjectReference Include="..\..\..\..\main-project\EST.Components\src\core\ESTCore.Message\ESTCore.Message.csproj" />
+    <ProjectReference Include="..\..\..\..\main-project\EST.Components\src\tools\ESTTool.Excel\ESTTool.Excel.csproj" />
     <ProjectReference Include="..\..\..\..\main-project\EST.Components\src\controls\svg-viewer\ESTControl.SvgViewer\ESTControl.SvgViewer.csproj" />
     <ProjectReference Include="..\MonitorPlatform.Contracts\MonitorPlatform.Contracts.csproj" />
     <ProjectReference Include="..\MonitorPlatform.Domain\MonitorPlatform.Domain.csproj" />

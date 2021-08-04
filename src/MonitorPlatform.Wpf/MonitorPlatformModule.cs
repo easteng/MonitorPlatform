@@ -21,6 +21,7 @@ using MonitorPlatform.Share;
 using MonitorPlatform.Wpf.Receiver;
 using Silky.Lms.Core.Modularity;
 
+using System.Threading.Tasks;
 
 namespace MonitorPlatform.Wpf
 {
@@ -31,6 +32,12 @@ namespace MonitorPlatform.Wpf
         )]
     public class MonitorPlatformModule: StartUpModule
     {
+        public override Task Initialize(ApplicationContext applicationContext)
+        {
+            // 启动主界面
+            GlableDelegateHandler.InitComplate?.Invoke(); // 初始化完成
+            return base.Initialize(applicationContext);
+        }
         protected override void RegisterServices(ContainerBuilder builder)
         {
             var service = new ServiceCollection();
